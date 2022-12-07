@@ -1,17 +1,17 @@
 # autotools cruft
-/INSTALL
-/Makefile.in
-/aclocal.m4
-/autom4te.cache/
-/autostuff/
-/configure
-/configure.lineno
+INSTALL
+Makefile.in
+aclocal.m4
+autom4te.cache/
+autostuff/
+configure
+configure.lineno
 
 # Editor/IDE cruft
 *.kate-swp
 *~
-/*.kdev4
-/Makefile.am.user
+*.kdev4
+Makefile.am.user
 
 # Configure/build cruft
 *.asm
@@ -33,7 +33,17 @@
 *.rst
 *.sym
 .dirstamp
-/Makefile
-/config.*
-/sigrok-firmware-fx2lafw-*.tar.*
+
+config.*
 stamp-h?
+
+__pycache__
+firmware/fx2/fx2lib
+firmware/fx2/INSTALL
+firmware/fx2/Makefile
+Changelog
+
+*.egg-info
+deb_dist
+dist
+*.deb

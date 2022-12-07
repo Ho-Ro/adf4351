@@ -35,9 +35,9 @@
 #include <eputils.h>
 #include <command.h>
 
-#define LE_IO 0x1
-#define CLK_IO 0x2
-#define DAT_IO 0x4
+#define LE_IO   0x1
+#define CLK_IO  0x2
+#define DATA_IO 0x4
 
 /* ... */
 volatile __bit got_sud;
@@ -116,26 +116,22 @@ void hispeed_isr(void) __interrupt HISPEED_ISR
 
 static void set_reg(void)
 {
-	int i = 0;
+	BYTE i = 0;
 	const BYTE *data = EP0BUF + 3;
 	BYTE b = 0;
 
-	IOA &= ~LE_IO;
-
-	while (i != 32) {
+	while ( i < 32 ) {
+		// shift data out, MSB first
 		if (i++ % 8 == 0)
 			b = *data--;
-
-		IOA = (IOA & ~(DAT_IO | CLK_IO)) | ((b & 0x80) ? DAT_IO : 0);
-		SYNCDELAY16;
-		IOA |= CLK_IO;
-
+		IOA = ((b & 0x80) ? DATA_IO : 0); // CLK low, LE low, DATA
 		b <<= 1;
+		IOA |= CLK_IO;  // set CLK high, shift data bit in
+		IOA &= ~CLK_IO; // set CLK low
 	}
-
-	IOA = (IOA & ~CLK_IO);
-	SYNCDELAY16;
-	IOA |= LE_IO;
+	// t6 > 10 ns between set CLK low and set LE high
+	IOA |= LE_IO; // CLK low, DATA low, set LE high, transfer shift reg to R0..5
+	IOA = 0;      // CLK, DATA, set LE low
 }
 
 void fx2adf435xfw_init(void)
@@ -147,13 +143,13 @@ void fx2adf435xfw_init(void)
 	vendor_command = 0xff;
 
 	/* Set the SPI pins to output */
-	OEA = LE_IO | DAT_IO | CLK_IO;
-	IOA = LE_IO | DAT_IO | CLK_IO;
+	OEA = LE_IO | DATA_IO | CLK_IO;
+	IOA = 0; // LE = CLK = DATA = 0
 
 	/* Renumerate. */
 	RENUMERATE_UNCOND();
 
-	SETCPUFREQ(CLK_48M);
+	SETCPUFREQ(CLK_12M); // no need to hurry
 
 	USE_USB_INTS();
 

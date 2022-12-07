@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# upload the firmware to the FX2 EzUSB processor on the ADF435x eval board
+
+FW_IHX=fx2adf435xfw.ihx
+SYSTEM_FW=/usr/share/pyadf435x/$FW_IHX
+
+if [ -r $FW_IHX ]; then
+    FIRMWARE=$FW_IHX
+elif [ -r $SYSTEM_FW ]; then
+    FIRMWARE=$SYSTEM_FW
+else
+    echo $(basename $0): error - firmware $FW_IHX not found
+    exit 1
+fi
+
+FX2UPLOAD=/usr/bin/fx2upload
+CYCFX2PROG=/usr/bin/cycfx2prog
+
+if [ -x $CYCFX2PROG ]; then
+    $CYCFX2PROG prg:$FIRMWARE && $CYCFX2PROG run
+elif [ -x $FX2UPLOAD ]; then
+    $FX2UPLOAD -v $FIRMWARE
+else
+    echo $(basename $0): error - utilities $CYCFX2PROG or $FX2UPLOAD not found
+    exit 2
+fi

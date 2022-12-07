@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='pyadf43x',
-    version='0.1',
+    name='pyadf435x',
+    version='0.2',
     packages=find_packages(),
 
     install_requires=['pyusb>=1.0.0'],
