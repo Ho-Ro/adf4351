@@ -38,6 +38,7 @@ config.*
 stamp-h?
 
 __pycache__
+firmware/stm32/libopencm3
 firmware/fx2/fx2lib
 firmware/fx2/INSTALL
 firmware/fx2/Makefile

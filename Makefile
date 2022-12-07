@@ -19,6 +19,20 @@ firmware/fx2/Makefile: firmware/fx2/Makefile.am
 	cd firmware/fx2 && ./autogen.sh && ./configure
 
 
+.PHONY: firmware_stm32
+firmware_stm32: stm32adf435xfw.bin
+
+
+stm32adf435xfw.bin: firmware/stm32/stm32adf435xfw.bin
+	cp $< $@
+	chmod -x $@
+
+
+firmware/stm32/stm32adf435xfw.bin: firmware/stm32/stm32adf435xfw.c
+	make -C firmware/stm32/libopencm3
+	make -C firmware/stm32
+
+
 .PHONY:	upload_fw
 upload_fw: fx2adf435xfw.ihx adf435xinit
 	./adf435xinit
@@ -65,4 +79,5 @@ clean:
 .PHONY:	distclean
 distclean: clean
 	-rm -f *.deb *.ihx firmware/fx2/Makefile
+	-make -C firmware/stm32/libopencm3 clean
 
