@@ -70,4 +70,5 @@ if args['verbose']:
         print('r%d = 0x%08x' % (r, regs[r]))
 
 intf = getattr(adf435x.interfaces, args['interface'])()
-intf.set_regs(regs[::-1])
+#intf.set_regs(regs[::-1])
+intf.set_regs(regs[::-1], bitsize=32) # append a 5th byte as register length info (=32) like the AD eval sw

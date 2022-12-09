@@ -22,10 +22,12 @@
 ## Please keep this list sorted alphabetically by vendor/device name.
 ##
 
-ACTION!="add|change", GOTO="adf435x_rules_end"
-SUBSYSTEM!="usb|usbmisc|usb_device", GOTO="adf435x_rules_end"
+ACTION!="add|change", GOTO="adf4xxx_rules_end"
+SUBSYSTEM!="usb|usbmisc|usb_device", GOTO="adf4xxx_rules_end"
 
-# ADF435x-EVAL
+# ADF4xxx USB Adapter Board
+ATTRS{idVendor}=="0456", ATTRS{idProduct}=="b403", MODE="664", GROUP="plugdev"
+# ADF4xxx USB Eval Board
 ATTRS{idVendor}=="0456", ATTRS{idProduct}=="b40d", MODE="664", GROUP="plugdev"
 
-LABEL="adf435x_rules_end"
+LABEL="adf4xxx_rules_end"

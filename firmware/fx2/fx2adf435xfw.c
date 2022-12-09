@@ -114,13 +114,14 @@ void hispeed_isr(void) __interrupt HISPEED_ISR
 	CLEAR_HISPEED();
 }
 
-static void set_reg(void)
+// send 4 register values with size defined by "bitsize" (default=32)
+static void set_reg( BYTE bitsize )
 {
 	BYTE i = 0;
 	const BYTE *data = EP0BUF + 3;
 	BYTE b = 0;
 
-	while ( i < 32 ) {
+	while ( i < bitsize ) {
 		// shift data out, MSB first
 		if (i++ % 8 == 0)
 			b = *data--;
@@ -134,6 +135,36 @@ static void set_reg(void)
 	IOA = 0;      // CLK, DATA, set LE low
 }
 
+extern __code BYTE serial_num; /* serial number string - ".globl _serial_num" in dscr.a51 */
+
+/* ID Registers that provide an unique serial number -> Cypress KBA89285 */
+__xdata __at 0xE507 volatile BYTE UNIQID0;  /* ID register byte 0 (LSB) */
+__xdata __at 0xE508 volatile BYTE UNIQID1;  /* ID register */
+__xdata __at 0xE509 volatile BYTE UNIQID2;  /* ID register */
+__xdata __at 0xE50A volatile BYTE UNIQID3;  /* ID register */
+__xdata __at 0xE50B volatile BYTE UNIQID4;  /* ID register */
+__xdata __at 0xE50C volatile BYTE UNIQID5;  /* ID register byte 5 (MSB) */
+
+void insert_serial_number()
+{
+	WORD p_serial_num = (WORD)&serial_num;
+	const char hex2Ascii[ 16 ] = {'0', '1', '2', '3', '4', '5', '6', '7',
+					'8', '9', 'A', 'B', 'C', 'D', 'E', 'F'}; /* array used to convert hex to ascii */
+
+	*( (BYTE __xdata *)p_serial_num + 24 ) = hex2Ascii[ ( UNIQID0 & 0xF0 ) >> 4 ]; /* LSB */
+	*( (BYTE __xdata *)p_serial_num + 22 ) = hex2Ascii[ UNIQID0 & 0x0F ];
+	*( (BYTE __xdata *)p_serial_num + 20 ) = hex2Ascii[ ( UNIQID1 & 0xF0 ) >> 4 ];
+	*( (BYTE __xdata *)p_serial_num + 18 ) = hex2Ascii[ UNIQID1 & 0x0F ];
+	*( (BYTE __xdata *)p_serial_num + 16 ) = hex2Ascii[ ( UNIQID2 & 0xF0 ) >> 4 ];
+	*( (BYTE __xdata *)p_serial_num + 14 ) = hex2Ascii[ UNIQID2 & 0x0F ];
+	*( (BYTE __xdata *)p_serial_num + 12 ) = hex2Ascii[ ( UNIQID3 & 0xF0 ) >> 4 ];
+	*( (BYTE __xdata *)p_serial_num + 10 ) = hex2Ascii[ UNIQID3 & 0x0F ];
+	*( (BYTE __xdata *)p_serial_num + 8 ) = hex2Ascii[ ( UNIQID4 & 0xF0 ) >> 4 ];
+	*( (BYTE __xdata *)p_serial_num + 6 ) = hex2Ascii[ UNIQID4 & 0x0F ];
+	*( (BYTE __xdata *)p_serial_num + 4 ) = hex2Ascii[ ( UNIQID5 & 0xF0 ) >> 4 ];
+	*( (BYTE __xdata *)p_serial_num + 2 ) = hex2Ascii[ UNIQID5 & 0x0F ]; /* MSB */
+}
+
 void fx2adf435xfw_init(void)
 {
 	/* Set DYN_OUT and ENH_PKT bits, as recommended by the TRM. */
@@ -145,6 +176,9 @@ void fx2adf435xfw_init(void)
 	/* Set the SPI pins to output */
 	OEA = LE_IO | DATA_IO | CLK_IO;
 	IOA = 0; // LE = CLK = DATA = 0
+
+	/* copy EzUSB serial number into descriptor as version string */
+	insert_serial_number();
 
 	/* Renumerate. */
 	RENUMERATE_UNCOND();
@@ -175,8 +209,10 @@ void fx2adf435xfw_poll(void)
 		if ((EP0CS & bmEPBUSY) != 0)
 			break;
 
-		if (EP0BCL == 4)
-			set_reg();
+		if (EP0BCL == 4) /* send 4 32bit register values */
+			set_reg( 32 );
+		else if (EP0BCL == 5) /* allow also 5 byte messages from AD eval board SW */
+			set_reg( EP0BUF[4] ); /* 5th byte defines the register bitsize */
 
 		/* Acknowledge the vendor command. */
 		vendor_command = 0xff;

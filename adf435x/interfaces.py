@@ -26,18 +26,21 @@ logger = logging.getLogger(__name__)
 
 class FX2:
     def __init__(self):
-        self.dev = usb.core.find(idVendor=0x0456, idProduct=0xb40d)
-
+        self.dev = usb.core.find(idVendor=0x0456, idProduct=0xb40d) # ADF4xxx USB Eval Board
         if self.dev is None:
-            raise ValueError('Device not found')
-
+            self.dev = usb.core.find(idVendor=0x0456, idProduct=0xb403) # ADF4xxx USB Adapter Board
+            if self.dev is None:
+                raise ValueError('Device not found')
         self.dev.set_configuration()
 
 
-    def set_regs(self, regs):
+    def set_regs( self, regs, bitsize=None ):
         for reg in regs:
-            self.dev.ctrl_transfer(bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0,
-                data_or_wLength=[(reg >> (8 * b)) & 0xFF for b in range(4)])
+            data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
+            if bitsize is not None and bitsize < 256: # HACK: append a 5th byte (register bitsize)
+                data.append( bitsize )                # as AD eval board sw does
+            self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
+            # print( [ hex( dat ) for dat in data ] )
 
 
 class BusPirate:

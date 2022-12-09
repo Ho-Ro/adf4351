@@ -77,7 +77,7 @@ _dev_dscr:
 	.dw	0x0000			; Product version (0.00)
 	.db	1			; Manufacturer string index
 	.db	2			; Product string index
-	.db	0			; Serial number string index (none)
+	.db	3			; Serial number string index (none)
 	.db	1			; Number of configurations
 dev_dscr_end:
 
@@ -167,7 +167,18 @@ _dev_strings:
 ; See http://www.usb.org/developers/docs/USB_LANGIDs.pdf for the full list.
 string_descriptor_lang 0 0x0409 ; Language code 0x0409 (English, US)
 
+; Vendor string
 string_descriptor_a 1,^"ANALOG DEVICES"
+
+; Product string
 string_descriptor_a 2,^"ADF4xxx USB Eval Board"
+
+; Serial number string
+; The template for unique FX2LP id ...
+; ... must be 12 byte long, see Cypress KBA212789
+.globl _serial_num
+_serial_num:
+string_descriptor_a 3,^"000000000000"
+
 _dev_strings_end:
 	.dw	0x0000

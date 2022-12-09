@@ -9,9 +9,10 @@ The software suite consists of the following components:
 * **adf435x** - A python library that can control the ADF4350/1 via various
   hardware interface back-ends.
 * **adf435xctl** - A command line tool to control the ADF4350/1 manually.
-* **fx2adf435xfw** - A firmware for the Cypress FX2 that replaces the
+* **adf435xinit** - A command line tool to transfer the FX2 firmware to the EVAL-ADF4351 board.
+* **fx2adf435xfw.ihx** - A firmware for the Cypress FX2 that replaces the
   proprietary firmware for the EVAL-ADF4351 board.
-* **stm32adf435xfw**  - A similar firmware for the STM32F103.
+* **stm32adf435xfw.bin**  - A similar firmware for the STM32F103.
 
 
 It's also possible to use the [Bus Pirate](http://dangerousprototypes.com/docs/Bus_Pirate) as the interface for the ``SPI``
@@ -29,19 +30,14 @@ adf435x
    $ sudo apt install python3-setuptools python3-usb
    ```
 
-2. Build the python module:
+2. Build a Debian package:
    ```
-   $ python3 setup.py build
-   ```
-
-3. Install the python module:
-   ```
-   $ sudo python3 setup.py install
+   $ make deb
    ```
 
-4. (Optional) Install udev rules:
+3. Install the Debian package:
    ```
-   $ sudo cp contrib/z60_adf435x.rules /etc/udev/rules.d/
+   $ make debinstall
    ```
 
 ### Usage
@@ -71,9 +67,9 @@ The firmware requires the following wiring:
 
 |  FX2 Pin  |  ADF4350/1 Pin  |
 |  -------  |  -------------  |
-|  PA0      |  LE             |
-|  PA1      |  CLK            |
-|  PA2      |  DAT            |
+|  33 - PA0 |  3 - LE         |
+|  34 - PA1 |  1 - CLK        |
+|  35 - PA2 |  2 - DATA       |
 
 ### Building
 
@@ -91,9 +87,7 @@ The firmware requires the following wiring:
 
 3. Build the firmware:
    ```
-   $ ./autogen.sh
-   $ ./configure
-   $ make
+   $ make firmware
    ```
    You will now have the firmware file `fx2adf435xfw.ihx`
 
@@ -108,12 +102,7 @@ The firmware requires the following wiring:
 
 2. Load the firware on to the Cypress FX2 with the following command:
    ```
-   $ cycfx2prog prg:./firmware/fx2/fx2adf435xfw.ihx
-   ```
-
-3. Run the firmware:
-   ```
-   $ cycfx2prog run
+   $ ./adf435xinit
    ```
    The device will no renumerate as with the VID/PID `0456:b40d`, as an Analog
    Devices board.
@@ -126,9 +115,9 @@ The firmware requires the following wiring:
 
 |  STM32F103 Pin  |  ADF4350/1 Pin  |
 |  -------------  |  -------------  |
-|  PA4            |  LE             |
-|  PA5            |  CLK            |
-|  PA7            |  DAT            |
+|  PA4            |  3 - LE         |
+|  PA5            |  1 - CLK        |
+|  PA7            |  2 - DAT        |
 
 ### Building & Installation
 
