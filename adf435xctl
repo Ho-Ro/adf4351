@@ -46,7 +46,7 @@ for r in range(6):
     parser.add_argument('--r%d' % r, default=None, type=str)
 
 parser.add_argument('-v', '--verbose', action='store_true')
-parser.add_argument('--interface', default='FX2')
+parser.add_argument('--interface', help='INTERFACE: FX2, BusPirate, tinyADF, NONE', default='FX2')
 
 # Parse
 args = vars(parser.parse_args())
@@ -69,6 +69,6 @@ if args['verbose']:
     for r in range(6):
         print('r%d = 0x%08x' % (r, regs[r]))
 
-intf = getattr(adf435x.interfaces, args['interface'])()
-#intf.set_regs(regs[::-1])
-intf.set_regs(regs[::-1], bitsize=32) # append a 5th byte as register length info (=32) like the AD eval sw
+if args['interface'] != 'NONE':
+    intf = getattr(adf435x.interfaces, args['interface'])()
+    intf.set_regs(regs[::-1])

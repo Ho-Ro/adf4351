@@ -19,12 +19,16 @@
 import logging
 import struct
 import usb.core
+import serial
+import time
 
 
 logger = logging.getLogger(__name__)
 
 
 class FX2:
+    '''This interface communicates via USB to demo board using the Analog Devices protocol.
+    The FX2 demo board translates the command in native three wire DAT, CLK, LE.'''
     def __init__(self):
         self.dev = usb.core.find(idVendor=0x0456, idProduct=0xb40d) # ADF4xxx USB Eval Board
         if self.dev is None:
@@ -33,23 +37,20 @@ class FX2:
                 raise ValueError('Device not found')
         self.dev.set_configuration()
 
-
-    def set_regs( self, regs, bitsize=None ):
+    def set_regs( self, regs ):
         for reg in regs:
             data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
-            if bitsize is not None and bitsize < 256: # HACK: append a 5th byte (register bitsize)
-                data.append( bitsize )                # as AD eval board sw does
             self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
             # print( [ hex( dat ) for dat in data ] )
 
 
 class BusPirate:
-    """This interface communicates via serial port using the pyBusPirateLite
-    module and translate the command in native SPI."""
+    '''This interface communicates via serial port using the pyBusPirateLite
+    module and translates the command in native SPI.'''
 
     def __init__(self, device='/dev/ttyUSB0', baudrate=115200):
-        """Initialize the interface for the Bus Pirate using "device"
-        with the given "baudrate"."""
+        '''Initialize the interface for the Bus Pirate using "device"
+        with the given "baudrate".'''
         from pyBusPirateLite.SPI import SPI
 
         self.spi = SPI(device, baudrate)
@@ -66,7 +67,7 @@ class BusPirate:
         self.spi.speed = '30kHz'
 
     def write_data(self, data):
-        """Write a single integer value (4 bytes) into the SPI bus."""
+        '''Write a single integer value (4 bytes) into the SPI bus.'''
         data = struct.pack('>I', data)
         logger.debug(['%02x' % d for d in data])
         self.spi.cs = True
@@ -76,3 +77,32 @@ class BusPirate:
     def set_regs(self, regs):
         for reg in regs:
             self.write_data(reg)
+
+
+class tinyADF:
+    '''This interface communicates via usb serial port to a ATtiny85
+    that translates the command in native three wire DAT, CLK, LE.'''
+
+    def __init__( self, device='/dev/ttyACM0' ):
+        '''init the serial communication to /dev/ttyACM0'''
+        print( 'tinyADF.__init__()' )
+        self.ADF=serial.Serial( device, timeout=0 )
+
+
+    def __del__( self ):
+        '''Close the device when last instance is deleted'''
+        print( 'tinyADF.__del__()' )
+        self.ADF.close()
+
+
+    def set_regs(self, regs):
+        '''send the 6 regs as 32 bit hex value'''
+        print( 'tinyADF.set_regs()' )
+        for reg in regs:
+            command = f'{reg:08X}R'
+            self.ADF.write( command.encode() )
+            print( command )
+            time.sleep( 0.1 )
+            while self.ADF.in_waiting:
+                self.ADF.read()
+
