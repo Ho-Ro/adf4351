@@ -4,11 +4,15 @@ all:	firmware
 
 
 .PHONY: firmware
-firmware: fx2adf435xfw.ihx
+firmware: fx2adf435xfw.ihx fx2adf435xfw.iic
 
 
 fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.ihx
 	cp $< $@
+
+
+fx2adf435xfw.iic: fx2adf435xfw.ihx
+	firmware/fx2/fx2lib/utils/ihx2iic.py --vid 0x0456 --pid 0xb40d $< $@
 
 
 firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51 firmware/fx2/Makefile
@@ -78,6 +82,6 @@ clean:
 # removes all build artefacts
 .PHONY:	distclean
 distclean: clean
-	-rm -f *.deb *.ihx firmware/fx2/Makefile
+	-rm -f *.deb *.ihx *.iic firmware/fx2/Makefile
 	-make -C firmware/stm32/libopencm3 clean
 

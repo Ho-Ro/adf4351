@@ -21,6 +21,7 @@ Makefile.am.user
 *.elf
 *.fw
 *.ihx
+*.iic
 *.lib
 *.lk
 *.lnk
