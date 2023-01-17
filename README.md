@@ -9,11 +9,12 @@ The software suite consists of the following components:
 * **adf435x** - A python library that can control the ADF4350/1 via various
   hardware interface back-ends.
 * **adf435xctl** - A command line tool to control the ADF4350/1 manually.
-* **adf435xinit** - A command line tool to transfer the FX2 firmware to the EVAL-ADF4351 board.
-* **fx2adf435xfw.ihx** - A firmware for the Cypress FX2 that replaces the
-  proprietary firmware for the EVAL-ADF4351 board.
+* **adf435xinit** - A command line tool to transfer the FX2 firmware to the RAM of the EVAL-ADF4351 board.
+* **fx2adf435xfw.ihx** - A firmware file for upload to the RAM of the Cypress FX2
+  that replaces the proprietary firmware for the EVAL-ADF4351 board.
+* **fx2adf435xfw.iic** - A firmware file for permanent storage in the EEPROM of the Cypress FX2
+  that replaces the proprietary firmware for the EVAL-ADF4351 board.
 * **stm32adf435xfw.bin**  - A similar firmware for the STM32F103.
-
 
 It's also possible to use the [Bus Pirate](http://dangerousprototypes.com/docs/Bus_Pirate) as the interface for the ``SPI``
 communications, simply using the ``adf435x.interfaces.BusPirate`` class.
@@ -89,7 +90,7 @@ The firmware requires the following wiring:
    ```
    $ make firmware
    ```
-   You will now have the firmware file `fx2adf435xfw.ihx`
+   You will now have the firmware files `fx2adf435xfw.ihx` and `fx2adf435xfw.iic`
 
 ### Usage
 
@@ -100,13 +101,16 @@ The firmware requires the following wiring:
    $ sudo apt install cycfx2prog
    ```
 
-2. Load the firware on to the Cypress FX2 with the following command:
+2. Load the firware file `fx2adf435xfw.ihx` to the Cypress FX2 RAM with the following command:
    ```
    $ ./adf435xinit
    ```
-   The device will no renumerate as with the VID/PID `0456:b40d`, as an Analog
-   Devices board.
+   The device will now renumerate as an Analog Devices card with the VID/PID '0456:b40d'.
+   The upload must be performed each time the module is connected to the PC.
 
+3. You can also store the firmware file `fx2adf435xfw.iic` permanently in the *large* 16K EEPROM
+   of the FX2 board, e.g. with the program [cyusb_linux](https://github.com/Ho-Ro/cyusb_linux).
+   The unit registers on the USB as an Analog Devices card with the VID/PID '0456:b40d'.
 
 stm32adf435xfw
 --------------
