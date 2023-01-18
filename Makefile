@@ -82,6 +82,6 @@ clean:
 # removes all build artefacts
 .PHONY:	distclean
 distclean: clean
-	-rm -f *.deb *.ihx *.iic firmware/fx2/Makefile
+	-rm -f *.deb firmware/fx2/Makefile
 	-make -C firmware/stm32/libopencm3 clean
 
