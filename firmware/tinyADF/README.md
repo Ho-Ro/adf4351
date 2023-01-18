@@ -1,4 +1,4 @@
-# tiny ADF4351 programmer"
+# tiny ADF4351 programmer
 
 
 Small frequency generator consisting of an ADF4351 board and a DigiSpark Tiny85 board

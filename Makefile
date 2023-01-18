@@ -16,7 +16,7 @@ fx2adf435xfw.iic: fx2adf435xfw.ihx
 
 
 firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51 firmware/fx2/Makefile
-	make -C firmware/fx2
+	make -j4 -C firmware/fx2
 
 
 firmware/fx2/Makefile: firmware/fx2/Makefile.am
@@ -33,8 +33,8 @@ stm32adf435xfw.bin: firmware/stm32/stm32adf435xfw.bin
 
 
 firmware/stm32/stm32adf435xfw.bin: firmware/stm32/stm32adf435xfw.c
-	make -C firmware/stm32/libopencm3
-	make -C firmware/stm32
+	make -j4 -C firmware/stm32/libopencm3
+	make -j4 -C firmware/stm32
 
 
 .PHONY:	upload_fw
@@ -75,13 +75,13 @@ debinstall: deb
 clean:
 	python setup.py clean
 	-rm -rf *~ .*~ deb_dist dist *.tar.gz *.egg* build tmp
-	-make -C firmware/fx2 clean
-	-make -C firmware/stm32 clean
+	-make -j4 -C firmware/fx2 clean
+	-make -j4 -C firmware/stm32 clean
 
 
 # removes all build artefacts
 .PHONY:	distclean
 distclean: clean
 	-rm -f *.deb firmware/fx2/Makefile
-	-make -C firmware/stm32/libopencm3 clean
+	-make -j4 -C firmware/stm32/libopencm3 clean
 

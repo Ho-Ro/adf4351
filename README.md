@@ -19,6 +19,9 @@ The software suite consists of the following components:
 It's also possible to use the [Bus Pirate](http://dangerousprototypes.com/docs/Bus_Pirate) as the interface for the ``SPI``
 communications, simply using the ``adf435x.interfaces.BusPirate`` class.
 
+Another optional interface is the experimental [DigiSpark Tiny85 module](firmware/tinyADF)
+with Arduino SW that receives USB serial commands.
+
 adf435x
 -------
 
@@ -73,9 +76,10 @@ The firmware requires the following wiring:
 
 ### Building
 
-1. First init/update all the sub-modules within the git repository:
+1. First init/update all the sub-modules within the git repository, silence the message about changed submodule:
    ```sh
    git submodule update --init
+   git update-index --assume-unchanged firmware/fx2/fx2lib
    ```
 
 2. Install AutoTools and the SDCC (Small Devices C Compiler).

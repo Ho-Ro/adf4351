@@ -13,10 +13,11 @@ The firmware requires the following wiring:
 
 ### Building & Installation
 
-1. First init/update all the sub-modules within the git repository:
+1. First init/update all the sub-modules within the git repository, silence the message about changed submodule:
    ```sh
    git submodule add -f https://github.com/libopencm3/libopencm3.git firmware/stm32/libopencm3
    git submodule update --init
+   git update-index --assume-unchanged firmware/fx2/libopencm3
    ```
 
 2. Install GNU Make, OpenOCD, and ARM builds of GCC compiler and Newlib.
@@ -39,7 +40,7 @@ The firmware requires the following wiring:
     TARGETS += stm32/l0 stm32/l1 stm32/l4
    ```
 
-4. Build *libopencm3*:
+4. Build *libopencm3*, this may give a lot of warnings about non portable use of "#defined":
    ```sh
    cd firmware/stm32/libopencm3
    make

@@ -15,7 +15,7 @@ Makefile.am.user
 
 # Configure/build cruft
 *.asm
-*.bin
+#*.bin
 *.cdb
 *.d
 *.elf
