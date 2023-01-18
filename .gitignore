@@ -20,8 +20,8 @@ Makefile.am.user
 *.d
 *.elf
 *.fw
-*.ihx
-*.iic
+#*.ihx
+#*.iic
 *.lib
 *.lk
 *.lnk
