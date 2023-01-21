@@ -45,7 +45,7 @@ for arg in arg_dict.keys():
 for r in range(6):
     parser.add_argument('--r%d' % r, default=None, type=str)
 
-parser.add_argument('-v', '--verbose', action='store_true')
+parser.add_argument('-v', '--verbose', action='count', default=0)
 parser.add_argument('--interface', help='INTERFACE: FX2, BusPirate, tinyADF, NONE', default='FX2')
 
 # Parse
@@ -66,6 +66,15 @@ for i in range(6):
         regs[i] = int(r, 0)
 
 if args['verbose']:
+    if args['verbose'] > 2:
+        for k in kw:
+            print(f'{k} = {kw[k]}')
+    if  args['verbose'] > 1:
+        for k in ('ref_freq', 'freq'):
+            print( f'{k} = {calculate_regs_kw[k]}' )
+    if args['verbose'] <= 2:
+        for k in ('INT', 'MOD', 'FRAC', 'output_divider', 'band_select_clock_divider'):
+            print(f'{k} = {kw[k]}')
     for r in range(6):
         print('r%d = 0x%08x' % (r, regs[r]))
 
