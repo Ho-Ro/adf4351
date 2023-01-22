@@ -28,7 +28,8 @@ logger = logging.getLogger(__name__)
 
 class FX2:
     '''This interface communicates via USB to demo board using the Analog Devices protocol.
-    The FX2 demo board translates the command in native three wire DAT, CLK, LE.'''
+    The FX2 demo board translates the command in native three wire DAT, CLK, LE.
+    This interface is actively developed and tested.'''
     def __init__(self):
         self.dev = usb.core.find(idVendor=0x0456, idProduct=0xb40d) # ADF4xxx USB Eval Board
         if self.dev is None:
@@ -37,11 +38,13 @@ class FX2:
                 raise ValueError('Device not found')
         self.dev.set_configuration()
 
-    def set_regs( self, regs ):
+    def set_regs( self, regs ): # write the registers
         for reg in regs:
             data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
             self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
-            # print( [ hex( dat ) for dat in data ] )
+
+    def get_mux( self ): # get the status of the MUX bit
+        return( self.dev.ctrl_transfer( bmRequestType=0xC0, bRequest=0xE0, wValue=0, wIndex=0, data_or_wLength=1 ) )
 
 
 class BusPirate:
@@ -81,27 +84,28 @@ class BusPirate:
 
 class tinyADF:
     '''This interface communicates via usb serial port to a ATtiny85
-    that translates the command in native three wire DAT, CLK, LE.'''
+    that translates the command in native three wire DAT, CLK, LE.
+    Tested, but very slow transfer (need ~100 ms delay per register).'''
 
     def __init__( self, device='/dev/ttyACM0' ):
         '''init the serial communication to /dev/ttyACM0'''
-        print( 'tinyADF.__init__()' )
+        # print( 'tinyADF.__init__()' )
         self.ADF=serial.Serial( device, timeout=0 )
 
 
     def __del__( self ):
         '''Close the device when last instance is deleted'''
-        print( 'tinyADF.__del__()' )
+        # print( 'tinyADF.__del__()' )
         self.ADF.close()
 
 
     def set_regs(self, regs):
-        '''send the 6 regs as 32 bit hex value'''
-        print( 'tinyADF.set_regs()' )
+        '''send the 6 regs as 32 bit hex value (8 char) followed by char "R".'''
+        # print( 'tinyADF.set_regs()' )
         for reg in regs:
             command = f'{reg:08X}R'
             self.ADF.write( command.encode() )
-            print( command )
+            # print( command )
             time.sleep( 0.1 )
             while self.ADF.in_waiting:
                 self.ADF.read()

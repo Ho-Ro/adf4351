@@ -23,6 +23,7 @@ import adf435x
 import adf435x.interfaces
 import argparse
 import inspect
+import sys
 
 parser = argparse.ArgumentParser(description='Controls an ADF4350/1')
 
@@ -39,8 +40,11 @@ for arg, default in zip(make_regs_spec.args, make_regs_spec.defaults):
 
 for arg in arg_dict.keys():
     val=arg_dict[arg]
-    parser.add_argument('--' + arg.lower().replace('_', '-'),
-            default=val, type=type(val))
+    if arg == 'freq':
+        parser.add_argument('--freq', '-f', default=val, type=type(val))
+    else:
+        parser.add_argument('--' + arg.lower().replace('_', '-'),
+                default=val, type=type(val))
 
 for r in range(6):
     parser.add_argument('--r%d' % r, default=None, type=str)
@@ -50,6 +54,13 @@ parser.add_argument('--interface', help='INTERFACE: FX2, BusPirate, tinyADF, NON
 
 # Parse
 args = vars(parser.parse_args())
+
+freq = args['freq']
+fMIN = 35
+fMAX = 4400
+if freq < fMIN or freq > fMAX:
+    raise ValueError( f'freq = {freq} MHz outside of valid range ({fMIN}...{fMAX} MHz)' )
+    sys.exit(2)
 
 # Generate register values
 calculate_regs_kw = {arg : args[arg.lower()]
@@ -72,7 +83,7 @@ if args['verbose']:
     if  args['verbose'] > 1:
         for k in ('ref_freq', 'freq'):
             print( f'{k} = {calculate_regs_kw[k]}' )
-    if args['verbose'] <= 2:
+    if args['verbose'] == 2:
         for k in ('INT', 'MOD', 'FRAC', 'output_divider', 'band_select_clock_divider'):
             print(f'{k} = {kw[k]}')
     for r in range(6):
@@ -81,3 +92,7 @@ if args['verbose']:
 if args['interface'] != 'NONE':
     intf = getattr(adf435x.interfaces, args['interface'])()
     intf.set_regs(regs[::-1])
+    if args['mux_out']:
+        status = intf.get_mux()[0]
+        print( status )
+        sys.exit( status )

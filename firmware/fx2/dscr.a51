@@ -19,8 +19,8 @@
 ;; along with this program; if not, see <http://www.gnu.org/licenses/>.
 ;;
 
-VID = 0x5604	; Manufacturer ID (0x0456)
-PID = 0x0db4	; Product ID (0xb40d)
+VID = 0x5604	; Manufacturer ID Analog Devices (0x0456)
+PID = 0x0db4	; Product ID ADF4351 eval board (0xb40d)
 
 .macro string_descriptor_a n,str
 _string'n:
