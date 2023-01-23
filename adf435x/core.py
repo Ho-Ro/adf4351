@@ -83,6 +83,7 @@ def calculate_regs(
         band_select_clock_divider=None,
         band_select_clock_mode=BandSelectClockMode.Low,
         enable_gcd=True):
+
     def gcd(a, b):
         while True:
             if a == 0:
@@ -94,6 +95,13 @@ def calculate_regs(
             else:
                 b = b % a
 
+    fMAX = 4400
+    if device_type == DeviceType.ADF4351:
+        fMIN = 35
+    else:
+        fMIN = 137.5
+    if freq < fMIN or freq > fMAX:
+        raise ValueError( f'freq = {freq} MHz outside of valid range ({fMIN}...{fMAX} MHz)' )
 
     pfd_freq = ((ref_freq * (2 if ref_doubler else 1)) /
         ((2 if ref_div2 else 1) * r_counter))
@@ -123,14 +131,14 @@ def calculate_regs(
     if pfd_freq > 32.0:
         if FRAC != 0:
             raise ValueError('Maximum PFD frequency in Frac-N mode (FRAC != 0)'
-                    ' is 32MHz.')
+                    ' is 32 MHz.')
         if FRAC == 0 and device_type == DeviceType.ADF4351:
             if pfd_freq > 90.0:
                 raise ValueError('Maximum PFD frequency in Int-N mode '
-                        '(FRAC = 0) is 90MHz.')
+                        '(FRAC = 0) is 90 MHz.')
             if band_select_clock_mode == BandSelectClockMode.Low:
                 raise ValueError('Band Select Clock Mode must be set to High '
-                        'when PFD is >32MHz in Int-N mode (FRAC = 0).')
+                        'when PFD is >32 MHz in Int-N mode (FRAC = 0).')
 
     if not band_select_clock_divider:
         pfd_scale = 8 if band_select_clock_mode == BandSelectClockMode.Low else 2
@@ -141,16 +149,16 @@ def calculate_regs(
 
     if band_select_clock_freq > 500.0:
         raise ValueError('Band Select Clock Frequency is too High. It must be '
-                '500kHz or less.')
+                '500 kHz or less.')
     elif band_select_clock_freq > 125.0:
         if device_type == DeviceType.ADF4351:
             if band_select_clock_mode == BandSelectClockMode.Low:
                 raise ValueError('Band Select Clock Frequency is too high. '
-                        'Reduce to 125kHz or less, or set Band Select Clock '
+                        'Reduce to 125 kHz or less, or set Band Select Clock '
                         'Mode to High.')
         else:
             raise ValueError('Band Select Clock Frequency is too high. Reduce '
-                    'to 125kHz or less.')
+                    'to 125 kHz or less.')
 
     return (int(INT), int(MOD), int(FRAC), output_divider, band_select_clock_divider)
 

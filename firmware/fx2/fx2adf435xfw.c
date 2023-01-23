@@ -35,9 +35,15 @@
 #include <fx2regs.h>
 #include <setupdat.h>
 
+// Port A
 #define LE_IO 0x1
 #define CLK_IO 0x2
 #define DATA_IO 0x4
+#define PDR_IO 0x20
+#define CE_IO 0x40
+
+// Port B
+#define MUXOUT_IO 0x01
 
 /* ... */
 volatile __bit got_sud;
@@ -54,8 +60,8 @@ BOOL handle_vendorcommand( BYTE cmd ) {
         return TRUE;
     case CMD_GET_MUX:
         vendor_command = cmd;
-        *EP0BUF = IOB & 0x01; // MUX bit
-        EP0BCL = 1;           // return 1 status bytes
+        *EP0BUF = IOB & MUXOUT_IO; // MUX bit
+        EP0BCL = 1;                // return 1 status bytes
         return TRUE;
     }
 

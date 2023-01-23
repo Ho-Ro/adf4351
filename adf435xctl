@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 ##
 ## This file is part of the pyadf435x project.
 ##
@@ -24,6 +24,7 @@ import adf435x.interfaces
 import argparse
 import inspect
 import sys
+import time
 
 parser = argparse.ArgumentParser(description='Controls an ADF4350/1')
 
@@ -54,13 +55,6 @@ parser.add_argument('--interface', help='INTERFACE: FX2, BusPirate, tinyADF, NON
 
 # Parse
 args = vars(parser.parse_args())
-
-freq = args['freq']
-fMIN = 35
-fMAX = 4400
-if freq < fMIN or freq > fMAX:
-    raise ValueError( f'freq = {freq} MHz outside of valid range ({fMIN}...{fMAX} MHz)' )
-    sys.exit(2)
 
 # Generate register values
 calculate_regs_kw = {arg : args[arg.lower()]
@@ -93,6 +87,7 @@ if args['interface'] != 'NONE':
     intf = getattr(adf435x.interfaces, args['interface'])()
     intf.set_regs(regs[::-1])
     if args['mux_out']:
+        time.sleep(.001)
         status = intf.get_mux()[0]
         print( status )
-        sys.exit( status )
+        sys.exit( not status )
