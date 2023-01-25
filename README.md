@@ -2,7 +2,9 @@ pyadf435x
 =========
 
 `pyadf435x` is a suite of software and firmware for controlling the Analog
-Devices ADF435x series of wide-band RF synthesizers.
+Devices ADF435x series of wide-band RF PLL synthesizers.
+
+![ADF4351 Pinout](images/ADF4351.png) ![ADF435X EVAL Board](images/ADF435X_EVAL_Board.jpg)
 
 The software suite consists of the following components:
 
@@ -44,7 +46,7 @@ adf435x
 
 ### Usage
 
-See `examples/` sub-directory.
+See the `examples/` sub-directory.
 
 adf435xctl
 ----------
@@ -152,18 +154,19 @@ The program `adf435xctl` returns `0` (no error) on success, otherwise `!= 0`.
 ```
 
 Sets the output frequency to 1000 MHz, sets MUXOUT pin to reflect LD (6 = digital lock detect) and checks the pin status.
-When locked, the command returns `0` (no error), otherwise `1`.
+When locked, the command prints "LOCKED" and returns `0` (no error), otherwise it prints "NOLOCK" and returns `1` (error).
 ```sh
-./adf435xctl --freq=1000 --mux-out 6
+./adf435xctl --freq=1000 --lock-detect
 ```
 
 This allows to chain the program.
 ```sh
-./adf435xctl --freq=1000 --mux-out 6 && echo LOCKED
+./adf435xctl --freq=1000 --lock-detect && echo SUCCESS
 ```
 
 fx2adf435xfw
 ------------
+
 
 The Cypress FX2 firmware is intended for the Anlog Devices board EVAL-ADF435x or compatible settings,
 e.g. a combination of a ADF4351 breakout board with a Cypress FX2 eval board.
@@ -238,10 +241,10 @@ permanently in the *large* 8K or 16K EEPROM of the FX2 board. For technical deta
 
 Under Linux you can use the program [cyusb_linux](https://github.com/Ho-Ro/cyusb_linux):
 
-1. Make sure you do not have another Cypress based device (e.g. a Salae LA clone) connected to your PC.
+1. Make sure you do not have another Cypress FX2 based device (e.g. a Salae LA clone) connected to your PC.
 2. Deactivate the large EEPROM - on my Chinese eval board by setting jumper JP1,
-   this changes the EEPROM address line A0 from HI to LO and alters the address from `0xA2` to `0xA0`.
-   As the FX2 read its VID/PID setting on power-on either from a small EEPROM at 0xA0 or a large EEPROM at 0xA2
+   this changes the EEPROM address line `A0` from HI to LO and alters its I2C address from `0xA2` to `0xA0`.
+   As the FX2 reads its VID/PID setting on power-on either from a small EEPROM at `0xA0` or a large EEPROM at `0xA2`
    the I2C read fails and the device comes up with the FX2 default setting `04b4:8613`
 3. Connect the board to USB.
 4. Remove the address jumper J1.
