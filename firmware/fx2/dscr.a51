@@ -1,13 +1,15 @@
+;; SPDX-License-Identifier: GPL-3.0-or-later
 ;;
-;; This file is part of the sigrok-firmware-fx2lafw project.
+;; This file is part of the fx2adf435xfw project.
 ;;
 ;; Copyright (C) 2012 Uwe Hermann <uwe@hermann-uwe.de>
 ;; Copyright (C) 2016 Stefan Brüns <stefan.bruens@rwth-aachen.de>
 ;; Copyright (C) 2012-2017 Joel Holdsworth <joel@airwebreathe.org.uk>
+;; Copyright (C) 2022, 2023 Martin Homuth-Rosemann
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2 of the License, or
+;; the Free Software Foundation; either version 3 of the License, or
 ;; (at your option) any later version.
 ;;
 ;; This program is distributed in the hope that it will be useful,
@@ -19,9 +21,16 @@
 ;; along with this program; if not, see <http://www.gnu.org/licenses/>.
 ;;
 
-VID = 0x5604	; Manufacturer ID Analog Devices (0x0456)
-PID = 0x0db4	; Product ID ADF4351 eval board (0xb40d)
+VID = 0x0456	; Manufacturer ID Analog Devices (0x0456)
+PID = 0xb40d	; Product ID EVAL-ADF4351 (0xb40d)
+VER = 0x0031	; FW version 00.31
 
+;; store 16 bit word in little endian format
+.macro .swapw 	word
+	.dw	(<word * 0x100) | >word
+.endm
+
+;; store a string as a sequence of char, 0x00, char, 0x00, ...
 .macro string_descriptor_a n,str
 _string'n:
 	.nchr	len,"'str"
@@ -32,11 +41,11 @@ _string'n:
 	.endm
 .endm
 
-.macro string_descriptor_lang n,l
+.macro string_descriptor_lang n,lang
 _string'n:
 	.db	4
 	.db	3
-	.dw	>l + (<l * 0x100)
+	.swapw	lang
 .endm
 
 .module DEV_DSCR
@@ -58,7 +67,9 @@ ENDPOINT_TYPE_ISO	= 1
 ENDPOINT_TYPE_BULK	= 2
 ENDPOINT_TYPE_INT	= 3
 
-.globl _dev_dscr, _dev_qual_dscr, _highspd_dscr, _fullspd_dscr, _dev_strings, _dev_strings_end
+.globl _dev_dscr, _dev_qual_dscr, _highspd_dscr, _fullspd_dscr
+.globl _dev_strings, _serial_num, _dev_strings_end
+
 .area DSCR_AREA (CODE)
 
 ; -----------------------------------------------------------------------------
@@ -67,14 +78,14 @@ ENDPOINT_TYPE_INT	= 3
 _dev_dscr:
 	.db	dev_dscr_end - _dev_dscr
 	.db	DSCR_DEVICE_TYPE
-	.dw	0x0002			; USB 2.0
+	.swapw	0x0200			; USB 2.0
 	.db	0 			; Class (defined at interface level)
 	.db	0			; Subclass (defined at interface level)
 	.db	0			; Protocol (defined at interface level)
 	.db	64			; Max. EP0 packet size
-	.dw	VID			; Manufacturer ID
-	.dw	PID			; Product ID
-	.dw	0x0000			; Product version (0.00)
+	.swapw	VID			; Manufacturer ID
+	.swapw 	PID			; Product ID
+	.swapw	VER			; Product version
 	.db	1			; Manufacturer string index
 	.db	2			; Product string index
 	.db	3			; Serial number string index (none)
@@ -87,7 +98,7 @@ dev_dscr_end:
 _dev_qual_dscr:
 	.db	dev_qualdscr_end - _dev_qual_dscr
 	.db	DSCR_DEVQUAL_TYPE
-	.dw	0x0002			; USB 2.0
+	.swapw	0x0200			; USB 2.0
 	.db	0			; Class (vendor specific)
 	.db	0			; Subclass (vendor specific)
 	.db	0			; Protocol (vendor specific)
@@ -109,7 +120,7 @@ _highspd_dscr:
 	.db	1			; Configuration number
 	.db	0			; Configuration string (none)
 	.db	0xa0			; Attributes (bus powered, remote wakeup)
-	.db	0x32			; Max. power (100mA)
+	.db	100			; Max. power (200mA/2)
 highspd_dscr_end:
 
 	; Interfaces (only one in our case)
@@ -140,7 +151,7 @@ _fullspd_dscr:
 	.db	1			; Configuration number
 	.db	0			; Configuration string (none)
 	.db	0xa0			; Attributes (bus powered, remote wakeup)
-	.db	0x32			; Max. power (100mA)
+	.db	100			; Max. power (200mA/2)
 fullspd_dscr_end:
 
 	; Interfaces (only one in our case)
@@ -171,12 +182,11 @@ string_descriptor_lang 0 0x0409 ; Language code 0x0409 (English, US)
 string_descriptor_a 1,^"ANALOG DEVICES"
 
 ; Product string
-string_descriptor_a 2,^"ADF4xxx USB Eval Board"
+string_descriptor_a 2,^"EVAL-ADF4351"
 
 ; Serial number string
 ; The template for unique FX2LP id ...
 ; ... must be 12 byte long, see Cypress KBA212789
-.globl _serial_num
 _serial_num:
 string_descriptor_a 3,^"000000000000"
 

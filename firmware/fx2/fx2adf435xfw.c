@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 /*
  * This file is part of the fx2ad4351fw project.
  *
  * Copyright (C) 2011-2012 Uwe Hermann <uwe@hermann-uwe.de>
  * Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
+ * Copyright (C) 2022, 2023 Martin Homuth-Rosemann
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -23,7 +25,7 @@
  * interface to the Analog Devices ADF435x series of chips.
  *
  * It is written in C, using fx2lib as helper library, and sdcc as compiler.
- * The code is licensed under the terms of the GNU GPL, version 2 or later.
+ * The code is licensed under the terms of the GNU GPL, version 3 or later.
  *
  */
 
@@ -36,13 +38,16 @@
 #include <setupdat.h>
 
 // Port A
+// required output bits for chip setup
 #define LE_IO 0x1
 #define CLK_IO 0x2
 #define DATA_IO 0x4
+// optional output bits - not used by FW, must be input (HiZ) or explicitely set to HI
 #define PDR_IO 0x20
 #define CE_IO 0x40
 
 // Port B
+// required input bit for MUXOUT status readback
 #define MUXOUT_IO 0x01
 
 /* ... */
@@ -57,15 +62,15 @@ BOOL handle_vendorcommand( BYTE cmd ) {
     case CMD_SET_REG:
         vendor_command = cmd;
         EP0BCL = 0;
-        return TRUE;
+        return TRUE; // ACK
     case CMD_GET_MUX:
         vendor_command = cmd;
         *EP0BUF = IOB & MUXOUT_IO; // MUX bit
-        EP0BCL = 1;                // return 1 status bytes
-        return TRUE;
+        EP0BCL = 1;                // return 1 status byte
+        return TRUE; // ACK
     }
 
-    return FALSE;
+    return FALSE; // NACK
 }
 
 BOOL handle_get_interface( BYTE ifc, BYTE *alt_ifc ) {
@@ -167,6 +172,7 @@ void fx2adf435xfw_init( void ) {
     vendor_command = 0xff;
 
     /* Set the SPI pins to output */
+    /* Leave the other port bits as input */
     OEA = LE_IO | DATA_IO | CLK_IO;
     IOA = 0; // LE = CLK = DATA = 0
 

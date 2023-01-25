@@ -53,103 +53,138 @@ Requires **adf435x** to be installed.
 
 ```
 usage: adf435xctl [-h] [--device-type DEVICE_TYPE] [--freq FREQ] [--ref-freq REF_FREQ]
-                  [--r-counter R_COUNTER] [--ref-doubler REF_DOUBLER] [--ref-div2 REF_DIV2]
+                  [--r-counter R_COUNTER] [--ref-doubler] [--ref-div2]
                   [--feedback-select FEEDBACK_SELECT]
                   [--band-select-clock-divider BAND_SELECT_CLOCK_DIVIDER]
-                  [--band-select-clock-mode BAND_SELECT_CLOCK_MODE] [--enable-gcd ENABLE_GCD]
-                  [--int INT] [--frac FRAC] [--mod MOD] [--phase-value PHASE_VALUE]
-                  [--prescaler PRESCALER] [--low-noise-spur-mode LOW_NOISE_SPUR_MODE]
-                  [--mux-out MUX_OUT] [--ref-div-2 REF_DIV_2]
-                  [--double-buff-r4 DOUBLE_BUFF_R4]
-                  [--charge-pump-current CHARGE_PUMP_CURRENT] [--ldp LDP]
-                  [--pd-polarity PD_POLARITY] [--powerdown POWERDOWN]
-                  [--cp-three-state CP_THREE_STATE] [--counter-reset COUNTER_RESET]
-                  [--abp ABP] [--charge-cancel CHARGE_CANCEL] [--csr CSR]
+                  [--band-select-clock-mode BAND_SELECT_CLOCK_MODE] [--int INT] [--frac FRAC]
+                  [--mod MOD] [--phase-value PHASE_VALUE] [--prescaler-4-5]
+                  [--low-noise-spur-mode LOW_NOISE_SPUR_MODE] [--mux-out MUX_OUT]
+                  [--double-buff-r4] [--charge-pump-current CHARGE_PUMP_CURRENT] [--ldp LDP]
+                  [--pd-polarity PD_POLARITY] [--powerdown] [--cp-three-state]
+                  [--counter-reset] [--abp ABP] [--charge-cancel] [--csr]
                   [--clk-div-mode CLK_DIV_MODE] [--clock-divider-value CLOCK_DIVIDER_VALUE]
-                  [--output-divider OUTPUT_DIVIDER] [--vco-powerdown VCO_POWERDOWN]
-                  [--mute-till-lock-detect MUTE_TILL_LOCK_DETECT]
-                  [--aux-output-select AUX_OUTPUT_SELECT]
-                  [--aux-output-enable AUX_OUTPUT_ENABLE]
-                  [--aux-output-power AUX_OUTPUT_POWER] [--output-enable OUTPUT_ENABLE]
-                  [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE] [--r0 R0]
-                  [--r1 R1] [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5] [-v]
-                  [--interface INTERFACE]
+                  [--output-divider OUTPUT_DIVIDER] [--vco-powerdown]
+                  [--mute-till-lock-detect] [--aux-output-select AUX_OUTPUT_SELECT]
+                  [--aux-output-enable] [--aux-output-power AUX_OUTPUT_POWER]
+                  [--output-disable] [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE]
+                  [--r0 R0] [--r1 R1] [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5]
+                  [--interface INTERFACE] [--lock-detect] [--version] [-v]
 
-Controls an ADF4350/1
+Control program for ADF4350/1 eval board
 
 optional arguments:
   -h, --help            show this help message and exit
   --device-type DEVICE_TYPE
-  --freq FREQ, -f FREQ
-  --ref-freq REF_FREQ
+                        default = 1
+  --freq FREQ, -f FREQ  default = 50.0
+  --ref-freq REF_FREQ   default = 25.0
   --r-counter R_COUNTER
-  --ref-doubler REF_DOUBLER
-  --ref-div2 REF_DIV2
+                        default = 1
+  --ref-doubler         default = False
+  --ref-div2            default = False
   --feedback-select FEEDBACK_SELECT
+                        default = 1
   --band-select-clock-divider BAND_SELECT_CLOCK_DIVIDER
+                        default = None
   --band-select-clock-mode BAND_SELECT_CLOCK_MODE
-  --enable-gcd ENABLE_GCD
-  --int INT
-  --frac FRAC
-  --mod MOD
+                        default = 0
+  --int INT             default = 100
+  --frac FRAC           default = 0
+  --mod MOD             default = 2
   --phase-value PHASE_VALUE
-  --prescaler PRESCALER
+                        default = None
+  --prescaler-4-5       default = False
   --low-noise-spur-mode LOW_NOISE_SPUR_MODE
-  --mux-out MUX_OUT
-  --ref-div-2 REF_DIV_2
-  --double-buff-r4 DOUBLE_BUFF_R4
+                        default = 0
+  --mux-out MUX_OUT     default = 0
+  --double-buff-r4      default = False
   --charge-pump-current CHARGE_PUMP_CURRENT
-  --ldp LDP
+                        default = 2.5
+  --ldp LDP             default = 10.0
   --pd-polarity PD_POLARITY
-  --powerdown POWERDOWN
-  --cp-three-state CP_THREE_STATE
-  --counter-reset COUNTER_RESET
-  --abp ABP
-  --charge-cancel CHARGE_CANCEL
-  --csr CSR
+                        default = 1
+  --powerdown           default = False
+  --cp-three-state      default = False
+  --counter-reset       default = False
+  --abp ABP             default = 10
+  --charge-cancel       default = False
+  --csr                 default = False
   --clk-div-mode CLK_DIV_MODE
+                        default = 0
   --clock-divider-value CLOCK_DIVIDER_VALUE
+                        default = 150
   --output-divider OUTPUT_DIVIDER
-  --vco-powerdown VCO_POWERDOWN
-  --mute-till-lock-detect MUTE_TILL_LOCK_DETECT
+                        default = 1
+  --vco-powerdown       default = False
+  --mute-till-lock-detect
+                        default = False
   --aux-output-select AUX_OUTPUT_SELECT
-  --aux-output-enable AUX_OUTPUT_ENABLE
+                        default = 0
+  --aux-output-enable   default = False
   --aux-output-power AUX_OUTPUT_POWER
-  --output-enable OUTPUT_ENABLE
+                        default = -4.0
+  --output-disable      default = False
   --output-power OUTPUT_POWER
+                        default = 5.0
   --ld-pin-mode LD_PIN_MODE
+                        default = 1
   --r0 R0
   --r1 R1
   --r2 R2
   --r3 R3
   --r4 R4
   --r5 R5
-  -v, --verbose
   --interface INTERFACE
-                        INTERFACE: FX2, BusPirate, tinyADF, NONE
+                        INTERFACE: FX2 (default), BusPirate, tinyADF, NONE
+  --lock-detect         query adf435x digital lock detect state
+  --version             show adf435x version
+  -v                    increase verbosity
+
+adf435x version 0.3.1
 ```
 
 ### Usage Examples
 
-Sets the output frequency to 1000 MHz:
+Sets the output frequency to 1000 MHz.
+The program `adf435xctl` returns `0` (no error) on success, otherwise `!= 0`.
 ```sh
 ./adf435xctl --freq=1000
+```
+
+Sets the output frequency to 1000 MHz, sets MUXOUT pin to reflect LD (6 = digital lock detect) and checks the pin status.
+When locked, the command returns `0` (no error), otherwise `1`.
+```sh
+./adf435xctl --freq=1000 --mux-out 6
+```
+
+This allows to chain the program.
+```sh
+./adf435xctl --freq=1000 --mux-out 6 && echo LOCKED
 ```
 
 fx2adf435xfw
 ------------
 
-The Cypress FX2 firmware project controls the synthesizer over SPI by
-bit-banging the FX2's GPIOs.
+The Cypress FX2 firmware is intended for the Anlog Devices board EVAL-ADF435x or compatible settings,
+e.g. a combination of a ADF4351 breakout board with a Cypress FX2 eval board.
+It controls the ADF435x synthesizer chip by bit-banging three of FX2's GPIOs.
+The firmware provides these vendor commands:
+
+-  `CMD_SET_REG` (0xDD) - write 4 or 5 byte - the optional 5th byte shall contain `32` (register size)
+to be compatible with the Analog Devices evaluation software.
+The 4 byte register content is written to the ADF435x registers via the SPI connection.
+-  `CMD_GET_MUX` (0xE0) - read 1 byte where `bit 0` reflects the state of the `MUXOUT` pin of ADF435x.
+The other bits 1..7 are reserved and currently set to `0`.
+
 
 The firmware requires the following wiring:
 
-|  FX2 Pin  |  ADF4350/1 Pin  |
-|  -------  |  -------------  |
-|  33 - PA0 |  3 - LE         |
-|  34 - PA1 |  1 - CLK        |
-|  35 - PA2 |  2 - DATA       |
-|  25 - PB0 | 30 - MUXOUT     |
+|  FX2 Pin  |     |  ADF4350/1 Pin  |
+|  -------  | --- |  -------------  |
+|  33 (PA0) | --> |  3 (LE)         |
+|  34 (PA1) | --> |  1 (CLK)        |
+|  35 (PA2) | --> |  2 (DATA)       |
+|  25 (PB0) | <-- | 30 (MUXOUT)     |
 
 The PB0 - MUXOUT connection is required only if you want to read the state of the MUXOUT pin,
 e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
@@ -176,25 +211,43 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 
    You will get the firmware files `fx2adf435xfw.ihx` and `fx2adf435xfw.iic`
 
-### Usage
+### Firmware in RAM
 
-1. Install *cycfx2prog*.
+The firmware upload must be performed each time the module is connected to the PC.
+
+#### Preparation
+
+Install *cycfx2prog*.
 
    On Debian/Ubuntu:
    ```sh
    sudo apt install cycfx2prog
    ```
-2. Connect the FX2 board to the USB, it should come up with VID:PID `04b4:8613`.
 
-3. Load the firware file `fx2adf435xfw.ihx` to the Cypress FX2 RAM with the following command:
+1. Connect the FX2 board to the USB, it should come up with VID:PID `04b4:8613`.
+2. Load the firware file `fx2adf435xfw.ihx` to the Cypress FX2 RAM with the following command:
    ```sh
    ./adf435xinit
    ```
-   The device will now renumerate as an Analog Devices card with the VID:PID `0456:b40d`.
-   The upload must be performed each time the module is connected to the PC.
+3. The device will now renumerate with the VID:PID `0456:b40d` as an "ANALOG DEVICES" "EVAL-ADF4351".
 
-4. You can also store the firmware file `fx2adf435xfw.iic` permanently in the *large* 8K or 16K EEPROM
-   of the FX2 board, e.g. with the program [cyusb_linux](https://github.com/Ho-Ro/cyusb_linux).
-   The unit will then enumerate on the USB as an Analog Devices card with the VID/PID `0456:b40d`
-   and can be used immediately without prior firmware upload.
+### Firmware in EEPROM
+
+If you're an experienced FX2 hacker you can also store the firmware file `fx2adf435xfw.iic`
+permanently in the *large* 8K or 16K EEPROM of the FX2 board. For technical details see the Cypress [AN50963](https://www.cypress.com/file/43391/download).
+
+Under Linux you can use the program [cyusb_linux](https://github.com/Ho-Ro/cyusb_linux):
+
+1. Make sure you do not have another Cypress based device (e.g. a Salae LA clone) connected to your PC.
+2. Deactivate the large EEPROM - on my Chinese eval board by setting jumper JP1,
+   this changes the EEPROM address line A0 from HI to LO and alters the address from `0xA2` to `0xA0`.
+   As the FX2 read its VID/PID setting on power-on either from a small EEPROM at 0xA0 or a large EEPROM at 0xA2
+   the I2C read fails and the device comes up with the FX2 default setting `04b4:8613`
+3. Connect the board to USB.
+4. Remove the address jumper J1.
+5. Start the program `cyusb`, the board is detected with VID:PID 04b4:8613 (Cypress FX2 chip).
+6. Select this device, open the `Program` tab, select `Download to Large EEPROM`.
+7. Select the file `fx2adf435xfw.iic` and start the download. After success close the program.
+8. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
+as an "ANALOG DEVICES" "EVAL-ADF4351" and can be used immediately from now on.
 

@@ -17,6 +17,10 @@
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 ##
 
+
+VERSION = '0.3.1'
+
+
 from math import ceil, floor, log
 
 
@@ -81,8 +85,7 @@ def calculate_regs(
         ref_div2=False,
         feedback_select=FeedbackSelect.Fundamental,
         band_select_clock_divider=None,
-        band_select_clock_mode=BandSelectClockMode.Low,
-        enable_gcd=True):
+        band_select_clock_mode=BandSelectClockMode.Low):
 
     def gcd(a, b):
         while True:
@@ -101,7 +104,7 @@ def calculate_regs(
     else:
         fMIN = 137.5
     if freq < fMIN or freq > fMAX:
-        raise ValueError( f'freq = {freq} MHz outside of valid range ({fMIN}...{fMAX} MHz)' )
+        raise ValueError( f'freq = {freq} MHz outside of valid range [{fMIN}...{fMAX}] MHz)' )
 
     pfd_freq = ((ref_freq * (2 if ref_doubler else 1)) /
         ((2 if ref_div2 else 1) * r_counter))
@@ -120,10 +123,9 @@ def calculate_regs(
     MOD = int(round(1000.0 * pfd_freq))
     FRAC = int(round((N - INT) * MOD))
 
-    if enable_gcd:
-        div = gcd(MOD, FRAC)
-        MOD = MOD / div
-        FRAC = FRAC / div
+    div = gcd(MOD, FRAC)
+    MOD = MOD / div
+    FRAC = FRAC / div
 
     if MOD == 1:
         MOD = 2
@@ -171,11 +173,11 @@ def make_regs(
         phase_value=None,
         band_select_clock_divider=200,
         band_select_clock_mode=BandSelectClockMode.Low,
-        prescaler='8/9',
+        prescaler_4_5=False,
         low_noise_spur_mode=LowNoiseSpurMode.LowNoiseMode,
         mux_out=MuxOut.ThreeState,
         ref_doubler=False,
-        ref_div_2=False,
+        ref_div2=False,
         r_counter=1,
         double_buff_r4=False,
         charge_pump_current=2.50,
@@ -196,7 +198,7 @@ def make_regs(
         aux_output_select=AuxOutputSelect.DividedOutput,
         aux_output_enable=False,
         aux_output_power=-4.0,
-        output_enable=True,
+        output_disable=False,
         output_power=5.0,
         ld_pin_mode=LDPinMode.DigitalLockDetect):
 
@@ -207,19 +209,19 @@ def make_regs(
     ABP = {10:0, 6:0}
     OutputPower = {-4:0, -1:1, +2:2, +5:3}
 
-    def check_uint_val(val_name, val, max):
-        if type(val) != int or val < 0 or val > max:
-            raise ValueError('%s value must be an integer greater than or '
-                    'equal to 0, and less than %d' % (val_name, max))
+    def check_uint_val(val_name, val, max, min=0):
+        if type(val) != int or val < min or val > max:
+            raise ValueError('%s value (%d) must be an integer '
+                    'in the range [%d...%d]' % (val_name, val, min, max))
 
     def check_lookup_val(val_name, val, lut):
         if val not in lut.keys():
             raise ValueError('%s value must be one of the following: %r' %
                     (val_name, lut.keys()))
 
-    check_uint_val('INT', INT, 65535)
-    check_uint_val('FRAC', FRAC, 4095)
-    check_uint_val('MOD', MOD, 4095)
+    check_uint_val('INT', INT, 65535, (23 if prescaler_4_5 else 75))
+    check_uint_val('MOD', MOD, 4095, 2)
+    check_uint_val('FRAC', FRAC, MOD-1)
     check_lookup_val('charge_pump_current', charge_pump_current,
             ChargePumpCurrent)
     check_lookup_val('abp', abp, ABP)
@@ -241,7 +243,7 @@ def make_regs(
 
     # R1
     regs[1] = ((1 if phase_value != None else 0) << 28 |
-        (1 if prescaler == '8/9' else 0) << 27 |
+        (0 if prescaler_4_5 else 1) << 27 |
         (1 if phase_value == None else phase_value) << 15 |
         MOD << 3 |
         0x1)
@@ -252,7 +254,7 @@ def make_regs(
     regs[2] = (low_noise_spur_mode << 29 |
         mux_out << 26 |
         (1 if ref_doubler else 0) << 25 |
-        (1 if ref_div_2 else 0) << 24 |
+        (1 if ref_div2 else 0) << 24 |
         r_counter << 14 |
         (1 if double_buff_r4 else 0) << 13 |
         ChargePumpCurrent[charge_pump_current] << 9 |
@@ -283,7 +285,7 @@ def make_regs(
         aux_output_select << 9 |
         (1 if aux_output_enable else 0) << 8 |
         OutputPower[aux_output_power] << 6 |
-        (1 if output_enable else 0) << 5 |
+        (0 if output_disable else 1) << 5 |
         OutputPower[output_power] << 3 |
         0x4)
 

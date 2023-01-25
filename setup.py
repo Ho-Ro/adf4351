@@ -2,14 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='pyadf435x',
-    version='0.3',
     packages=find_packages(),
 
     install_requires=['pyusb>=1.0.0'],
 
-    author='Joel Holdsworth',
-    author_email='joel@airwebreathe.org.uk',
+    author='Martin Homuth-Rosemann',
+    author_email='Ho-Ro@users.noreply.github.com',
     description='A package for automating AD4350/1 boards',
-    license='GPLv2',
-    url='http://github.com/jhol/pyadf435x'
+    license='GPLv3',
+    url='http://github.com/Ho-Ro/pyadf435x'
 )

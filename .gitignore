@@ -20,8 +20,8 @@ Makefile.am.user
 *.d
 *.elf
 *.fw
-#*.ihx
-#*.iic
+firmware/fx2/*.ihx
+firmware/fx2/*.iic
 *.lib
 *.lk
 *.lnk
@@ -48,4 +48,5 @@ Changelog
 *.egg-info
 deb_dist
 dist
+*.tar.gz
 *.deb

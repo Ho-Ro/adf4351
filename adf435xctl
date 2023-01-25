@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 ##
+## SPDX-License-Identifier: GPL-3.0-or-later
+##
 ## This file is part of the pyadf435x project.
 ##
 ## Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
+## Copyright (C) 2022, 2023 Martin Homuth-Rosemann
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -15,7 +18,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, see <http://www.gnu.org/licenses/>.
+## along with this program; if not, see <http://www.gnu.org/licenses/>.-ver
 ##
 
 from collections import OrderedDict
@@ -26,7 +29,11 @@ import inspect
 import sys
 import time
 
-parser = argparse.ArgumentParser(description='Controls an ADF4350/1')
+adf435x_version = f'adf435x version {adf435x.VERSION}'
+
+parser = argparse.ArgumentParser(
+    description=f'Control program for ADF4350/1 eval board',
+    epilog=f'{adf435x_version}')
 
 # Populate arguments
 calculate_regs_spec = inspect.getfullargspec(adf435x.calculate_regs)
@@ -41,20 +48,30 @@ for arg, default in zip(make_regs_spec.args, make_regs_spec.defaults):
 
 for arg in arg_dict.keys():
     val=arg_dict[arg]
-    if arg == 'freq':
-        parser.add_argument('--freq', '-f', default=val, type=type(val))
+    if arg == 'freq': # define '-f' shortcut for frequency
+        parser.add_argument('--freq', '-f', default=val, type=type(val), help=f'default = {val}')
     else:
-        parser.add_argument('--' + arg.lower().replace('_', '-'),
-                default=val, type=type(val))
+        arg_string = '--' + arg.lower().replace('_', '-')
+        if type(val) == bool:
+            parser.add_argument( arg_string, action='store_true', help=f'default = {val}')
+        else:
+            parser.add_argument( arg_string, default=val, type=type(val), help=f'default = {val}')
 
 for r in range(6):
     parser.add_argument('--r%d' % r, default=None, type=str)
 
-parser.add_argument('-v', '--verbose', action='count', default=0)
-parser.add_argument('--interface', help='INTERFACE: FX2, BusPirate, tinyADF, NONE', default='FX2')
+parser.add_argument('--interface', help='INTERFACE: FX2 (default), BusPirate, tinyADF, NONE', default='FX2')
+parser.add_argument('--lock-detect', dest='lock_detect', action = 'store_true', help = 'query adf435x digital lock detect state')
+parser.add_argument('--version', action = 'store_true', help = 'show adf435x version')
+parser.add_argument('-v', dest='verbose', action='count', default=0, help='increase verbosity')
 
 # Parse
-args = vars(parser.parse_args())
+options = parser.parse_args()
+args = vars(options)
+
+if options.version:
+    print(adf435x_version)
+    sys.exit()
 
 # Generate register values
 calculate_regs_kw = {arg : args[arg.lower()]
@@ -63,6 +80,10 @@ kw = {arg : args[arg.lower()] for arg in make_regs_spec.args}
 kw['INT'], kw['MOD'], kw['FRAC'], kw['output_divider'], \
     kw['band_select_clock_divider'] = adf435x.calculate_regs(
             **calculate_regs_kw)
+
+if options.lock_detect:
+    kw['mux_out'] = 6; # set MUXOUT to digital lock detect
+
 regs = adf435x.make_regs(**kw)
 
 for i in range(6):
@@ -70,24 +91,28 @@ for i in range(6):
     if r != None:
         regs[i] = int(r, 0)
 
-if args['verbose']:
-    if args['verbose'] > 2:
+# report register values
+if options.verbose:
+    if options.verbose > 2:
         for k in kw:
             print(f'{k} = {kw[k]}')
-    if  args['verbose'] > 1:
+    if  options.verbose > 1:
         for k in ('ref_freq', 'freq'):
             print( f'{k} = {calculate_regs_kw[k]}' )
-    if args['verbose'] == 2:
-        for k in ('INT', 'MOD', 'FRAC', 'output_divider', 'band_select_clock_divider'):
+    if options.verbose == 2:
+        for k in ('INT', 'FRAC', 'MOD', 'output_divider', 'band_select_clock_divider'):
             print(f'{k} = {kw[k]}')
     for r in range(6):
         print('r%d = 0x%08x' % (r, regs[r]))
 
-if args['interface'] != 'NONE':
-    intf = getattr(adf435x.interfaces, args['interface'])()
-    intf.set_regs(regs[::-1])
-    if args['mux_out']:
-        time.sleep(.001)
-        status = intf.get_mux()[0]
-        print( status )
-        sys.exit( not status )
+if options.interface != 'NONE': # do the communication with the ADF435x device
+    intf = getattr(adf435x.interfaces, args['interface'])() # which interface?
+    intf.set_regs(regs[::-1]) # write the 6 registers
+    if kw['mux_out']: # normally set to digital lock
+        time.sleep(.001) # wait 1 ms for PLL lock, takes typically < 100µs
+        status = intf.get_mux()[0] # get one byte, 0: MUXOUT=LOW or 1: MUXOUT=HIGH
+        if kw['mux_out'] == 6: # digital lock
+            print(f'{("NOLOCK", "LOCKED")[status]}')
+        else: # report the value (even if this state gives less info)
+            print(f'MUXOUT({kw["mux_out"]}) = {("LOW", "HIGH")[status]}')
+        sys.exit( not status ) # return value 0 = ok

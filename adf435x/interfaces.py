@@ -43,7 +43,7 @@ class FX2:
             data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
             self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
 
-    def get_mux( self ): # get the status of the MUX bit
+    def get_mux( self ): # get the status of the MUX bit - byte value 0: MUXOUT=LOW or 1: MUXOUT=HIGH
         return( self.dev.ctrl_transfer( bmRequestType=0xC0, bRequest=0xE0, wValue=0, wIndex=0, data_or_wLength=1 ) )
 
 
@@ -81,6 +81,9 @@ class BusPirate:
         for reg in regs:
             self.write_data(reg)
 
+    def get_mux( self ): # get the status of the MUX bit - not yet implemented
+        return 1 # DUMMY
+
 
 class tinyADF:
     '''This interface communicates via usb serial port to a ATtiny85
@@ -92,12 +95,10 @@ class tinyADF:
         # print( 'tinyADF.__init__()' )
         self.ADF=serial.Serial( device, timeout=0 )
 
-
     def __del__( self ):
         '''Close the device when last instance is deleted'''
         # print( 'tinyADF.__del__()' )
         self.ADF.close()
-
 
     def set_regs(self, regs):
         '''send the 6 regs as 32 bit hex value (8 char) followed by char "R".'''
@@ -110,3 +111,5 @@ class tinyADF:
             while self.ADF.in_waiting:
                 self.ADF.read()
 
+    def get_mux( self ): # get the status of the MUX bit - not possible with this interface
+        return 1 # DUMMY
