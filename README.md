@@ -1,12 +1,15 @@
 pyadf435x
 =========
 
-`pyadf435x` is a suite of software and firmware for controlling the Analog
+**pyadf435x** is a suite of software and firmware for controlling the Analog
 Devices ADF435x series of wide-band RF PLL synthesizers.
 
-![ADF4351 Pinout](images/ADF4351.png) ![ADF435X EVAL Board](images/ADF435X_EVAL_Board.jpg)
+![ADF4351 Pinout](images/ADF4351_Pinout.png) ![ADF435X EVAL Board](images/ADF435X_EVAL_Board.jpg)
 
-The software suite consists of the following components:
+The software is developed and maintained on Linux Debian Stable and should work on systems with a `libusb-1.0`
+implementation, e.g. FreeBSD, MacOS or even Windows (with the help of [Zadig](https://zadig.akeo.ie/)).
+
+The suite consists of the following components:
 
 * **adf435x** - A python library that can control the ADF4350/1 via various hardware interface back-ends.
 * **adf435xctl** - A command line tool to control the ADF4350/1 manually.
@@ -167,7 +170,6 @@ This allows to chain the program.
 fx2adf435xfw
 ------------
 
-
 The Cypress FX2 firmware is intended for the Anlog Devices board EVAL-ADF435x or compatible settings,
 e.g. a combination of a ADF4351 breakout board with a Cypress FX2 eval board.
 It controls the ADF435x synthesizer chip by bit-banging three of FX2's GPIOs.
@@ -178,7 +180,6 @@ to be compatible with the Analog Devices evaluation software.
 The 4 byte register content is written to the ADF435x registers via the SPI connection.
 -  `CMD_GET_MUX` (0xE0) - read 1 byte where `bit 0` reflects the state of the `MUXOUT` pin of ADF435x.
 The other bits 1..7 are reserved and currently set to `0`.
-
 
 The firmware requires the following wiring:
 
@@ -214,9 +215,12 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 
    You will get the firmware files `fx2adf435xfw.ihx` and `fx2adf435xfw.iic`
 
-### Firmware in RAM
+### Upload the firmware into RAM
 
-The firmware upload must be performed each time the module is connected to the PC.
+If you didn't already store the firmware permanently in EEPROM (see later),
+the upload must be performed each time the module is connected to the PC.
+This has the advantage, that you cannot *brick* your device, even when you upload corrupt FW.
+Just disconnect and reconnect and upload the correct FW.
 
 #### Preparation
 
@@ -227,30 +231,76 @@ Install *cycfx2prog*.
    sudo apt install cycfx2prog
    ```
 
-1. Connect the FX2 board to the USB, it should come up with VID:PID `04b4:8613`.
-2. Load the firware file `fx2adf435xfw.ihx` to the Cypress FX2 RAM with the following command:
+1. Connect the FX2 board to the USB, a typical FX2 eval board should come up with VID:PID `04b4:8613`,
+while an Analog Devices ADF435x eval board clone announces typically as `0456:b40d` or `0456:b403`.
+2. Load the firware file `fx2adf435xfw.ihx` to the unconfigured Cypress FX2 RAM with the following command:
    ```sh
-   ./adf435xinit
+cycfx2prog prg:fx2adf435xfw.ihx run
    ```
-3. The device will now renumerate with the VID:PID `0456:b40d` as an "ANALOG DEVICES" "EVAL-ADF4351".
+   or use the command `./adf435xinit`.
+   If the eval board clone announces already as e.g. `0456:b40d`, modify the upload command:
+   ```sh
+cycfx2prog -id=0x0456.0xb40d prg:fx2adf435xfw.ihx run
+   ```
+3. The device will now renumerate with the VID:PID `0456:b40d` as an *"ANALOG DEVICES"* *"EVAL-ADF4351"*.
 
-### Firmware in EEPROM
+### Store the firmware permanently in EEPROM
 
 If you're an experienced FX2 hacker you can also store the firmware file `fx2adf435xfw.iic`
-permanently in the *large* 8K or 16K EEPROM of the FX2 board. For technical details see the Cypress [AN50963](https://www.cypress.com/file/43391/download).
+permanently in the *large* 8K or 16K EEPROM of the FX2 board.
+For technical details see the Cypress [AN50963](https://www.cypress.com/file/43391/download).
+Even with this approach you cannot *brick* your device, if the storage fails, just deactivate the EEPROM
+(e.g. with a jumper on the FX2 board) and repeat the programming.
 
-Under Linux you can use the program [cyusb_linux](https://github.com/Ho-Ro/cyusb_linux):
+#### fx2eeprom
 
-1. Make sure you do not have another Cypress FX2 based device (e.g. a Salae LA clone) connected to your PC.
-2. Deactivate the large EEPROM - on my Chinese eval board by setting jumper JP1,
-   this changes the EEPROM address line `A0` from HI to LO and alters its I2C address from `0xA2` to `0xA0`.
-   As the FX2 reads its VID/PID setting on power-on either from a small EEPROM at `0xA0` or a large EEPROM at `0xA2`
-   the I2C read fails and the device comes up with the FX2 default setting `04b4:8613`
-3. Connect the board to USB.
-4. Remove the address jumper J1.
-5. Start the program `cyusb`, the board is detected with VID:PID 04b4:8613 (Cypress FX2 chip).
-6. Select this device, open the `Program` tab, select `Download to Large EEPROM`.
-7. Select the file `fx2adf435xfw.iic` and start the download. After success close the program.
-8. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
-as an "ANALOG DEVICES" "EVAL-ADF4351" and can be used immediately from now on.
+You can use the simple command line tool [fx2eeprom](https://github.com/ribalda/fx2eeprom).
+
+1. Prepare the tools
+```sh
+apt install cycfx2prog libusb-1.0-0-dev
+git clone https://github.com/ribalda/fx2eeprom.git
+cd fx2eeprom
+make
+```
+2. Copy the file `fx2adf435xfw.iic` into the `fx2eeprom` directory.
+3. Activate the *large* EEPROM, on my Chinese eval board by removing the jumper `JP1`.
+4. Connect the device, check the VID:PID, e.g. with `lsusb` or `sudo dmesg`,
+   it's typically `0x0456`:`0xb40d` (ADF435x eval board) or `0x0456`:`0xb403` (ADF4xxx interface).
+5. Load the Cypress EEPROM helper firmware into RAM, `cycfx2prog` should be in your path
+(**use the correct VID:PID from above**):
+```sh
+cycfx2prog -id=0x0456.0xb40d prg:vend_ax.hex run
+```
+6. Write the firmware into EEPROM, **use the same VID:PID as above**.
+   Get the size of the FW file `wc -c fx2adf435xfw.iic`, e.g "2787" and use this value:
+```sh
+./fx2eeprom w 0x0456 0xb40d 2787 < fx2adf435xfw.iic
+```
+   or get and use the size automatically:
+```sh
+./fx2eeprom w 0x0456 0xb40d $(wc -c fx2adf435xfw.iic | cut -d" " -f1) < fx2adf435xfw.iic
+```
+7. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
+as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
+
+#### cyusb
+
+Another possibility is to use the GUI program [cyusb](https://github.com/Ho-Ro/cyusb_linux)
+that has a lot of additional features.
+
+1. Build and install it following the [instructions](https://github.com/Ho-Ro/cyusb_linux#readme).
+2. Make sure you do not have another Cypress FX2 based device (e.g. a Salae LA clone) connected to your PC.
+3. Deactivate the *large* EEPROM - on my Chinese eval board by setting the jumper `JP1`
+   in the [center of the board](images/ADF435X_EVAL_Board.jpg), this changes the EEPROM address line `A0`
+   from HI to LO and alters its I2C address from `0xA2` to `0xA0`.
+   As the FX2 reads its VID/PID setting on power-on either from a *small* EEPROM at `0xA0` or a *large* EEPROM at `0xA2`
+   the I2C read is not possible and the device comes up with the FX2 default setting `04b4:8613`
+4. Connect the board to USB where it will enumerate as `04b4:8613`.
+5. Remove the address jumper `J1`, this enables the *large* EEPROM access again without changing the USB IDs.
+6. Start the program `cyusb`, the board is detected with VID:PID `04b4:8613` (Cypress FX2 chip).
+7. Select this device, open the `Program` tab, select `Download to Large EEPROM`.
+8. Select the file `fx2adf435xfw.iic` and start the download. After success close the program.
+9. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
+   as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# upload the firmware to the FX2 EzUSB processor on the ADF435x eval board
+# upload the firmware to the unconfigured FX2 EzUSB processor on the ADF435x eval board
 
 FW_IHX=fx2adf435xfw.ihx
 SYSTEM_FW=/usr/share/pyadf435x/$FW_IHX
@@ -18,7 +18,7 @@ FX2UPLOAD=/usr/bin/fx2upload
 CYCFX2PROG=/usr/bin/cycfx2prog
 
 if [ -x $CYCFX2PROG ]; then
-    $CYCFX2PROG prg:$FIRMWARE && $CYCFX2PROG run
+    $CYCFX2PROG prg:$FIRMWARE run
 elif [ -x $FX2UPLOAD ]; then
     $FX2UPLOAD -v $FIRMWARE
 else

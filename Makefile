@@ -11,8 +11,8 @@ fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.ihx
 	cp $< $@
 
 
-fx2adf435xfw.iic: fx2adf435xfw.ihx
-	firmware/fx2/fx2lib/utils/ihx2iic.py --vid 0x0456 --pid 0xb40d $< $@
+fx2adf435xfw.iic: fx2adf435xfw.ihx Makefile
+	firmware/fx2/fx2lib/utils/ihx2iic.py --vid 0x0456 --pid 0xb40d --configbyte 0x01 $< $@
 
 
 firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51 firmware/fx2/Makefile
