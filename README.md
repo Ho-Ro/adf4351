@@ -254,12 +254,12 @@ Even with this approach you cannot *brick* your device, if the storage fails, ju
 
 #### fx2eeprom
 
-You can use the simple command line tool [fx2eeprom](https://github.com/ribalda/fx2eeprom).
+You can use the simple command line tool [fx2eeprom](https://github.com/Ho-Ro/fx2eeprom).
 
 1. Prepare the tools
 ```sh
 apt install cycfx2prog libusb-1.0-0-dev
-git clone https://github.com/ribalda/fx2eeprom.git
+git clone https://github.com/Ho-Ro/fx2eeprom.git
 cd fx2eeprom
 make
 ```
@@ -273,13 +273,8 @@ make
 cycfx2prog -id=0x0456.0xb40d prg:vend_ax.hex run
 ```
 6. Write the firmware into EEPROM, **use the same VID:PID as above**.
-   Get the size of the FW file `wc -c fx2adf435xfw.iic`, e.g "2787" and use this value:
 ```sh
-./fx2eeprom w 0x0456 0xb40d 2787 < fx2adf435xfw.iic
-```
-   or get and use the size automatically:
-```sh
-./fx2eeprom w 0x0456 0xb40d $(wc -c fx2adf435xfw.iic | cut -d" " -f1) < fx2adf435xfw.iic
+./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw.iic
 ```
 7. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
 as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
