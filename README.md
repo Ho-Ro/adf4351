@@ -215,6 +215,12 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 
    You will get the firmware files `fx2adf435xfw.ihx` and `fx2adf435xfw.iic`
 
+### Experimental FW based on libfx2
+
+Another Cypress FW based on libfx2 is located in [firmware/fx2.libfx2](firmware/fx2.libfx2).
+It supports the same functionality as the counterpart in [firmware/fx2](firmware/fx2).
+The source code consists of only one file `main.c` and has an easier syntax.
+
 ### Upload the firmware into RAM
 
 If you didn't already store the firmware permanently in EEPROM (see later),

@@ -15,6 +15,11 @@ fx2adf435xfw.iic: fx2adf435xfw.ihx Makefile
 	firmware/fx2/fx2lib/utils/ihx2iic.py --vid 0x0456 --pid 0xb40d --configbyte 0x01 $< $@
 
 
+.PHONY: firmware_libfx2
+firmware_libfx2:
+	make -j4 -C firmware/fx2.libfx2
+
+
 firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51 firmware/fx2/Makefile
 	make -j4 -C firmware/fx2
 
@@ -76,6 +81,7 @@ clean:
 	python setup.py clean
 	-rm -rf *~ .*~ deb_dist dist *.tar.gz *.egg* build tmp
 	-make -j4 -C firmware/fx2 clean
+	-make -j4 -C firmware/fx2.libfx2 clean
 	-make -j4 -C firmware/stm32 clean
 
 

@@ -22,6 +22,9 @@ Makefile.am.user
 *.fw
 firmware/fx2/*.ihx
 firmware/fx2/*.iic
+firmware/fx2.libfx2/*.ihex
+firmware/fx2.libfx2/*.iic
+build
 *.lib
 *.lk
 *.lnk
