@@ -67,7 +67,7 @@ usb_configuration_set_c usb_configs[] = {
 
 usb_ascii_string_c usb_strings[] = {
     "ANALOG DEVICES", "EVAL-ADF4351",
-    "LIBFX2 FW", // serial number string
+    "EXPERIMENTAL", // serial number string
 };
 
 __xdata struct usb_descriptor_set usb_descriptor_set = {
