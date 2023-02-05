@@ -23,7 +23,7 @@
 
 VID = 0x0456	; Manufacturer ID Analog Devices (0x0456)
 PID = 0xb40d	; Product ID EVAL-ADF4351 (0xb40d)
-VER = 0x0031	; FW version 00.31
+VER = 0x0032	; FW version 00.32
 
 ;; store 16 bit word in little endian format
 .macro .swapw 	word

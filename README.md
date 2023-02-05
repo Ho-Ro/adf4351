@@ -49,7 +49,17 @@ adf435x
 
 ### Usage
 
-See the `examples/` sub-directory.
+This code sets the output frequency to 100 MHz:
+```python
+from adf435x.interfaces import FX2
+from adf435x import freq_make_regs
+intf = FX2()
+freq = 100
+regs = freq_make_regs(freq)
+intf.set_regs(regs[::-1])
+```
+
+See also `adf435xctl` and the `examples/` sub-directory.
 
 adf435xctl
 ----------
@@ -217,7 +227,7 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 
 ### Experimental FW based on libfx2
 
-Another Cypress FW based on libfx2 is located in [firmware/fx2.libfx2](firmware/fx2.libfx2).
+Another Cypress FW based on libfx2 is `fx2adf435xfw_ex.ihx`, located in [firmware/fx2.libfx2](firmware/fx2.libfx2).
 It supports the same functionality as the counterpart in [firmware/fx2](firmware/fx2).
 The source code consists of only one file `main.c` and has an easier syntax.
 
@@ -253,7 +263,7 @@ cycfx2prog -id=0x0456.0xb40d prg:fx2adf435xfw.ihx run
 ### Store the firmware permanently in EEPROM
 
 If you're an experienced FX2 hacker you can also store the firmware file `fx2adf435xfw.iic`
-permanently in the *large* 8K or 16K EEPROM of the FX2 board.
+or `fx2adf435xfw_ex.iic` permanently in the *large* 8K or 16K EEPROM of the FX2 board.
 For technical details see the Cypress [AN50963](https://www.cypress.com/file/43391/download).
 Even with this approach you cannot *brick* your device, if the storage fails, just deactivate the EEPROM
 (e.g. with a jumper on the FX2 board) and repeat the programming.
@@ -269,7 +279,7 @@ git clone https://github.com/Ho-Ro/fx2eeprom.git
 cd fx2eeprom
 make
 ```
-2. Copy the file `fx2adf435xfw.iic` into the `fx2eeprom` directory.
+2. Copy the file `fx2adf435xfw.iic` or `fx2adf435xfw_ex.iic` into the `fx2eeprom` directory.
 3. Activate the *large* EEPROM, on my Chinese eval board by removing the jumper `JP1`.
 4. Connect the device, check the VID:PID, e.g. with `lsusb` or `sudo dmesg`,
    it's typically `0x0456`:`0xb40d` (ADF435x eval board) or `0x0456`:`0xb403` (ADF4xxx interface).
@@ -281,6 +291,10 @@ cycfx2prog -id=0x0456.0xb40d prg:vend_ax.hex run
 6. Write the firmware into EEPROM, **use the same VID:PID as above**.
 ```sh
 ./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw.iic
+```
+or
+```sh
+./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw_ex.iic
 ```
 7. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
 as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.

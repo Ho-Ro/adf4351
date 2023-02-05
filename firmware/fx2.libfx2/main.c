@@ -1,5 +1,17 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include <fx2lib.h>
 #include <fx2usb.h>
+
+
+/*
+ * fx2ad4351fw is an open-source firmware for a Cypress FX2 based USB
+ * interface to the Analog Devices ADF435x series of chips.
+ * Inspired by libfx2/firmware/boot-cypress, uses libfx2 as helper library.
+ * Copyright (C) 2023 Martin Homuth-Rosemann
+ *
+ * The code is licensed under the terms of the GNU GPL, version 3 or later.
+ */
 
 
 // Port A
@@ -26,7 +38,7 @@ usb_desc_device_c usb_device = {
     .bMaxPacketSize0 = 64,
     .idVendor = 0x0456,
     .idProduct = 0xb40d,
-    .bcdDevice = 0x0031,
+    .bcdDevice = 0x0032,
     .iManufacturer = 1,
     .iProduct = 2,
     .iSerialNumber = 3,
@@ -128,14 +140,14 @@ void handle_pending_usb_setup() {
         pending_setup = false;
         SETUP_EP0_BUF( 0 );
         while ( EP0CS & _BUSY )
-            /* idle */;
+            ; // idle
         set_adf_reg();
         return;
     }
 
     if ( req->bmRequestType == ( USB_RECIP_DEVICE | USB_TYPE_VENDOR | USB_DIR_IN ) && req->bRequest == USB_REQ_GET_MUX ) {
         while ( EP0CS & _BUSY )
-            /* idle */;
+            ; // idle
         *EP0BUF = IOB & MUXOUT_IO; // MUX bit
         SETUP_EP0_BUF( 1 );        // return 1 byte
         pending_setup = false;
@@ -145,8 +157,9 @@ void handle_pending_usb_setup() {
 
 
 void adf_pin_init() {
-    /* Set the three wire i/f pins to output */
-    /* Leave the other port bits as input */
+    // Set the three wire i/f pins to output
+    // PA5 and PA6 bits shall be input (HiZ)
+    // or must be set to Hi out
     OEA = LE_IO | DATA_IO | CLK_IO;
     IOA = 0; // LE = CLK = DATA = 0
 }

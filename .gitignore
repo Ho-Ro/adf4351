@@ -41,6 +41,12 @@ build
 config.*
 stamp-h?
 
+*.bak
+*.new
+*.old
+*.orig
+*.sh
+
 __pycache__
 firmware/stm32/libopencm3
 firmware/fx2/fx2lib

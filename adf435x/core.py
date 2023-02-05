@@ -18,7 +18,7 @@
 ##
 
 
-VERSION = '0.3.1'
+VERSION = '0.3.2'
 
 
 from math import ceil, floor, log
@@ -295,3 +295,11 @@ def make_regs(
         0x5)
 
     return regs
+
+
+def freq_make_regs( freq ):
+    INT, MOD, FRAC, output_divider, band_select_clock_divider = \
+            calculate_regs(freq=freq)
+    return make_regs(INT=INT, MOD=MOD, FRAC=FRAC,
+            output_divider=output_divider,
+            band_select_clock_divider=band_select_clock_divider)

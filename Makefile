@@ -1,10 +1,15 @@
 PROJECT = pyadf435x
 
-all:	firmware
+
+VID = 0x0456
+PID = 0xb40d
+CONFIGBYTE = 0x01
+
+IHX2IIC = firmware/fx2/fx2lib/utils/ihx2iic.py --vid $(VID) --pid $(PID) --configbyte $(CONFIGBYTE)
 
 
 .PHONY: firmware
-firmware: fx2adf435xfw.ihx fx2adf435xfw.iic
+firmware: fx2adf435xfw.ihx fx2adf435xfw.iic fx2adf435xfw_ex.ihx fx2adf435xfw_ex.iic
 
 
 fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.ihx
@@ -12,12 +17,7 @@ fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.ihx
 
 
 fx2adf435xfw.iic: fx2adf435xfw.ihx Makefile
-	firmware/fx2/fx2lib/utils/ihx2iic.py --vid 0x0456 --pid 0xb40d --configbyte 0x01 $< $@
-
-
-.PHONY: firmware_libfx2
-firmware_libfx2:
-	make -j4 -C firmware/fx2.libfx2
+	$(IHX2IIC) $< $@
 
 
 firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51 firmware/fx2/Makefile
@@ -26,6 +26,18 @@ firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51
 
 firmware/fx2/Makefile: firmware/fx2/Makefile.am
 	cd firmware/fx2 && ./autogen.sh && ./configure
+
+
+fx2adf435xfw_ex.ihx: firmware/fx2.libfx2/fx2adf435xfw_ex.ihex
+	cp $< $@
+
+
+fx2adf435xfw_ex.iic: fx2adf435xfw_ex.ihx
+	$(IHX2IIC) $< $@
+
+
+firmware/fx2.libfx2/fx2adf435xfw_ex.ihex: firmware/fx2.libfx2/main.c firmware/fx2.libfx2/Makefile
+	make -j4 -C firmware/fx2.libfx2
 
 
 .PHONY: firmware_stm32

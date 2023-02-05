@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from adf435x import interfaces
+from adf435x.interfaces import FX2
 import sys
 
-intf = interfaces.FX2()
+intf = FX2()
 
 status = intf.get_mux()[0]
 print( status )
