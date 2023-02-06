@@ -64,6 +64,10 @@ parser.add_argument('--interface', help='INTERFACE: FX2 (default), BusPirate, ti
 parser.add_argument('--lock-detect', dest='lock_detect', action = 'store_true', help = 'query adf435x digital lock detect state')
 parser.add_argument('--version', action = 'store_true', help = 'show adf435x version')
 parser.add_argument('-v', dest='verbose', action='count', default=0, help='increase verbosity')
+parser.add_argument('--store-default', dest = 'store_default', action = 'store_true',
+                    help = 'store the current register set as power-on default')
+parser.add_argument('--clear-default', dest = 'clear_default', action = 'store_true',
+                    help = 'clear the power-on default, come up uninitialized')
 
 # Parse
 options = parser.parse_args()
@@ -72,6 +76,15 @@ args = vars(options)
 if options.version:
     print(adf435x_version)
     sys.exit()
+
+if options.interface == 'FX2': # do the communication with the ADF435x device
+    intf = getattr(adf435x.interfaces, args['interface'])() # which interface?
+    if options.store_default:
+        intf.store_default() # store the 6 registers as power-on default
+        sys.exit()
+    if options.clear_default:
+        intf.clear_default() # clear the power-on default values
+        sys.exit()
 
 # Generate register values
 calculate_regs_kw = {arg : args[arg.lower()]

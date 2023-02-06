@@ -83,7 +83,8 @@ usage: adf435xctl [-h] [--device-type DEVICE_TYPE] [--freq FREQ] [--ref-freq REF
                   [--aux-output-enable] [--aux-output-power AUX_OUTPUT_POWER]
                   [--output-disable] [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE]
                   [--r0 R0] [--r1 R1] [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5]
-                  [--interface INTERFACE] [--lock-detect] [--version] [-v]
+                  [--interface INTERFACE] [--lock-detect] [--version] [-v] [--store-default]
+                  [--clear-default]
 
 Control program for ADF4350/1 eval board
 
@@ -154,8 +155,10 @@ optional arguments:
   --lock-detect         query adf435x digital lock detect state
   --version             show adf435x version
   -v                    increase verbosity
+  --store-default       store the current register set as power-on default
+  --clear-default       clear the power-on default, come up uninitialized
 
-adf435x version 0.3.1
+adf435x version 0.3.3
 ```
 
 ### Usage Examples
@@ -228,7 +231,8 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 ### Experimental FW based on libfx2
 
 Another Cypress FW based on libfx2 is `fx2adf435xfw_ex.ihx`, located in [firmware/fx2.libfx2](firmware/fx2.libfx2).
-It supports the same functionality as the counterpart in [firmware/fx2](firmware/fx2).
+It supports the same functionality as the counterpart in [firmware/fx2](firmware/fx2),
+additional it supports the storage of default register settings in EEPROM that are used at power-on.
 The source code consists of only one file `main.c` and has an easier syntax.
 
 ### Upload the firmware into RAM
@@ -267,6 +271,10 @@ or `fx2adf435xfw_ex.iic` permanently in the *large* 8K or 16K EEPROM of the FX2 
 For technical details see the Cypress [AN50963](https://www.cypress.com/file/43391/download).
 Even with this approach you cannot *brick* your device, if the storage fails, just deactivate the EEPROM
 (e.g. with a jumper on the FX2 board) and repeat the programming.
+
+#### fx2tool
+
+See the [complete documentation](https://libfx2.readthedocs.io) for details.
 
 #### fx2eeprom
 

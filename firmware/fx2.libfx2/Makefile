@@ -5,9 +5,26 @@ LIBFX2 	= libfx2/firmware/library
 include $(LIBFX2)/fx2rules.mk
 
 
+VID=0456
+PID=b40d
+
+CONFIGBYTE=0x01
+
+IHX2IIC = ../fx2/fx2lib/utils/ihx2iic.py --vid 0x$(VID) --pid 0x$(PID) --configbyte $(CONFIGBYTE)
+
+
 .PHONY: lib
 lib:
 	make -C libfx2/firmware/library
+
+
+$(TARGET).iic: $(TARGET).ihex Makefile
+	$(IHX2IIC) $< $@
+
+
+.PHONY: ee_load
+ee_load: $(TARGET).iic Makefile
+	fx2tool -d $(VID):$(PID) -F bin -B write_eeprom -W2 -p32 -f $<
 
 
 .PHONY: fw_load

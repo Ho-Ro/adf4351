@@ -18,7 +18,7 @@
 ##
 
 
-VERSION = '0.3.2'
+VERSION = '0.3.3'
 
 
 from math import ceil, floor, log
@@ -100,7 +100,7 @@ def calculate_regs(
 
     fMAX = 4400
     if device_type == DeviceType.ADF4351:
-        fMIN = 35
+        fMIN = 34.375
     else:
         fMIN = 137.5
     if freq < fMIN or freq > fMAX:
@@ -297,9 +297,11 @@ def make_regs(
     return regs
 
 
-def freq_make_regs( freq ):
+def freq_make_regs(freq):
     INT, MOD, FRAC, output_divider, band_select_clock_divider = \
             calculate_regs(freq=freq)
     return make_regs(INT=INT, MOD=MOD, FRAC=FRAC,
             output_divider=output_divider,
-            band_select_clock_divider=band_select_clock_divider)
+            band_select_clock_divider=band_select_clock_divider,
+            mux_out=MuxOut.DigitalLockDetect
+    )
