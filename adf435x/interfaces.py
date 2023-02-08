@@ -43,10 +43,10 @@ class FX2:
             data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
             self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
 
-    def store_default( self ): # store the registers into EEPROM as default setting
+    def clear_default( self ): # clear the default settings in EEPROM
             self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDE, wValue=0, wIndex=0, data_or_wLength=None )
 
-    def clear_default( self ): # clear the default settings in EEPROM
+    def store_default( self ): # store the registers into EEPROM as default setting
             self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDE, wValue=1, wIndex=0, data_or_wLength=None )
 
     def get_mux( self ): # get the status of the MUX bit - byte value 0: MUXOUT=LOW or 1: MUXOUT=HIGH
