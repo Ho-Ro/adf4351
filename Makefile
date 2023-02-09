@@ -5,39 +5,23 @@ VID = 0x0456
 PID = 0xb40d
 CONFIGBYTE = 0x01
 
-IHX2IIC = firmware/fx2/fx2lib/utils/ihx2iic.py --vid $(VID) --pid $(PID) --configbyte $(CONFIGBYTE)
+IHX2IIC = firmware/fx2.fx2lib/fx2lib/utils/ihx2iic.py --vid $(VID) --pid $(PID) --configbyte $(CONFIGBYTE)
 
 
 .PHONY: firmware
-firmware: fx2adf435xfw.ihx fx2adf435xfw.iic fx2adf435xfw_ex.ihx fx2adf435xfw_ex.iic
+firmware: fx2adf435xfw.ihx fx2adf435xfw.iic
 
 
-fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.ihx
-	cp $< $@
-
-
-fx2adf435xfw.iic: fx2adf435xfw.ihx Makefile
+fx2adf435xfw.iic: fx2adf435xfw.ihx
 	$(IHX2IIC) $< $@
 
 
-firmware/fx2/fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.c firmware/fx2/dscr.a51 firmware/fx2/Makefile
+fx2adf435xfw.ihx: firmware/fx2/fx2adf435xfw.ihex
+	cp $< $@
+
+
+firmware/fx2/fx2adf435xfw.ihex: firmware/fx2/main.c firmware/fx2/Makefile
 	make -j4 -C firmware/fx2
-
-
-firmware/fx2/Makefile: firmware/fx2/Makefile.am
-	cd firmware/fx2 && ./autogen.sh && ./configure
-
-
-fx2adf435xfw_ex.ihx: firmware/fx2.libfx2/fx2adf435xfw_ex.ihex
-	cp $< $@
-
-
-fx2adf435xfw_ex.iic: fx2adf435xfw_ex.ihx
-	$(IHX2IIC) $< $@
-
-
-firmware/fx2.libfx2/fx2adf435xfw_ex.ihex: firmware/fx2.libfx2/main.c firmware/fx2.libfx2/Makefile
-	make -j4 -C firmware/fx2.libfx2
 
 
 .PHONY: firmware_stm32
@@ -83,7 +67,7 @@ deb:	clean fx2adf435xfw.ihx
 
 # install the latest debian package
 .PHONY:	debinstall
-debinstall: deb
+debinstall:
 	sudo dpkg -i $(PROJECT)_*_all.deb
 
 
@@ -93,13 +77,13 @@ clean:
 	python setup.py clean
 	-rm -rf *~ .*~ deb_dist dist *.tar.gz *.egg* build tmp
 	-make -j4 -C firmware/fx2 clean
-	-make -j4 -C firmware/fx2.libfx2 clean
+	-make -j4 -C firmware/fx2.fx2lib clean
 	-make -j4 -C firmware/stm32 clean
 
 
 # removes all build artefacts
 .PHONY:	distclean
 distclean: clean
-	-rm -f *.deb firmware/fx2/Makefile
+	-rm -f *.deb firmware/fx2.fx2lib/Makefile
 	-make -j4 -C firmware/stm32/libopencm3 clean
 

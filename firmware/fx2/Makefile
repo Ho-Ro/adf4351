@@ -1,4 +1,4 @@
-TARGET    = fx2adf435xfw_ex
+TARGET    = fx2adf435xfw
 LIBRARIES = fx2 fx2usb fx2isrs
 
 LIBFX2 	= libfx2/firmware/library

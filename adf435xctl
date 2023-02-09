@@ -62,12 +62,14 @@ for r in range(6):
 
 parser.add_argument('--interface', help='INTERFACE: FX2 (default), BusPirate, tinyADF, NONE', default='FX2')
 parser.add_argument('--lock-detect', dest='lock_detect', action = 'store_true', help = 'query adf435x digital lock detect state')
-parser.add_argument('--version', action = 'store_true', help = 'show adf435x version')
-parser.add_argument('-v', dest='verbose', action='count', default=0, help='increase verbosity')
+parser.add_argument('--version', action = 'store_true', help = 'show adf435x version and exit')
 parser.add_argument('--store-default', dest = 'store_default', action = 'store_true',
-                    help = 'store the current register set as power-on default')
+                    help = 'store the current register set as power-on default and exit '
+                    '(ignore all other arguments)')
 parser.add_argument('--clear-default', dest = 'clear_default', action = 'store_true',
-                    help = 'clear the power-on default, come up uninitialized')
+                    help = 'clear the power-on default, come up uninitialized and exit '
+                    '(ignore all other arguments)')
+parser.add_argument('-v', dest='verbose', action='count', default=0, help='increase verbosity')
 
 # Parse
 options = parser.parse_args()

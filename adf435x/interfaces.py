@@ -41,16 +41,28 @@ class FX2:
     def set_regs( self, regs ): # write the registers
         for reg in regs:
             data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
-            self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
+            self.dev.ctrl_transfer(
+                bmRequestType=0x40, bRequest=0xDD, wValue=0, wIndex=0, data_or_wLength=data )
 
     def clear_default( self ): # clear the default settings in EEPROM
-            self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDE, wValue=0, wIndex=0, data_or_wLength=None )
+        self.dev.ctrl_transfer(
+            bmRequestType=0x40, bRequest=0xDE, wValue=0, wIndex=0, data_or_wLength=None )
 
     def store_default( self ): # store the registers into EEPROM as default setting
-            self.dev.ctrl_transfer( bmRequestType=0x40, bRequest=0xDE, wValue=1, wIndex=0, data_or_wLength=None )
+        self.dev.ctrl_transfer(
+            bmRequestType=0x40, bRequest=0xDE, wValue=1, wIndex=0, data_or_wLength=None )
 
     def get_mux( self ): # get the status of the MUX bit - byte value 0: MUXOUT=LOW or 1: MUXOUT=HIGH
-        return( self.dev.ctrl_transfer( bmRequestType=0xC0, bRequest=0xE0, wValue=0, wIndex=0, data_or_wLength=1 ) )
+        return self.dev.ctrl_transfer(
+            bmRequestType=0xC0, bRequest=0xE0, wValue=0, wIndex=0, data_or_wLength=1 )
+
+    def get_eeprom( self, addr=8160, size=32 ):
+        return self.dev.ctrl_transfer(
+            bmRequestType=0xC0, bRequest=0xA9, wValue=addr, wIndex=0, data_or_wLength=size )
+
+    def set_eeprom( self, data, addr=8160 ):
+        self.dev.ctrl_transfer(
+            bmRequestType=0x40, bRequest=0xA9, wValue=addr, wIndex=0, data_or_wLength=data )
 
 
 class BusPirate:
@@ -87,8 +99,20 @@ class BusPirate:
         for reg in regs:
             self.write_data(reg)
 
-    def get_mux( self ): # get the status of the MUX bit - not yet implemented
+    def clear_default( self ): # clear the default settings in EEPROM - n/a
+        return
+
+    def store_default( self ): # store the registers into EEPROM as default setting - n/a
+        return
+
+    def get_mux( self ): # get the status of the MUX bit - not possible with this interface
         return 1 # DUMMY
+
+    def get_eeprom( self, addr=8160, size=32 ):
+        return None
+
+    def set_eeprom( self, data, addr=8160 ):
+        return
 
 
 class tinyADF:
@@ -117,5 +141,18 @@ class tinyADF:
             while self.ADF.in_waiting:
                 self.ADF.read()
 
+    def clear_default( self ): # clear the default settings in EEPROM - n/a
+        return
+
+    def store_default( self ): # store the registers into EEPROM as default setting - n/a
+        return
+
     def get_mux( self ): # get the status of the MUX bit - not possible with this interface
         return 1 # DUMMY
+
+    def get_eeprom( self, addr=8160, size=32 ):
+        return None
+
+    def set_eeprom( self, data, addr=8160 ):
+        return
+

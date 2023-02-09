@@ -28,7 +28,7 @@
 // required input bit for MUXOUT status readback
 #define MUXOUT_IO 0x01
 
-// 24LC64 EEPROM
+// 24LC64 8 KByte EEPROM
 // for USB id, application and default data storage
 #define EEPROM_I2C_ADDR 0x51
 #define EEPROM_I2C_SIZE 0x2000
@@ -52,7 +52,7 @@ usb_desc_device_c usb_device = {
     .bMaxPacketSize0 = 64,
     .idVendor =  0x0456,
     .idProduct = 0xb40d,
-    .bcdDevice = 0x0033,
+    .bcdDevice = 0x0034,
     .iManufacturer = 1,
     .iProduct = 2,
     .iSerialNumber = 3,
@@ -99,7 +99,7 @@ usb_configuration_set_c usb_configs[] = {
 usb_ascii_string_c usb_strings[] = {
     "ANALOG DEVICES", // Product
     "EVAL-ADF4351",   // Manufacturer
-    "EXP. EEPROM",    // SerialNumber
+    // "EXPERIMENTAL",   // SerialNumber
 };
 
 __xdata struct usb_descriptor_set usb_descriptor_set = {
@@ -112,6 +112,9 @@ __xdata struct usb_descriptor_set usb_descriptor_set = {
 
 // USB config request
 enum {
+    USB_REQ_CYPRESS_EEPROM_SB  = 0xA2,
+    USB_REQ_CYPRESS_EEPROM_DB  = 0xA9,
+    USB_REQ_LIBFX2_PAGE_SIZE   = 0xB0,
     USB_REQ_SET_REG = 0xDD, // send one 32bit register
     USB_REQ_EE_REGS = 0xDE, // store or clear default setting in EEPROM
     USB_REQ_GET_MUX = 0xE0, // get status of the MUX pin
@@ -122,7 +125,7 @@ __xdata uint8_t reg_set[ REG_SET_SIZE ];
 
 
 // send register value (4 bytes) to ADF4351
-static void set_adf_reg( const uint8_t *reg ) {
+static void adf_set_reg( const uint8_t *reg ) {
 
     uint8_t bit_pos = 32;
     const uint8_t *data = reg + 3; // start with MSB
@@ -136,13 +139,13 @@ static void set_adf_reg( const uint8_t *reg ) {
             IOA = DATA_IO;        // CLK low, LE low, DATA high
         else
             IOA = 0;              // CLK low, LE low, DATA low
-        one_byte <<= 1;           // next bit
         IOA |= CLK_IO;            // set CLK high, shift data bit in
         IOA = 0;                  // set CLK low, set DATA low
+        one_byte <<= 1;           // next bit
     }
     // t6 > 10 ns between set CLK low and set LE high
-    IOA |= LE_IO; // set LE high, transfer shift reg to R0..5
-    IOA = 0;      // set LE low
+    IOA = LE_IO; // set LE high, transfer shift reg to R0..5
+    IOA = 0;     // set LE low
 }
 
 
@@ -174,9 +177,65 @@ void handle_usb_setup( __xdata struct usb_req_setup *req ) {
 }
 
 
+// The EEPROM write cycle time is the same for a single byte or a single page;
+// it is therefore far more efficient to write EEPROMs in entire pages.
+// Set to 5 -> 32 (2**5) according the data sheet of the 24LC64 chip on the eval board.
+
+uint8_t ee_page_size = EEPROM_I2C_PAGE_EXP; // log2(page size in bytes)
+
+
 static void handle_pending_usb_setup() {
 
     __xdata struct usb_req_setup *req = (__xdata struct usb_req_setup *)SETUPDAT;
+
+    // explicitely set the EEPROM page size
+    if(req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_OUT) &&
+        req->bRequest == USB_REQ_LIBFX2_PAGE_SIZE) {
+        ee_page_size = req->wValue;
+        pending_setup = false;
+
+        ACK_EP0();
+        return;
+    }
+
+    // read/write small/large EEPROM
+    if((req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_IN) ||
+        req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_OUT)) &&
+        (req->bRequest == USB_REQ_CYPRESS_EEPROM_SB ||
+        req->bRequest == USB_REQ_CYPRESS_EEPROM_DB)) {
+        bool     arg_read  = (req->bmRequestType & USB_DIR_IN);
+        bool     arg_dbyte = (req->bRequest == USB_REQ_CYPRESS_EEPROM_DB);
+        uint8_t  arg_chip  = arg_dbyte ? 0x51 : 0x50;
+        uint16_t arg_addr  = req->wValue;
+        uint16_t arg_len   = req->wLength;
+        pending_setup = false;
+
+        while(arg_len > 0) {
+        uint8_t len = arg_len < 64 ? arg_len : 64;
+
+        if(arg_read) {
+            while(EP0CS & _BUSY);
+            if(!eeprom_read(arg_chip, arg_addr, EP0BUF, len, arg_dbyte)) {
+            STALL_EP0();
+            break;
+            }
+            SETUP_EP0_BUF(len);
+        } else {
+            SETUP_EP0_BUF(0);
+            while(EP0CS & _BUSY);
+            if(!eeprom_write(arg_chip, arg_addr, EP0BUF, len, arg_dbyte, ee_page_size,
+                            /*timeout=*/166)) {
+            STALL_EP0();
+            break;
+            }
+        }
+
+        arg_len  -= len;
+        arg_addr += len;
+        }
+
+        return;
+    }
 
     // receive one register value from USB: 32 bit and 1 optional bitsize byte (=32)
     if ( req->bmRequestType == ( USB_RECIP_DEVICE | USB_TYPE_VENDOR | USB_DIR_OUT ) \
@@ -191,7 +250,7 @@ static void handle_pending_usb_setup() {
         if ( reg_num > 5 ) // reg 0..5
             return;
         xmemcpy( reg_set + 4 * reg_num, EP0BUF, 4 ); // store this register value
-        set_adf_reg( EP0BUF ); //transfer to the ADF
+        adf_set_reg( EP0BUF ); // transfer to the ADF
         return;
     }
 
@@ -212,8 +271,7 @@ static void handle_pending_usb_setup() {
         }
         // now store the reg set into EEPROM
         if( !eeprom_write( EEPROM_I2C_ADDR, EEPROM_REG_ADDR, reg_set, REG_SET_SIZE, \
-            EEPROM_I2C_DOUBLE_BYTE, EEPROM_I2C_PAGE_EXP, EEPROM_I2C_TIMEOUT )
-        )
+            EEPROM_I2C_DOUBLE_BYTE, EEPROM_I2C_PAGE_EXP, EEPROM_I2C_TIMEOUT ) )
             STALL_EP0(); // stall if not successful
         return;
     }
@@ -248,7 +306,7 @@ static void adf_reg_init() {
     if ( eeprom_read( EEPROM_I2C_ADDR, EEPROM_REG_ADDR, reg_set, REG_SET_SIZE, EEPROM_I2C_DOUBLE_BYTE ) ) {
         if ( reg_set[ 30 ] == EEPROM_CHECKSUM_MAGIC && reg_set[ 31 ] == reg_chksum() ) {
             for ( int8_t reg_num = 5; reg_num >= 0; --reg_num ) { // R5 .. R0
-                set_adf_reg( reg_set + 4 * reg_num ); // set reg from pointer to reg set
+                adf_set_reg( reg_set + 4 * reg_num ); // set reg from pointer to reg set
             }
         }
     }

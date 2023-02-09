@@ -83,8 +83,8 @@ usage: adf435xctl [-h] [--device-type DEVICE_TYPE] [--freq FREQ] [--ref-freq REF
                   [--aux-output-enable] [--aux-output-power AUX_OUTPUT_POWER]
                   [--output-disable] [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE]
                   [--r0 R0] [--r1 R1] [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5]
-                  [--interface INTERFACE] [--lock-detect] [--version] [-v] [--store-default]
-                  [--clear-default]
+                  [--interface INTERFACE] [--lock-detect] [--version] [--store-default]
+                  [--clear-default] [-v]
 
 Control program for ADF4350/1 eval board
 
@@ -153,12 +153,14 @@ optional arguments:
   --interface INTERFACE
                         INTERFACE: FX2 (default), BusPirate, tinyADF, NONE
   --lock-detect         query adf435x digital lock detect state
-  --version             show adf435x version
+  --version             show adf435x version and exit
+  --store-default       store the current register set as power-on default and exit (ignore
+                        all other arguments)
+  --clear-default       clear the power-on default, come up uninitialized and exit (ignore all
+                        other arguments)
   -v                    increase verbosity
-  --store-default       store the current register set as power-on default
-  --clear-default       clear the power-on default, come up uninitialized
 
-adf435x version 0.3.3
+adf435x version 0.3.4
 ```
 
 ### Usage Examples
@@ -186,13 +188,16 @@ fx2adf435xfw
 The Cypress FX2 firmware is intended for the Anlog Devices board EVAL-ADF435x or compatible settings,
 e.g. a combination of a ADF4351 breakout board with a Cypress FX2 eval board.
 It controls the ADF435x synthesizer chip by bit-banging three of FX2's GPIOs.
-The firmware provides these vendor commands:
+The firmware supports these vendor commands:
 
--  `CMD_SET_REG` (0xDD) - write 4 or 5 byte - the optional 5th byte shall contain `32` (register size)
+-  `USB_REQ_SET_REG` (0xDD) - write 4 or 5 byte - an optional 5th byte is ignored
 to be compatible with the Analog Devices evaluation software.
 The 4 byte register content is written to the ADF435x registers via the SPI connection.
--  `CMD_GET_MUX` (0xE0) - read 1 byte where `bit 0` reflects the state of the `MUXOUT` pin of ADF435x.
+-  `USB_REQ_EE_REGS` (0xDE) - store or clear the default register settings in EEPROM.
+-  `USB_REQ_GET_MUX` (0xE0) - read 1 byte where `bit 0` reflects the state of the `MUXOUT` pin of ADF435x.
 The other bits 1..7 are reserved and currently set to `0`.
+-  `USB_REQ_CYPRESS_EEPROM_DB` (0xA9) - read or write the large EEPROM on the eval board.
+
 
 The firmware requires the following wiring:
 
@@ -211,14 +216,13 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 1. First init/update all the sub-modules within the git repository, silence the message about changed submodule:
    ```sh
    git submodule update --init
-   git update-index --assume-unchanged firmware/fx2/fx2lib
    ```
 
 2. Install AutoTools and the SDCC (Small Devices C Compiler).
 
    On Debian/Ubuntu:
    ```sh
-   sudo apt install autoconf automake make sdcc
+   sudo apt install make sdcc
    ```
 
 3. Build the firmware:
@@ -228,12 +232,11 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 
    You will get the firmware files `fx2adf435xfw.ihx` and `fx2adf435xfw.iic`
 
-### Experimental FW based on libfx2
+### Old FW based on fx2lib
 
-Another Cypress FW based on libfx2 is `fx2adf435xfw_ex.ihx`, located in [firmware/fx2.libfx2](firmware/fx2.libfx2).
-It supports the same functionality as the counterpart in [firmware/fx2](firmware/fx2),
-additional it supports the storage of default register settings in EEPROM that are used at power-on.
-The source code consists of only one file `main.c` and has an easier syntax.
+Another Cypress FW based on fx2lib is located in [firmware/fx2.fx2lib](firmware/fx2.fx2lib).
+It supports only a reduced functionality compared to the counterpart in [firmware/fx2](firmware/fx2)
+and has a more complex syntax.
 
 ### Upload the firmware into RAM
 
@@ -267,7 +270,7 @@ cycfx2prog -id=0x0456.0xb40d prg:fx2adf435xfw.ihx run
 ### Store the firmware permanently in EEPROM
 
 If you're an experienced FX2 hacker you can also store the firmware file `fx2adf435xfw.iic`
-or `fx2adf435xfw_ex.iic` permanently in the *large* 8K or 16K EEPROM of the FX2 board.
+permanently in the *large* 8K or 16K EEPROM of the FX2 board.
 For technical details see the Cypress [AN50963](https://www.cypress.com/file/43391/download).
 Even with this approach you cannot *brick* your device, if the storage fails, just deactivate the EEPROM
 (e.g. with a jumper on the FX2 board) and repeat the programming.
@@ -287,7 +290,7 @@ git clone https://github.com/Ho-Ro/fx2eeprom.git
 cd fx2eeprom
 make
 ```
-2. Copy the file `fx2adf435xfw.iic` or `fx2adf435xfw_ex.iic` into the `fx2eeprom` directory.
+2. Copy the file `fx2adf435xfw.iic` into the `fx2eeprom` directory.
 3. Activate the *large* EEPROM, on my Chinese eval board by removing the jumper `JP1`.
 4. Connect the device, check the VID:PID, e.g. with `lsusb` or `sudo dmesg`,
    it's typically `0x0456`:`0xb40d` (ADF435x eval board) or `0x0456`:`0xb403` (ADF4xxx interface).
@@ -299,10 +302,6 @@ cycfx2prog -id=0x0456.0xb40d prg:vend_ax.hex run
 6. Write the firmware into EEPROM, **use the same VID:PID as above**.
 ```sh
 ./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw.iic
-```
-or
-```sh
-./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw_ex.iic
 ```
 7. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
 as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
@@ -326,4 +325,3 @@ that has a lot of additional features.
 8. Select the file `fx2adf435xfw.iic` and start the download. After success close the program.
 9. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
    as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
-

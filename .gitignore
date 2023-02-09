@@ -15,15 +15,16 @@ Makefile.am.user
 
 # Configure/build cruft
 *.asm
-#*.bin
+*.bin
+!stm32adf435xfw.bin
 *.cdb
 *.d
 *.elf
 *.fw
-firmware/fx2/*.ihx
+firmware/fx2/*.ihex
 firmware/fx2/*.iic
-firmware/fx2.libfx2/*.ihex
-firmware/fx2.libfx2/*.iic
+firmware/fx2.fx2lib/*.ihx
+firmware/fx2.fx2lib/*.iic
 build
 *.lib
 *.lk
@@ -49,9 +50,9 @@ stamp-h?
 
 __pycache__
 firmware/stm32/libopencm3
-firmware/fx2/fx2lib
-firmware/fx2/INSTALL
-firmware/fx2/Makefile
+firmware/fx2.fx2lib/fx2lib
+firmware/fx2.fx2lib/INSTALL
+firmware/fx2.fx2lib/Makefile
 Changelog
 
 *.egg-info
