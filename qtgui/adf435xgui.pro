@@ -4,7 +4,7 @@
 
 QT      += core gui
 QT      += gui widgets
-TARGET   = adf4351gui
+TARGET   = adf435xgui
 TEMPLATE = app
 
 

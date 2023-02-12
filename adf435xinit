@@ -3,7 +3,7 @@
 # upload the firmware to the unconfigured FX2 EzUSB processor on the ADF435x eval board
 
 FW_IHX=fx2adf435xfw.ihx
-SYSTEM_FW=/usr/share/pyadf435x/$FW_IHX
+SYSTEM_FW=/usr/share/adf435x/$FW_IHX
 
 if [ -r $FW_IHX ]; then
     FIRMWARE=$FW_IHX

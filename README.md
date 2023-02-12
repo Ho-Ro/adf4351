@@ -1,7 +1,7 @@
-adf4351
+adf435x
 =======
 
-**adf4351** is a suite of software and firmware for controlling the
+**adf435x** is a suite of software and firmware for controlling the
 Analog Devices ADF4351 (and ADF4350) series of wide-band RF PLL synthesizers.
 
 ![ADF4351 Pinout](images/ADF4351_Pinout.png) ![ADF435X EVAL Board](images/ADF435X_EVAL_Board.jpg)

@@ -1,5 +1,5 @@
 #
-## This file is part of the pyadf435x project.
+## This file is part of the adf435x project.
 ##
 ## Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
 ##

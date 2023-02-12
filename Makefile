@@ -1,4 +1,4 @@
-PROJECT = pyadf435x
+PROJECT = adf435x
 
 
 VID = 0x0456
@@ -43,6 +43,19 @@ upload_fw: fx2adf435xfw.ihx adf435xinit
 	./adf435xinit
 
 
+qtgui/Makefile: qtgui/adf435xgui.pro
+	cd qtgui && qmake && cd ..
+
+
+.PHONY: gui
+gui: qtgui/linux/adf435xgui
+	cp $< .
+
+
+qtgui/linux/adf435xgui: qtgui/Makefile
+	make -j -C qtgui
+
+
 # create a python source package
 .PHONY:	sdist
 sdist:
@@ -57,7 +70,7 @@ dsc:
 
 # create a debian binary package
 .PHONY:	deb
-deb:	clean fx2adf435xfw.ihx
+deb:	clean fx2adf435xfw.ihx gui
 	git log --pretty="%cs: %s [%h]" > Changelog
 	python setup.py --command-packages=stdeb.command bdist_deb
 	-rm -f $(PROJECT)_*_all.deb $(PROJECT)-*.tar.gz
@@ -75,15 +88,17 @@ debinstall:
 .PHONY:	clean
 clean:
 	python setup.py clean
-	-rm -rf *~ .*~ deb_dist dist *.tar.gz *.egg* build tmp
-	-make -j4 -C firmware/fx2 clean
-	-make -j4 -C firmware/fx2.fx2lib clean
-	-make -j4 -C firmware/stm32 clean
+	-rm -rf *~ .*~ deb_dist dist *.tar.gz *.egg* build tmp adf435xgui
+	-make -C firmware/fx2 clean
+	-make -C firmware/fx2.fx2lib clean
+	-make -C firmware/stm32 clean
+	-make -C qtgui clean
 
 
 # removes all build artefacts
 .PHONY:	distclean
 distclean: clean
-	-rm -f *.deb firmware/fx2.fx2lib/Makefile
+	-rm -Rf *.deb firmware/fx2.fx2lib/Makefile
 	-make -j4 -C firmware/stm32/libopencm3 clean
+	-make -C qtgui distclean
 
