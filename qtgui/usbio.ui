@@ -47,6 +47,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
@@ -68,6 +71,9 @@
         <family>Noto Sans</family>
         <pointsize>10</pointsize>
        </font>
+      </property>
+      <property name="locale">
+       <locale language="C" country="AnyCountry"/>
       </property>
       <property name="title">
        <string>ADF4351</string>
@@ -933,7 +939,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Presacler</string>
+        <string>Prescaler</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1756,6 +1762,9 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
     <property name="inputMask">
      <string>HHHHHHHH</string>
     </property>
@@ -1784,6 +1793,9 @@
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
     </property>
     <property name="inputMask">
      <string>HHHHHHHH</string>
@@ -1814,6 +1826,9 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
     <property name="inputMask">
      <string>HHHHHHHH</string>
     </property>
@@ -1842,6 +1857,9 @@
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
     </property>
     <property name="inputMask">
      <string>HHHHHHHH</string>
@@ -1872,6 +1890,9 @@
       <bold>true</bold>
      </font>
     </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
+    </property>
     <property name="inputMask">
      <string>HHHHHHHH</string>
     </property>
@@ -1900,6 +1921,9 @@
       <weight>75</weight>
       <bold>true</bold>
      </font>
+    </property>
+    <property name="locale">
+     <locale language="C" country="AnyCountry"/>
     </property>
     <property name="inputMask">
      <string>HHHHHHHH</string>
