@@ -24,6 +24,6 @@
 
 /* Protocol commands */
 #define CMD_SET_REG			0xDD
-#define CMD_GET_MUX			0xE0
+#define CMD_GET_MUX			0xDF
 
 #endif

@@ -1,0 +1,6 @@
+*.pro.user
+.qmake.stash
+Makefile
+linux/
+
+

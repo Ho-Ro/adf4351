@@ -113,11 +113,12 @@ __xdata struct usb_descriptor_set usb_descriptor_set = {
 // USB config request
 enum {
     USB_REQ_CYPRESS_EEPROM_SB  = 0xA2,
+    USB_REQ_CYPRESS_EXT_RAM    = 0xA3,
     USB_REQ_CYPRESS_EEPROM_DB  = 0xA9,
     USB_REQ_LIBFX2_PAGE_SIZE   = 0xB0,
     USB_REQ_SET_REG = 0xDD, // send one 32bit register
     USB_REQ_EE_REGS = 0xDE, // store or clear default setting in EEPROM
-    USB_REQ_GET_MUX = 0xE0, // get status of the MUX pin
+    USB_REQ_GET_MUX = 0xDF, // get status of the MUX pin
 };
 
 // register and checksum setup storage 6 x 32 bit register + 32 bit reserved + 32 bit checksum
@@ -228,6 +229,34 @@ static void handle_pending_usb_setup() {
             STALL_EP0();
             break;
             }
+        }
+
+        arg_len  -= len;
+        arg_addr += len;
+        }
+
+        return;
+    }
+
+    if((req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_IN) ||
+        req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_OUT)) &&
+        req->bRequest == USB_REQ_CYPRESS_EXT_RAM) {
+        bool     arg_read = (req->bmRequestType & USB_DIR_IN);
+        uint16_t arg_addr = req->wValue;
+        uint16_t arg_len  = req->wLength;
+        pending_setup = false;
+
+        while(arg_len > 0) {
+        uint8_t len = arg_len < 64 ? arg_len : 64;
+
+        if(arg_read) {
+            while(EP0CS & _BUSY);
+            xmemcpy(EP0BUF, (__xdata void *)arg_addr, len);
+            SETUP_EP0_BUF(len);
+        } else {
+            SETUP_EP0_BUF(0);
+            while(EP0CS & _BUSY);
+            xmemcpy((__xdata void *)arg_addr, EP0BUF, arg_len);
         }
 
         arg_len  -= len;
