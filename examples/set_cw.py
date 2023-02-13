@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# requires the new fx2 firmware (based on libfx2)
+
 import sys
 import time
 from adf435x.interfaces import FX2

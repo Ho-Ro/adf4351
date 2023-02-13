@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-##
 ## SPDX-License-Identifier: GPL-3.0-or-later
 ##
-## This file is part of the pyadf435x project.
+## This file is part of the adf435x project.
 ##
 ## Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
 ## Copyright (C) 2022, 2023 Martin Homuth-Rosemann
@@ -18,7 +17,7 @@
 ## GNU General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, see <http://www.gnu.org/licenses/>.-ver
+## along with this program; if not, see <http://www.gnu.org/licenses/>.
 ##
 
 from collections import OrderedDict

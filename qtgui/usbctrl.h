@@ -1,5 +1,6 @@
-#ifndef USBCTRL_H
-#define USBCTRL_H
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
 
 #include <QObject>
 #include <QTimer>
@@ -62,5 +63,3 @@ class USBCTRL : public QObject {
     unsigned char buf[ MAX_STR ];
     void closeDevice();
 };
-
-#endif // USBCTRL_H

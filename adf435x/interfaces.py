@@ -1,11 +1,13 @@
-#
+## SPDX-License-Identifier: GPL-3.0-or-later
+##
 ## This file is part of the adf435x project.
 ##
 ## Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
+## Copyright (C) 2022, 2023 Martin Homuth-Rosemann
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
+## the Free Software Foundation; either version 3 of the License, or
 ## (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
@@ -16,6 +18,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 ##
+
 import logging
 import struct
 import usb.core
@@ -29,6 +32,8 @@ logger = logging.getLogger(__name__)
 # USB requests:
 USB_REQ_CYPRESS_EEPROM_SB  = 0xA2
 USB_REQ_CYPRESS_EXT_RAM    = 0xA3
+USB_REQ_CYPRESS_CHIP_REV   = 0xA6
+USB_REQ_CYPRESS_RENUMERATE = 0xA8
 USB_REQ_CYPRESS_EEPROM_DB  = 0xA9
 USB_REQ_LIBFX2_PAGE_SIZE   = 0xB0
 USB_REQ_SET_REG = 0xDD # send one 32bit register
@@ -77,6 +82,14 @@ class FX2:
     def get_xram( self, addr=0x3e00, size=32 ):
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_EXT_RAM, wValue=addr, wIndex=0, data_or_wLength=size )
+
+    def get_chip_rev( self ): # get the chip revision
+        return self.dev.ctrl_transfer(
+            bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_CHIP_REV, wValue=0, wIndex=0, data_or_wLength=1 )
+
+    def renumerate( self ): # renumerate on the bus
+        return self.dev.ctrl_transfer(
+            bmRequestType=0x40, bRequest=0xa8, wValue=0, wIndex=0, data_or_wLength=0 )
 
 
 class BusPirate:

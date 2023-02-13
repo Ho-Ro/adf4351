@@ -3,6 +3,7 @@
 #include <fx2lib.h>
 #include <fx2usb.h>
 #include <fx2eeprom.h>
+#include <fx2delay.h>
 
 
 /*
@@ -41,6 +42,9 @@
 #define EEPROM_REG_ADDR (EEPROM_I2C_SIZE - REG_SET_SIZE)
 #define EEPROM_CHECKSUM_MAGIC 0xEC
 
+#define EP0BUFF_SIZE 64
+#define EEPROM_ADDR_SMALL 0x50
+#define EEPROM_ADDR_LARGE 0x51
 
 usb_desc_device_c usb_device = {
     .bLength = sizeof( struct usb_desc_device ),
@@ -52,10 +56,10 @@ usb_desc_device_c usb_device = {
     .bMaxPacketSize0 = 64,
     .idVendor =  0x0456,
     .idProduct = 0xb40d,
-    .bcdDevice = 0x0034,
-    .iManufacturer = 1,
-    .iProduct = 2,
-    .iSerialNumber = 3,
+    .bcdDevice = 0x0035,
+    .iManufacturer = 1, // 1 = usb_strings[0]
+    .iProduct = 2,      // 2 = usb_strings[1]
+    .iSerialNumber = 0, // 3 = usb_strings[2] if exist
     .bNumConfigurations = 1,
 };
 
@@ -96,10 +100,10 @@ usb_configuration_set_c usb_configs[] = {
     &usb_config,
 };
 
-usb_ascii_string_c usb_strings[] = {
-    "ANALOG DEVICES", // Product
-    "EVAL-ADF4351",   // Manufacturer
-    // "EXPERIMENTAL",   // SerialNumber
+usb_ascii_string_c usb_strings[] = { // set string numbers in usb_device to 1, 2 (,3)
+    "ANALOG DEVICES", // string = 1, Product
+    "EVAL-ADF4351",   // string = 2, Manufacturer
+    // "EXPERIMENTAL",   // string = 3, SerialNumber
 };
 
 __xdata struct usb_descriptor_set usb_descriptor_set = {
@@ -114,6 +118,8 @@ __xdata struct usb_descriptor_set usb_descriptor_set = {
 enum {
     USB_REQ_CYPRESS_EEPROM_SB  = 0xA2,
     USB_REQ_CYPRESS_EXT_RAM    = 0xA3,
+    USB_REQ_CYPRESS_CHIP_REV   = 0xA6,
+    USB_REQ_CYPRESS_RENUMERATE = 0xA8,
     USB_REQ_CYPRESS_EEPROM_DB  = 0xA9,
     USB_REQ_LIBFX2_PAGE_SIZE   = 0xB0,
     USB_REQ_SET_REG = 0xDD, // send one 32bit register
@@ -206,13 +212,13 @@ static void handle_pending_usb_setup() {
         req->bRequest == USB_REQ_CYPRESS_EEPROM_DB)) {
         bool     arg_read  = (req->bmRequestType & USB_DIR_IN);
         bool     arg_dbyte = (req->bRequest == USB_REQ_CYPRESS_EEPROM_DB);
-        uint8_t  arg_chip  = arg_dbyte ? 0x51 : 0x50;
+        uint8_t  arg_chip  = arg_dbyte ? EEPROM_ADDR_LARGE : EEPROM_ADDR_SMALL;
         uint16_t arg_addr  = req->wValue;
         uint16_t arg_len   = req->wLength;
         pending_setup = false;
 
         while(arg_len > 0) {
-        uint8_t len = arg_len < 64 ? arg_len : 64;
+        uint8_t len = arg_len < EP0BUFF_SIZE ? arg_len : EP0BUFF_SIZE;
 
         if(arg_read) {
             while(EP0CS & _BUSY);
@@ -247,7 +253,7 @@ static void handle_pending_usb_setup() {
         pending_setup = false;
 
         while(arg_len > 0) {
-        uint8_t len = arg_len < 64 ? arg_len : 64;
+        uint8_t len = arg_len < EP0BUFF_SIZE ? arg_len : EP0BUFF_SIZE;
 
         if(arg_read) {
             while(EP0CS & _BUSY);
@@ -263,6 +269,31 @@ static void handle_pending_usb_setup() {
         arg_addr += len;
         }
 
+        return;
+    }
+
+    // send chip revision over USB
+    if ( req->bmRequestType == ( USB_RECIP_DEVICE | USB_TYPE_VENDOR | USB_DIR_IN ) \
+        && req->bRequest == USB_REQ_CYPRESS_CHIP_REV ) {
+        while ( EP0CS & _BUSY )
+            ; // idle
+        *EP0BUF = REVID; // Rev A, B = 0, Rev C = 2
+        SETUP_EP0_BUF( 1 );        // return 1 byte
+        pending_setup = false;
+        return;
+    }
+
+    // renumerate on the bus
+    if ( req->bmRequestType == ( USB_RECIP_DEVICE | USB_TYPE_VENDOR | USB_DIR_OUT ) \
+        && req->bRequest == USB_REQ_CYPRESS_RENUMERATE ) {
+        while ( EP0CS & _BUSY )
+            ; // idle
+        SETUP_EP0_BUF( 0 );
+        delay_ms(1); // finish pending transfer
+        USBCS |= _DISCON; // disconnect
+        delay_ms(10);
+        USBCS &= ~_DISCON; // reconnect
+        pending_setup = false;
         return;
     }
 

@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "adf4351.h"
 #include <math.h>
 #include <stdlib.h>
 
 
-ADF4351::ADF4351() { this->enable_gcd = true; }
+ADF4351::ADF4351() { enable_gcd = true; }
 
 
 inline int min( const int a, const int b ) {
@@ -27,10 +29,10 @@ uint32_t gcd( uint32_t a, uint32_t b ) {
 }
 
 #if 0
-void ADF4351::ADF4351_calculate_reg_from_freq( uint32_t frequency ) {
-    // printf( "ADF4351::ADF4351_calculate_reg_from_freq( %d\n", frequency );
-    this->frequency = frequency;
-    double pfd_freq = ( this->REF_FREQ * ( this->ref_doubler ? 2 : 1 ) ) / ( ( this->ref_div2 ? 2 : 1 ) * this->r_counter );
+void ADF4351::calculateRegFromFreq( uint32_t frequency ) {
+    // printf( "ADF4351::calculateRegFromFreq( %d\n", frequency );
+    frequency = frequency;
+    double pfd_freq = ( REF_FREQ * ( ref_doubler ? 2 : 1 ) ) / ( ( ref_div2 ? 2 : 1 ) * r_counter );
     uint32_t output_divider;
     double N;
     for ( uint8_t i = 0; i < 7; i++ ) {
@@ -40,7 +42,7 @@ void ADF4351::ADF4351_calculate_reg_from_freq( uint32_t frequency ) {
         }
     }
 
-    if ( this->feedback_select == false ) {
+    if ( feedback_select == false ) {
         N = frequency * output_divider / pfd_freq;
     } else {
         N = frequency / pfd_freq;
@@ -51,7 +53,7 @@ void ADF4351::ADF4351_calculate_reg_from_freq( uint32_t frequency ) {
     uint32_t MOD = round( 1000.0 * pfd_freq );
     uint32_t FRAC = round( ( N - INT ) * MOD );
 
-    if ( this->enable_gcd ) {
+    if ( enable_gcd ) {
         uint32_t div = gcd( MOD, FRAC );
         MOD = MOD / div;
         FRAC = FRAC / div;
@@ -65,167 +67,140 @@ void ADF4351::ADF4351_calculate_reg_from_freq( uint32_t frequency ) {
         if ( FRAC != 0 ) {
             // printf( "Maximum PFD frequency in Frac-N mode (FRAC != 0) is 32MHz.\n" );
 
-        } else if ( this->band_select_clock_mode == true ) {
+        } else if ( band_select_clock_mode == true ) {
             // printf( "Band Select Clock Mode must be set to High when PFD is >32MHz in Int-N mode (FRAC = 0).\n" );
         }
     }
 
-    if ( !this->band_select_clock_divider ) {
+    if ( !band_select_clock_divider ) {
         uint32_t pfd_scale = 8;
 
-        if ( this->band_select_clock_mode != 0 ) {
+        if ( band_select_clock_mode != 0 ) {
             pfd_scale = 2;
         }
-        if ( this->band_select_clock_mode == 0 )
-            this->band_select_clock_divider = min( ceil( 8 * pfd_freq ), 255 );
+        if ( band_select_clock_mode == 0 )
+            band_select_clock_divider = min( ceil( 8 * pfd_freq ), 255 );
     }
 
-    this->band_select_clock_freq = ( 1000.0 * pfd_freq ) / this->band_select_clock_divider;
+    band_select_clock_freq = ( 1000.0 * pfd_freq ) / band_select_clock_divider;
 
-    if ( this->band_select_clock_freq > 500.0 ) {
+    if ( band_select_clock_freq > 500.0 ) {
         // printf("Band Select Clock Frequency is too High. It must be 500kHz or less.\n");
 
-    } else if ( this->band_select_clock_freq > 125.0 ) {
-        if ( this->band_select_clock_mode == 0 ) {
+    } else if ( band_select_clock_freq > 125.0 ) {
+        if ( band_select_clock_mode == 0 ) {
             // printf("Band Select Clock Frequency is too high. Reduce to 125kHz or less, or set Band Select Clock  Mode to High.
             // \n");
         }
     }
 
-    this->reg[ 0 ] = INT << 15 | ( ( FRAC << 3 ) & 0x7FF8 ) | 0x1;
-    this->reg[ 1 ] = this->PHASE_ADJUST | this->PR1 << 27 | ( this->PHASE << 5 & 0x7FF800 ) | ( ( MOD << 3 ) & 0x1F8 ) | 0x2;
+    reg[ 0 ] = INT << 15 | ( ( FRAC << 3 ) & 0x7FF8 ) | 0x1;
+    reg[ 1 ] = PHASE_ADJUST | PR1 << 27 | ( PHASE << 5 & 0x7FF800 ) | ( ( MOD << 3 ) & 0x1F8 ) | 0x2;
 }
 #endif
 
 void ADF4351::buildRegisters() {
     // printf( "AD4351::BuildRegisters()\n" );
     for ( int i = 0; i < 6; i++ ) {
-        this->previous_reg[ i ] = this->reg[ i ];
+        previous_reg[ i ] = reg[ i ];
     }
-    this->PFDFreq =
-        ( this->REF_FREQ * (double)( this->ref_doubler ? 2 : 1 ) / (double)( this->ref_div2 ? 2 : 1 ) / (double)this->r_counter );
+    PFDFreq = ( REF_FREQ * (double)( ref_doubler ? 2 : 1 ) / (double)( ref_div2 ? 2 : 1 ) / (double)r_counter );
     uint16_t output_divider = 1;
-    if ( this->frequency >= 2200.0 ) {
+    if ( frequency >= 2200.0 ) {
         output_divider = 1;
     }
-    if ( this->frequency < 2200.0 ) {
+    if ( frequency < 2200.0 ) {
         output_divider = 2;
     }
-    if ( this->frequency < 1100.0 ) {
+    if ( frequency < 1100.0 ) {
         output_divider = 4;
     }
-    if ( this->frequency < 550.0 ) {
+    if ( frequency < 550.0 ) {
         output_divider = 8;
     }
-    if ( this->frequency < 275.0 ) {
+    if ( frequency < 275.0 ) {
         output_divider = 16;
     }
-    if ( this->frequency < 137.5 ) {
+    if ( frequency < 137.5 ) {
         output_divider = 32;
     }
-    if ( this->frequency < 68.75 ) {
+    if ( frequency < 68.75 ) {
         output_divider = 64;
     }
 
 
-    if ( this->feedback_select ) {
-        this->N = (double)this->frequency * output_divider / this->PFDFreq;
+    if ( feedback_select ) {
+        N = (double)frequency * output_divider / PFDFreq;
     } else {
-        this->N = (double)this->frequency / this->PFDFreq;
+        N = (double)frequency / PFDFreq;
     }
 
-    this->INT = (uint32_t)this->N;
-    this->MOD = (uint32_t)round( 1000 * this->PFDFreq );
-    this->FRAC = (uint32_t)round( ( (double)this->N - this->INT ) * this->MOD );
-    if ( this->enable_gcd ) {
-        uint32_t div = gcd( (uint32_t)this->MOD, (uint32_t)this->FRAC );
-        this->MOD = this->MOD / div;
-        this->FRAC = this->FRAC / div;
+    INT = (uint32_t)N;
+    MOD = (uint32_t)round( 1000 * PFDFreq );
+    FRAC = (uint32_t)round( ( (double)N - INT ) * MOD );
+    if ( enable_gcd ) {
+        uint32_t div = gcd( (uint32_t)MOD, (uint32_t)FRAC );
+        MOD = MOD / div;
+        FRAC = FRAC / div;
     }
-    if ( this->MOD == 1.0 ) {
-        this->MOD = 2.0;
+    if ( MOD == 1.0 ) {
+        MOD = 2.0;
     }
 
-    // this.RFoutBox.Text = ((this.INT + this.FRAC / this.MOD) * (double)this.PFDFreq / (double)Convert.ToInt16(this.DivBox.Text) *
-    // (double)((this.FeedbackSelectBox.SelectedIndex == 1) ? 1 : Convert.ToInt16(this.DivBox.Text))).ToString();
+    // printf( "f = %f\n", ( INT + FRAC / MOD ) * PFDFreq / output_divider );
 
-    if ( this->band_select_auto ) {
+    if ( band_select_auto ) {
         uint32_t temp;
-        if ( this->band_select_clock_mode == 0 ) // low
+        if ( band_select_clock_mode == 0 ) // low
         {
-            temp = (uint32_t)round( 8.0 * this->PFDFreq );
-            if ( 8.0 * this->PFDFreq - temp > 0 ) {
+            temp = (uint32_t)round( 8.0 * PFDFreq );
+            if ( 8.0 * PFDFreq - temp > 0 ) {
                 temp += 1u;
             }
             temp = ( ( temp > 255u ) ? 255u : temp );
         } else {
-            temp = (uint32_t)round( this->PFDFreq * 2.0 );
-            if ( 2.0 * this->PFDFreq - temp > 0 ) {
+            temp = (uint32_t)round( PFDFreq * 2.0 );
+            if ( 2.0 * PFDFreq - temp > 0 ) {
                 temp += 1u;
             }
             temp = ( ( temp > 255u ) ? 255u : temp );
         }
-        this->band_select_clock_divider = temp;
-        this->band_select_clock_freq = ( 1000 * this->PFDFreq / (uint32_t)temp );
+        band_select_clock_divider = temp;
+        band_select_clock_freq = ( 1000 * PFDFreq / (uint32_t)temp );
     }
 
 
-    this->reg[ 0 ] = ( uint32_t )( (double)( (uint32_t)this->INT & 65535 ) * ( 1 << 15 ) +
-                                   (double)( (uint32_t)this->FRAC & 4095 ) * ( 1 << 3 ) + 0.0 );
-    this->reg[ 1 ] = ( uint32_t )( (double)this->PHASE_ADJUST * ( 1 << 28 ) + (double)this->PR1 * ( 1 << 27 ) +
-                                   (double)this->PHASE * ( 1 << 15 ) + (double)( (int)this->MOD & 4095 ) * ( 1 << 3 ) + 1.0 );
+    reg[ 0 ] =
+        ( uint32_t )( (double)( (uint32_t)INT & 65535 ) * ( 1 << 15 ) + (double)( (uint32_t)FRAC & 4095 ) * ( 1 << 3 ) + 0.0 );
+    reg[ 1 ] = ( uint32_t )( (double)PHASE_ADJUST * ( 1 << 28 ) + (double)PR1 * ( 1 << 27 ) + (double)PHASE * ( 1 << 15 ) +
+                             (double)( (int)MOD & 4095 ) * ( 1 << 3 ) + 1.0 );
 
 
-    this->reg[ 2 ] = ( uint32_t )( (double)this->low_noise_spur_mode * ( 1 << 29 ) + (double)this->muxout * ( 1 << 26 ) +
-                                   (double)( this->ref_doubler ? 1 : 0 ) * ( 1 << 25 ) +
-                                   (double)( this->ref_div2 ? 1 : 0 ) * ( 1 << 24 ) + (double)this->r_counter * ( 1 << 14 ) +
-                                   (double)this->double_buff * ( 1 << 13 ) + (double)this->charge_pump_current * ( 1 << 9 ) +
-                                   (double)this->LDF * ( 1 << 8 ) + (double)this->LDP * ( 1 << 7 ) +
-                                   (double)this->PD_Polarity * ( 1 << 6 ) + (double)this->power_down * ( 1 << 5 ) +
-                                   (double)this->cp_3stage * ( 1 << 4 ) + (double)this->counter_reset * ( 1 << 3 ) + 2.0 );
-    this->reg[ 3 ] = ( uint32_t )( (uint32_t)this->band_select_clock_mode * ( 1 << 23 ) + (uint32_t)this->ABP * ( 1 << 22 ) +
-                                   (uint32_t)this->charge_cancelletion * ( 1 << 21 ) + (uint32_t)this->CSR * ( 1 << 18 ) +
-                                   (uint32_t)this->CLK_DIV_MODE * ( 1 << 15 ) + (uint32_t)this->clock_divider * ( 1 << 3 ) + 3.0 );
+    reg[ 2 ] = ( uint32_t )( (double)low_noise_spur_mode * ( 1 << 29 ) + (double)muxout * ( 1 << 26 ) +
+                             (double)( ref_doubler ? 1 : 0 ) * ( 1 << 25 ) + (double)( ref_div2 ? 1 : 0 ) * ( 1 << 24 ) +
+                             (double)r_counter * ( 1 << 14 ) + (double)double_buff * ( 1 << 13 ) +
+                             (double)charge_pump_current * ( 1 << 9 ) + (double)LDF * ( 1 << 8 ) + (double)LDP * ( 1 << 7 ) +
+                             (double)PD_Polarity * ( 1 << 6 ) + (double)power_down * ( 1 << 5 ) + (double)cp_3stage * ( 1 << 4 ) +
+                             (double)counter_reset * ( 1 << 3 ) + 2.0 );
+    reg[ 3 ] = ( uint32_t )( (uint32_t)band_select_clock_mode * ( 1 << 23 ) + (uint32_t)ABP * ( 1 << 22 ) +
+                             (uint32_t)charge_cancelletion * ( 1 << 21 ) + (uint32_t)CSR * ( 1 << 18 ) +
+                             (uint32_t)CLK_DIV_MODE * ( 1 << 15 ) + (uint32_t)clock_divider * ( 1 << 3 ) + 3.0 );
 
-    this->reg[ 4 ] =
-        ( uint32_t )( (uint32_t)this->feedback_select * ( 1 << 23 ) + log2( (double)output_divider ) * ( 1 << 20 ) +
-                      (double)this->band_select_clock_divider * ( 1 << 12 ) + (double)this->VCO_power_down * ( 1 << 11 ) +
-                      (double)this->MTLD * ( 1 << 10 ) + (double)this->AUX_output_mode * ( 1 << 9 ) +
-                      (double)this->AUX_output_enable * ( 1 << 8 ) + (double)this->AUX_output_power * ( 1 << 6 ) +
-                      (double)this->RF_ENABLE * ( 1 << 5 ) + (double)this->RF_output_power * ( 1 << 3 ) + 4.0 );
-    this->reg[ 5 ] = ( uint32_t )( (uint32_t)this->LD * ( 1 << 22 ) + (uint32_t)0x3 * ( 1 << 19 ) + 5.0 );
+    reg[ 4 ] = ( uint32_t )( (uint32_t)feedback_select * ( 1 << 23 ) + log2( (double)output_divider ) * ( 1 << 20 ) +
+                             (double)band_select_clock_divider * ( 1 << 12 ) + (double)VCO_power_down * ( 1 << 11 ) +
+                             (double)MTLD * ( 1 << 10 ) + (double)AUX_output_mode * ( 1 << 9 ) +
+                             (double)AUX_output_enable * ( 1 << 8 ) + (double)AUX_output_power * ( 1 << 6 ) +
+                             (double)RF_ENABLE * ( 1 << 5 ) + (double)RF_output_power * ( 1 << 3 ) + 4.0 );
+    reg[ 5 ] = ( uint32_t )( (uint32_t)LD * ( 1 << 22 ) + (uint32_t)0x3 * ( 1 << 19 ) + 5.0 );
 
     // for ( int r = 0; r < 6; ++r )
-    //    printf( "r%d = 0x%08X\n", r, this->reg[ r ] );
+    //    printf( "r%d = 0x%08X\n", r, reg[ r ] );
 
-    //    this.UpdateVCOChannelSpacing();
-    //    this.UpdateVCOOutputFrequencyBox();
-    //    if (this.CLKDivModeBox.SelectedIndex == 2)
-    //    {
-    //        this.TsyncLabel.Visible = true;
-    //        this.TsyncLabel.Text = "Tsync = " + (1.0 / (double)this.PFDFreq * this.MOD *
-    //        (double)Convert.ToInt32(this.ClockDividerValueBox.Value)).ToString() + " us";
-    //    }
-    //    else
-    //    {
-    //        this.TsyncLabel.Visible = false;
-    //    }
-    //    if (this.Autowrite.Checked)
-    //    {
-    //        this.WriteAllButton.PerformClick();
-    //    }
+    if ( CLK_DIV_MODE == 2 ) {
+        tSync = 1.0 / PFDFreq * MOD * clock_divider;
+    } else {
+        tSync = 0;
+    }
 
-    //    this.Limit_Check();
-    //    if (this.FeedbackSelectBox.SelectedIndex == 0)
-    //    {
-    //        this.FeedbackFrequencyLabel.Text = Convert.ToDouble(this.RFoutBox.Text) + " MHz";
-    //    }
-    //    else
-    //    {
-    //        this.FeedbackFrequencyLabel.Text = (Convert.ToDouble(this.RFoutBox.Text) *
-    //        (double)Convert.ToInt16(this.OutputDividerBox.Text)).ToString() + " MHz";
-    //    }
-
-    //   this.WarningsCheck();
     emit regUpdateResult();
 }

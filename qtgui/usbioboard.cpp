@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "usbioboard.h"
 #include "ui_usbio.h"
 
@@ -146,6 +148,11 @@ void USBIOBoard::displayReg() {
     ui->line_reg3->setText( QString( "%1" ).arg( adf4351->reg[ 3 ], 8, 16, QChar( '0' ) ).toUpper() );
     ui->line_reg4->setText( QString( "%1" ).arg( adf4351->reg[ 4 ], 8, 16, QChar( '0' ) ).toUpper() );
     ui->line_reg5->setText( QString( "%1" ).arg( adf4351->reg[ 5 ], 8, 16, QChar( '0' ) ).toUpper() );
+    if ( adf4351->tSync ) {
+        ui->labelTsync->setText( QString( "t SYNC = %1 µs" ).arg( adf4351->tSync ) );
+        ui->labelTsync->setVisible( true );
+    } else
+        ui->labelTsync->setVisible( false );
 
     if ( enableAutoTx ) {
         emit signalAutoTx();
@@ -157,13 +164,13 @@ void USBIOBoard::updateGUI( bool isConnected, UI_Data *ui_data ) {
     // printf( "USBIOBoard::update_gui()\n" );
     ui->labelMuxOut->setVisible( isConnected );
     if ( isConnected ) {
+        windowTitle = "ADF4351";
         if ( !ui_data->readFirmwareInfoPending ) {
-            setWindowTitle( "EVAL-ADF4351 : FW " + QString::number( ui_data->firmwareVersionMajor ) + "." +
-                            QString::number( ui_data->firmwareVersionMinor ) + "." +
-                            QString::number( ui_data->firmwarePatchNumber ) ); //  + " : Device Found" );
-        } else {
-            setWindowTitle( "EVAL-ADF4351 : Device Found" );
+            windowTitle.append( " : FW " + QString::number( ui_data->firmwareVersionMajor ) + "." +
+                                QString::number( ui_data->firmwareVersionMinor ) + "." +
+                                QString::number( ui_data->firmwarePatchNumber ) );
         }
+        setWindowTitle( windowTitle );
 
         if ( !ui_data->readFirmwareInfoPending ) {
             if ( ui_data->muxoutStat ) {

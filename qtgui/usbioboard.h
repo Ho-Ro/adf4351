@@ -1,5 +1,6 @@
-#ifndef USBIOBOARD_H
-#define USBIOBOARD_H
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
 
 #include "adf4351.h"
 #include "usbctrl.h"
@@ -26,6 +27,7 @@ class USBIOBoard : public QMainWindow {
     bool enableAutoTx;
     void getDataFromUI();
     void showEvent( QShowEvent *event );
+    QString windowTitle;
 
   signals:
     void signalUpdateReg( const uint32_t *reg, bool enableAutoTx );
@@ -39,5 +41,3 @@ class USBIOBoard : public QMainWindow {
     void updateReg();
     void recalculate();
 };
-
-#endif // USBIOBOARD_H

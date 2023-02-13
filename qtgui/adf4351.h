@@ -1,5 +1,6 @@
-#ifndef ADF4351_H
-#define ADF4351_H
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
 
 #include <QObject>
 #include <QTimer>
@@ -56,12 +57,13 @@ class ADF4351 : public QObject {
     uint32_t PHASE;
     uint32_t r_counter;
     double frequency;
+    double tSync;
     uint32_t reg[ 6 ];
     uint32_t previous_reg[ 6 ];
     uint32_t INT;
     double MOD;
     double FRAC;
-    // void ADF4351_calculate_reg_from_freq( uint32_t frequency );
+    // void calculateRegFromFreq( uint32_t frequency );
 
   public slots:
     void buildRegisters();
@@ -69,5 +71,3 @@ class ADF4351 : public QObject {
   signals:
     void regUpdateResult();
 };
-
-#endif // AD4351_H

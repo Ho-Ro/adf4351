@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/images">
-        <file>board.ico</file>
+        <file>AD_64x64.png</file>
     </qresource>
 </RCC>

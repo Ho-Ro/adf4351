@@ -7,6 +7,9 @@ CONFIGBYTE = 0x01
 
 IHX2IIC = firmware/fx2.fx2lib/fx2lib/utils/ihx2iic.py --vid $(VID) --pid $(PID) --configbyte $(CONFIGBYTE)
 
+.PHONY: all
+all: firmware gui
+
 
 .PHONY: firmware
 firmware: fx2adf435xfw.ihx fx2adf435xfw.iic
@@ -70,7 +73,7 @@ dsc:
 
 # create a debian binary package
 .PHONY:	deb
-deb:	clean fx2adf435xfw.ihx gui
+deb:	distclean firmware gui
 	git log --pretty="%cs: %s [%h]" > Changelog
 	python setup.py --command-packages=stdeb.command bdist_deb
 	-rm -f $(PROJECT)_*_all.deb $(PROJECT)-*.tar.gz
