@@ -5,6 +5,7 @@
 #include "adf4351.h"
 #include "usbctrl.h"
 #include <QMainWindow>
+#include <QSettings>
 #include <QTimer>
 
 
@@ -24,7 +25,9 @@ class USBIOBoard : public QMainWindow {
     USBCTRL *usbCtrl;
     ADF4351 *adf4351;
 
-    bool enableAutoTx;
+    QSettings *settings;
+    bool autoTX = false;
+    bool autoInit = false;
     void getDataFromUI();
     void showEvent( QShowEvent *event );
     QString windowTitle;

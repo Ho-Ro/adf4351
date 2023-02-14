@@ -154,7 +154,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QSpinBox" name="spinBox_rcount">
+     <widget class="QSpinBox" name="spinBox_R_COUNTER">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -176,7 +176,7 @@
        <number>10</number>
       </property>
      </widget>
-     <widget class="QComboBox" name="comboBox_feedback">
+     <widget class="QComboBox" name="comboBox_FEEDBACK_SELECT">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -199,7 +199,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_mode">
+     <widget class="QComboBox" name="comboBox_NOISE_MODE">
       <property name="geometry">
        <rect>
         <x>368</x>
@@ -229,7 +229,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_mux_out">
+     <widget class="QComboBox" name="comboBox_MUXOUT">
       <property name="geometry">
        <rect>
         <x>368</x>
@@ -268,12 +268,12 @@
       </item>
       <item>
        <property name="text">
-        <string>Analog Lock Detect</string>
+        <string>Analog LD</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Digital Lock Detect</string>
+        <string>Digital LD</string>
        </property>
       </item>
       <item>
@@ -458,7 +458,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_powerdown">
+     <widget class="QComboBox" name="comboBox_POWERDOWN">
       <property name="geometry">
        <rect>
         <x>590</x>
@@ -518,7 +518,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_vco_powerdown">
+     <widget class="QComboBox" name="comboBox_VCO_POWERDOWN">
       <property name="geometry">
        <rect>
         <x>810</x>
@@ -558,7 +558,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_AUX_OUT">
+     <widget class="QComboBox" name="comboBox_AUX_OUTPUT_SELECT">
       <property name="geometry">
        <rect>
         <x>810</x>
@@ -569,16 +569,16 @@
       </property>
       <item>
        <property name="text">
-        <string>Disable</string>
+        <string>Divided</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Enable</string>
+        <string>Fundamental</string>
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_AUX_EN">
+     <widget class="QComboBox" name="comboBox_AUX_OUTPUT_ENABLE">
       <property name="geometry">
        <rect>
         <x>810</x>
@@ -598,7 +598,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_AUX_out_power">
+     <widget class="QComboBox" name="comboBox_AUX_OUTPUT_POWER">
       <property name="geometry">
        <rect>
         <x>810</x>
@@ -609,22 +609,22 @@
       </property>
       <item>
        <property name="text">
+        <string>-10 dBm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>-7 dBm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>-4 dBm</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>-1 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>+2 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>+5 dBm</string>
        </property>
       </item>
      </widget>
@@ -651,7 +651,7 @@
        </property>
       </item>
      </widget>
-     <widget class="QComboBox" name="comboBox_RF_POWER">
+     <widget class="QComboBox" name="comboBox_OUTPUT_POWER">
       <property name="geometry">
        <rect>
         <x>810</x>
@@ -665,22 +665,22 @@
       </property>
       <item>
        <property name="text">
+        <string>-10 dBm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>-7 dBm</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>-4 dBm</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>-1 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>+2 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>+5 dBm</string>
        </property>
       </item>
      </widget>
@@ -799,7 +799,7 @@
       </item>
       <item>
        <property name="text">
-        <string>Digital Lock Detect</string>
+        <string>Digital LD</string>
        </property>
       </item>
       <item>
@@ -1077,7 +1077,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Mode</string>
+       <string>Noise Mode</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1102,7 +1102,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Muxout</string>
+       <string>MUXOUT</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1502,7 +1502,7 @@
        </font>
       </property>
       <property name="text">
-       <string>VCO PwrDown</string>
+       <string>VCO Power Down</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1552,7 +1552,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Aux Output</string>
+       <string>AUX OUT SELECT</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1577,7 +1577,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Aux Out En</string>
+       <string>AUX OUT</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1602,7 +1602,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Aux Out Power</string>
+       <string>AUX OUT POWER</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1627,7 +1627,7 @@
        </font>
       </property>
       <property name="text">
-       <string>RF Out</string>
+       <string>RF OUT</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1652,13 +1652,13 @@
        </font>
       </property>
       <property name="text">
-       <string>RF out Power</string>
+       <string>OUTPUT POWER</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_freq">
+     <widget class="QDoubleSpinBox" name="doubleSpinBox_FREQUENCY">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1726,19 +1726,32 @@
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_autotx">
-      <property name="geometry">
-       <rect>
-        <x>620</x>
-        <y>380</y>
-        <width>121</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Auto Write </string>
-      </property>
-     </widget>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_autoinit">
+     <property name="geometry">
+      <rect>
+       <x>755</x>
+       <y>330</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Auto Init</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_autotx">
+     <property name="geometry">
+      <rect>
+       <x>755</x>
+       <y>350</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Auto Write</string>
+     </property>
     </widget>
    </widget>
    <widget class="QLineEdit" name="line_reg0">
@@ -1968,6 +1981,50 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>doubleSpinBox_FREQUENCY</tabstop>
+  <tabstop>USBTX</tabstop>
+  <tabstop>line_reg0</tabstop>
+  <tabstop>line_reg1</tabstop>
+  <tabstop>line_reg2</tabstop>
+  <tabstop>line_reg3</tabstop>
+  <tabstop>line_reg4</tabstop>
+  <tabstop>line_reg5</tabstop>
+  <tabstop>comboBox_NOISE_MODE</tabstop>
+  <tabstop>comboBox_MUXOUT</tabstop>
+  <tabstop>comboBox_double_buff</tabstop>
+  <tabstop>comboBox_charge_pump_current</tabstop>
+  <tabstop>comboBox_LDF</tabstop>
+  <tabstop>comboBox_band_select_clk_mode</tabstop>
+  <tabstop>comboBox_charge_cancellation</tabstop>
+  <tabstop>spinBox_clock_divider</tabstop>
+  <tabstop>comboBox_LDP</tabstop>
+  <tabstop>comboBox_PD_polarity</tabstop>
+  <tabstop>lineEdit_ref</tabstop>
+  <tabstop>comboBox_cp_3_state</tabstop>
+  <tabstop>comboBox_counter_rst</tabstop>
+  <tabstop>comboBox_POWERDOWN</tabstop>
+  <tabstop>comboBox_ABP</tabstop>
+  <tabstop>comboBox_CSR</tabstop>
+  <tabstop>comboBox_LDPIN</tabstop>
+  <tabstop>comboBox_VCO_POWERDOWN</tabstop>
+  <tabstop>comboBox_MTLD</tabstop>
+  <tabstop>comboBox_AUX_OUTPUT_SELECT</tabstop>
+  <tabstop>comboBox_AUX_OUTPUT_ENABLE</tabstop>
+  <tabstop>comboBox_AUX_OUTPUT_POWER</tabstop>
+  <tabstop>comboBox_RF_OUT</tabstop>
+  <tabstop>comboBox_OUTPUT_POWER</tabstop>
+  <tabstop>comboBox_CLK_div_mode</tabstop>
+  <tabstop>checkBox_autotx</tabstop>
+  <tabstop>checkBox_autoinit</tabstop>
+  <tabstop>checkBox_refdiv2</tabstop>
+  <tabstop>checkBox_refx2</tabstop>
+  <tabstop>spinBox_R_COUNTER</tabstop>
+  <tabstop>comboBox_presacler</tabstop>
+  <tabstop>comboBox_FEEDBACK_SELECT</tabstop>
+  <tabstop>comboBox_phase_adjust</tabstop>
+  <tabstop>spinBox_phase_val</tabstop>
+ </tabstops>
  <resources>
   <include location="Resources.qrc"/>
  </resources>

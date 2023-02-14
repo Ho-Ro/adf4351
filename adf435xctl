@@ -116,8 +116,8 @@ if options.verbose:
     if options.verbose == 2:
         for k in ('INT', 'FRAC', 'MOD', 'output_divider', 'band_select_clock_divider'):
             print(f'{k} = {kw[k]}')
-    for r in range(6):
-        print('r%d = 0x%08x' % (r, regs[r]))
+    for r in range(5,-1, -1):
+        print('R%d = 0x%08x' % (r, regs[r]))
 
 if options.interface != 'NONE': # do the communication with the ADF435x device
     intf = getattr(adf435x.interfaces, args['interface'])() # which interface?

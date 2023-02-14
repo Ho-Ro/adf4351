@@ -23,7 +23,7 @@ class ADF4351 : public QObject {
     bool ref_doubler;
     bool ref_div2;
     bool enable_gcd;
-    bool feedback_select; // 0: divided or 1:fundamental  , 1 default
+    bool FEEDBACK_SELECT; // 0: divided or 1:fundamental  , 1 default
     bool band_select_clock_mode;
     uint32_t clock_divider;
     double band_select_clock_freq;
@@ -32,13 +32,13 @@ class ADF4351 : public QObject {
     double PFDFreq;
     bool PHASE_ADJUST;           // 0 default
     bool PR1;                    // 1 default 8/9
-    uint8_t low_noise_spur_mode; // 0 default
+    uint8_t NOISE_MODE;          // 0 default
     uint8_t muxout;              // 0 default
     uint8_t charge_pump_current; // 8 default
     bool LDF;                    // 0: fract n 1: INT n , 0 default
     bool LDP;                    // 0: 10ns 1: 6ns 0 default
     bool PD_Polarity;            // 0: negative 1:positive 1 default
-    bool power_down;             // 0 default
+    bool POWERDOWN;              // 0 default
     bool cp_3stage;              // 0 default
     bool counter_reset;          // 0 default
     bool double_buff;            // 0 default
@@ -47,13 +47,13 @@ class ADF4351 : public QObject {
     bool CSR;                    // 0: dislabe default
     uint8_t CLK_DIV_MODE;        // 0 default clock div off, 1 fast lock, 2  Resync enable , 3 reserve
     uint8_t LD;                  // 0  low , 1 default lock detect 2 low , 3 high
-    bool VCO_power_down;         // 0 disable default
+    bool VCO_POWERDOWN;          // 0 disable default
     bool MTLD;                   // 0 disable default
-    bool AUX_output_mode;        // 0 divided default 1: fundamental
-    bool AUX_output_enable;      // 0 disable 1:enable
-    uint8_t AUX_output_power;
-    uint8_t RF_output_power; // 3 default +5dBm 0: -4dBm
-    bool RF_ENABLE;          // 1:enable default,
+    bool AUX_OUTPUT_SELECT;      // 0 divided default 1: fundamental
+    bool AUX_OUTPUT_ENABLE;      // 0 disable 1:enable
+    uint8_t AUX_OUTPUT_POWER;    // 0 default +5dBm 0: -4dBm
+    uint8_t OUTPUT_POWER;        // 3 default +5dBm 0: -4dBm
+    bool RF_ENABLE;              // 1:enable default,
     uint32_t PHASE;
     uint32_t r_counter;
     double frequency;
@@ -64,6 +64,7 @@ class ADF4351 : public QObject {
     double MOD;
     double FRAC;
     // void calculateRegFromFreq( uint32_t frequency );
+    void initFromRegisters();
 
   public slots:
     void buildRegisters();

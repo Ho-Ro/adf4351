@@ -5,12 +5,31 @@
 
 
 USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::USB_ADF4351_form ) {
-    ui->setupUi( this );
 
+    settings = new QSettings( "adf435x", "adf435xgui" );
+    ui->setupUi( this );
     usbCtrl = new USBCTRL();
     adf4351 = new ADF4351();
-    enableAutoTx = false;
+
     ui->labelMuxOut->setVisible( false );
+
+    // get persistent settings
+    if ( optionFrequency ) {
+        ui->doubleSpinBox_FREQUENCY->setValue( optionFrequency );
+        autoInit = true;
+    } else {
+        ui->doubleSpinBox_FREQUENCY->setValue( settings->value( "gui/frequency", 100 ).toDouble() );
+        autoInit = settings->value( "gui/autoInit", false ).toBool();
+    }
+    ui->checkBox_autoinit->setChecked( autoInit );
+    autoTX = settings->value( "gui/enableAutoTx", false ).toBool();
+    ui->checkBox_autotx->setChecked( autoTX );
+    ui->USBTX->setEnabled( !autoTX );
+    ui->comboBox_MUXOUT->setCurrentIndex( settings->value( "adf435x/MUXOUT", 0 ).toUInt() );
+    ui->comboBox_OUTPUT_POWER->setCurrentIndex( settings->value( "adf435x/OUTPUT_POWER", 0 ).toUInt() );
+    ui->comboBox_RF_OUT->setCurrentIndex( settings->value( "adf435x/RF_OUT", 0 ).toUInt() );
+    ui->comboBox_MTLD->setCurrentIndex( settings->value( "adf435x/MTLD", 0 ).toUInt() );
+    ui->spinBox_R_COUNTER->setValue( settings->value( "adf435x/R_COUNTER", 1 ).toUInt() );
 
     connect( this, SIGNAL( signalRecalculate() ), adf4351, SLOT( buildRegisters() ) );
 
@@ -24,17 +43,17 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
 
     connect( ui->checkBox_autotx, SIGNAL( clicked( bool ) ), this, SLOT( autoTxClicked() ) );
 
-    connect( ui->doubleSpinBox_freq, SIGNAL( valueChanged( double ) ), this, SLOT( recalculate() ) );
+    connect( ui->doubleSpinBox_FREQUENCY, SIGNAL( valueChanged( double ) ), this, SLOT( recalculate() ) );
 
     connect( ui->groupBox_main, SIGNAL( clicked( bool ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_ABP, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_mode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_mux_out, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_NOISE_MODE, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_MUXOUT, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_MTLD, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_band_select_clk_mode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_AUX_EN, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_AUX_OUT, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_AUX_out_power, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_AUX_OUTPUT_ENABLE, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_AUX_OUTPUT_SELECT, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_AUX_OUTPUT_POWER, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_phase_adjust, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_double_buff, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_charge_cancellation, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
@@ -43,23 +62,27 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
     connect( ui->comboBox_cp_3_state, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_CLK_div_mode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_CSR, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_feedback, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_FEEDBACK_SELECT, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_LDF, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_LDP, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_LDPIN, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_powerdown, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_POWERDOWN, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_presacler, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_PD_polarity, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_vco_powerdown, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_VCO_POWERDOWN, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->comboBox_RF_OUT, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->comboBox_RF_POWER, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->comboBox_OUTPUT_POWER, SIGNAL( currentIndexChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->spinBox_clock_divider, SIGNAL( valueChanged( int ) ), this, SLOT( recalculate() ) );
-    connect( ui->spinBox_rcount, SIGNAL( valueChanged( int ) ), this, SLOT( recalculate() ) );
+    connect( ui->spinBox_R_COUNTER, SIGNAL( valueChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->spinBox_phase_val, SIGNAL( valueChanged( int ) ), this, SLOT( recalculate() ) );
     connect( ui->checkBox_refdiv2, SIGNAL( clicked( bool ) ), this, SLOT( recalculate() ) );
     connect( ui->checkBox_refx2, SIGNAL( clicked( bool ) ), this, SLOT( recalculate() ) );
     connect( ui->lineEdit_ref, SIGNAL( textChanged( QString ) ), this, SLOT( recalculate() ) );
+
     recalculate();
+
+    if ( autoInit )
+        updateReg();
 }
 
 
@@ -72,21 +95,37 @@ void USBIOBoard::showEvent( QShowEvent *event ) {
 
 USBIOBoard::~USBIOBoard() {
     disconnect( usbCtrl, SIGNAL( usbctrlUpdate( bool, UI_Data * ) ), this, SLOT( updateGUI( bool, UI_Data * ) ) );
+
+    settings->setValue( "gui/enableAutoTx", autoTX );
+    settings->setValue( "gui/autoInit", autoInit );
+    settings->setValue( "gui/frequency", ui->doubleSpinBox_FREQUENCY->value() );
+
+    settings->setValue( "adf435x/MUXOUT", ui->comboBox_MUXOUT->currentIndex() );
+    settings->setValue( "adf435x/OUTPUT_POWER", ui->comboBox_OUTPUT_POWER->currentIndex() );
+    settings->setValue( "adf435x/RF_OUT", ui->comboBox_RF_OUT->currentIndex() );
+    settings->setValue( "adf435x/MTLD", ui->comboBox_MTLD->currentIndex() );
+    settings->setValue( "adf435x/R_COUNTER", ui->spinBox_R_COUNTER->value() );
+
+    for ( int r = 0; r < 6; ++r )
+        settings->setValue( QString( "adf435x/R%1" ).arg( r ),
+                            QString( "0x%1" ).arg( adf4351->reg[ r ], 8, 16, QChar( '0' ) ).toUpper() );
+    delete settings;
+
     delete ui;
     delete usbCtrl;
 }
 
 
 void USBIOBoard::getDataFromUI() {
-    adf4351->frequency = ui->doubleSpinBox_freq->value();
+    adf4351->frequency = ui->doubleSpinBox_FREQUENCY->value();
     adf4351->REF_FREQ = ui->lineEdit_ref->text().toInt();
-    adf4351->r_counter = ui->spinBox_rcount->text().toInt();
+    adf4351->r_counter = ui->spinBox_R_COUNTER->text().toInt();
     adf4351->PHASE = ui->spinBox_phase_val->text().toInt();
     adf4351->PHASE_ADJUST = ui->comboBox_phase_adjust->currentIndex();
     adf4351->ref_div2 = ui->checkBox_refdiv2->isChecked();
     adf4351->ref_doubler = ui->checkBox_refx2->isChecked();
-    adf4351->low_noise_spur_mode = ui->comboBox_mode->currentIndex();
-    adf4351->muxout = ui->comboBox_mux_out->currentIndex();
+    adf4351->NOISE_MODE = ui->comboBox_NOISE_MODE->currentIndex();
+    adf4351->muxout = ui->comboBox_MUXOUT->currentIndex();
     adf4351->double_buff = ui->comboBox_double_buff->currentIndex();
     adf4351->charge_pump_current = ui->comboBox_charge_pump_current->currentIndex();
     adf4351->LDF = ui->comboBox_LDF->currentIndex();
@@ -101,16 +140,16 @@ void USBIOBoard::getDataFromUI() {
     adf4351->clock_divider = ui->spinBox_clock_divider->value();
     adf4351->CLK_DIV_MODE = ui->comboBox_CLK_div_mode->currentIndex();
     adf4351->LD = ui->comboBox_LDPIN->currentIndex();
-    adf4351->power_down = ui->comboBox_powerdown->currentIndex();
-    adf4351->VCO_power_down = ui->comboBox_vco_powerdown->currentIndex();
+    adf4351->POWERDOWN = ui->comboBox_POWERDOWN->currentIndex();
+    adf4351->VCO_POWERDOWN = ui->comboBox_VCO_POWERDOWN->currentIndex();
     adf4351->MTLD = ui->comboBox_MTLD->currentIndex();
-    adf4351->AUX_output_mode = ui->comboBox_AUX_OUT->currentIndex();
-    adf4351->AUX_output_enable = ui->comboBox_AUX_EN->currentIndex();
-    adf4351->AUX_output_power = ui->comboBox_AUX_out_power->currentIndex();
-    adf4351->RF_output_power = ui->comboBox_RF_POWER->currentIndex();
+    adf4351->AUX_OUTPUT_SELECT = ui->comboBox_AUX_OUTPUT_SELECT->currentIndex();
+    adf4351->AUX_OUTPUT_ENABLE = ui->comboBox_AUX_OUTPUT_ENABLE->currentIndex();
+    adf4351->AUX_OUTPUT_POWER = ui->comboBox_AUX_OUTPUT_POWER->currentIndex();
+    adf4351->OUTPUT_POWER = ui->comboBox_OUTPUT_POWER->currentIndex();
     adf4351->RF_ENABLE = ui->comboBox_RF_OUT->currentIndex();
     adf4351->PR1 = ui->comboBox_presacler->currentIndex();
-    adf4351->feedback_select = ui->comboBox_feedback->currentIndex();
+    adf4351->FEEDBACK_SELECT = ui->comboBox_FEEDBACK_SELECT->currentIndex();
     // qDebug() << ui->doubleSpinBox_freq->text() << ui->doubleSpinBox_freq->value() << ad4351->frequency;
 }
 
@@ -122,22 +161,21 @@ void USBIOBoard::recalculate() {
 
 
 void USBIOBoard::updateReg() {
-    // printf( "USBIOBoard::update_reg()\n" );
+    if ( verbose > 1 )
+        printf( " USBIOBoard::updateReg( %d )\n", autoTX );
 
-    bool bStatus = false;
     const uint32_t hex_values[] = {
-        ui->line_reg0->text().toUInt( &bStatus, 16 ), ui->line_reg1->text().toUInt( &bStatus, 16 ),
-        ui->line_reg2->text().toUInt( &bStatus, 16 ), ui->line_reg3->text().toUInt( &bStatus, 16 ),
-        ui->line_reg4->text().toUInt( &bStatus, 16 ), ui->line_reg5->text().toUInt( &bStatus, 16 ),
+        ui->line_reg0->text().toUInt( nullptr, 16 ), ui->line_reg1->text().toUInt( nullptr, 16 ),
+        ui->line_reg2->text().toUInt( nullptr, 16 ), ui->line_reg3->text().toUInt( nullptr, 16 ),
+        ui->line_reg4->text().toUInt( nullptr, 16 ), ui->line_reg5->text().toUInt( nullptr, 16 ),
     };
-    emit signalUpdateReg( hex_values, enableAutoTx );
+    emit signalUpdateReg( hex_values, autoTX );
 }
 
 
 void USBIOBoard::autoTxClicked() {
-    enableAutoTx = ui->checkBox_autotx->isChecked();
-    ui->USBTX->setEnabled( !enableAutoTx );
-    emit
+    autoTX = ui->checkBox_autotx->isChecked();
+    ui->USBTX->setEnabled( !autoTX );
 }
 
 
@@ -154,15 +192,18 @@ void USBIOBoard::displayReg() {
     } else
         ui->labelTsync->setVisible( false );
 
-    if ( enableAutoTx ) {
+    if ( autoTX ) {
         emit signalAutoTx();
     }
 }
 
 
 void USBIOBoard::updateGUI( bool isConnected, UI_Data *ui_data ) {
-    // printf( "USBIOBoard::update_gui()\n" );
+    static bool wasConnected = false;
+    if ( verbose > 2 )
+        printf( "  USBIOBoard::update_gui( %d )\n", isConnected );
     ui->labelMuxOut->setVisible( isConnected );
+    autoInit = ui->checkBox_autoinit->isChecked();
     if ( isConnected ) {
         windowTitle = "ADF4351";
         if ( !ui_data->readFirmwareInfoPending ) {
@@ -173,16 +214,16 @@ void USBIOBoard::updateGUI( bool isConnected, UI_Data *ui_data ) {
         setWindowTitle( windowTitle );
 
         if ( !ui_data->readFirmwareInfoPending ) {
-            if ( ui_data->muxoutStat ) {
-                ui->labelMuxOut->setText( "MUXOUT = HIGH" );
-            } else {
-                ui->labelMuxOut->setText( "MUXOUT = LOW" );
-            }
+            ui->labelMuxOut->setText(
+                QString( "%1 = %2" ).arg( ui->comboBox_MUXOUT->currentText(), ui_data->muxoutStat ? "HIGH" : "LOW" ) );
         }
+        if ( !wasConnected && autoInit )
+            updateReg();
     } else {
         ui_data->readMuxoutPending = true;
         ui_data->readFirmwareInfoPending = true;
         // stop all timers here
         setWindowTitle( "No Device" );
     }
+    wasConnected = isConnected;
 }

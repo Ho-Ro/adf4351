@@ -12,6 +12,9 @@
 
 #define MAX_STR 65
 
+extern uint8_t verbose;
+extern double optionFrequency;
+
 typedef enum {
     USB_REQ_SET_REG = 0xDD,
     USB_REQ_EE_REGS = 0xDE,
@@ -30,6 +33,7 @@ class UI_Data {
     uint8_t firmwarePatchNumber;
     uint32_t reg[ 6 ];
     bool muxoutStat = false;
+    uint8_t verbose = 0;
 };
 
 class USBCTRL : public QObject {
