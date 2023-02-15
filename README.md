@@ -13,17 +13,12 @@ The suite consists of the following components:
 
 * **adf435x** - A python library that can control the ADF4350/1 via various hardware interface back-ends.
 * **adf435xctl** - A command line tool to control the ADF4350/1 manually.
+* **adf435xgui** - A QT-based user interface for the ADF4351 Eval board, see the [README](qtgui/README.md).
 * **adf435xinit** - A command line tool to transfer the FX2 firmware to the RAM of the EVAL-ADF4351 board.
 * **fx2adf435xfw.ihx** - A firmware file for upload to the RAM of the Cypress FX2
   that replaces the proprietary firmware for the EVAL-ADF4351 board.
-* **fx2adf435xfw.iic** - The same firmware in the file format for permanent storage in the EEPROM of the Cypress FX2.
-* **stm32adf435xfw.bin**  - A similar (untested) firmware for the STM32F103, see [`README_stm32.md`](README_stm32.md).
-
-It's also possible to use the [Bus Pirate](http://dangerousprototypes.com/docs/Bus_Pirate) as the interface for the `SPI`
-communications, simply using the `adf435x.interfaces.BusPirate` class.
-
-Another optional interface is the experimental [DigiSpark Tiny85 module](firmware/tinyADF) with Arduino SW
-that receives USB serial commands, simply using the `adf435x.interfaces.tinyADF` class.
+* **fx2adf435xfw.iic** - The same firmware in the file format for permanent storage
+  in the *large* EEPROM of the Cypress FX2.
 
 adf435x
 -------
@@ -325,3 +320,19 @@ that has a lot of additional features.
 8. Select the file `fx2adf435xfw.iic` and start the download. After success close the program.
 9. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
    as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
+
+#### Untested
+
+These components can be used if you want to control a simple ADF435x breakout board
+without communication processor with different interfaces, that provide the simple
+three-wire interface to the ADF4351:
+
+**stm32adf435xfw.bin**  - An (untested) firmware for the STM32F103,
+  see [`README_stm32.md`](README_stm32.md).
+
+It's also possible to use the [Bus Pirate](http://dangerousprototypes.com/docs/Bus_Pirate)
+as the interface for the `SPI` communications, simply using the `adf435x.interfaces.BusPirate` class.
+
+Another optional (very slow) interface is the experimental [DigiSpark Tiny85 module](firmware/tinyADF)
+with Arduino SW that receives USB serial commands, simply using the `adf435x.interfaces.tinyADF` class.
+

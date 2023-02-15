@@ -1,9 +1,21 @@
 adf435xgui
 ==========
 
-QT-based user interface for controlling the ADF4351 Eval board.
+QT-based user interface for the ADF4351 Eval board.
 
 ![adf435xgui](adf435xgui.png)
+
+### Usage
+
+```
+Usage: adf435xgui [options]
+
+Options:
+  -f, --frequency <frequency>  set initial frequency
+  -v, --verbose <verbosity>    Trace program start and processing steps
+  -h, --help                   Displays help on commandline options.
+  --help-all                   Displays help including Qt specific options.
+```
 
 ### Development
 
