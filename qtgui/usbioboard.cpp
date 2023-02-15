@@ -187,10 +187,10 @@ void USBIOBoard::displayReg() {
     ui->line_reg4->setText( QString( "%1" ).arg( adf4351->reg[ 4 ], 8, 16, QChar( '0' ) ).toUpper() );
     ui->line_reg5->setText( QString( "%1" ).arg( adf4351->reg[ 5 ], 8, 16, QChar( '0' ) ).toUpper() );
     if ( adf4351->tSync ) {
-        ui->labelTsync->setText( QString( "t SYNC = %1 µs" ).arg( adf4351->tSync ) );
-        ui->labelTsync->setVisible( true );
+        ui->label_Tsync->setText( QString( "t SYNC = %1 µs" ).arg( adf4351->tSync ) );
+        ui->label_Tsync->setVisible( true );
     } else
-        ui->labelTsync->setVisible( false );
+        ui->label_Tsync->setVisible( false );
 
     if ( autoTX ) {
         emit signalAutoTx();

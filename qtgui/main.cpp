@@ -3,6 +3,7 @@
 #include "usbioboard.h"
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QStyleFactory>
 
 uint8_t verbose = 0;
 double optionFrequency = 0;
@@ -27,6 +28,8 @@ int main( int argc, char *argv[] ) {
     }
     if ( p.isSet( verboseOption ) )
         verbose = p.value( "verbose" ).toInt();
+
+    application.setStyle( QStyleFactory::create( "Fusion" ) );
 
     USBIOBoard mainWindow;
     mainWindow.show();

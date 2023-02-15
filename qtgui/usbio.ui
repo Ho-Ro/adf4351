@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>950</width>
-    <height>480</height>
+    <height>489</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -30,33 +30,829 @@
     <normaloff>:/images/AD_64x64.png</normaloff>:/images/AD_64x64.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QFrame" name="frame">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
+   <widget class="QGroupBox" name="groupBox_main">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>5</y>
-      <width>940</width>
-      <height>440</height>
+      <x>9</x>
+      <y>0</y>
+      <width>930</width>
+      <height>421</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <family>Noto Sans</family>
       <pointsize>10</pointsize>
      </font>
     </property>
     <property name="locale">
      <locale language="C" country="AnyCountry"/>
     </property>
-    <widget class="QGroupBox" name="groupBox_main">
+    <property name="title">
+     <string>ADF4351</string>
+    </property>
+    <widget class="QLabel" name="label_RF_Freq">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>5</y>
-       <width>930</width>
-       <height>430</height>
+       <x>420</x>
+       <y>330</y>
+       <width>261</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>RF Freq</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="USBTX">
+     <property name="geometry">
+      <rect>
+       <x>750</x>
+       <y>369</y>
+       <width>151</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Write</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_ref">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>30</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="inputMask">
+      <string>99</string>
+     </property>
+     <property name="text">
+      <string>25</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_presacler">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>120</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>4/5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>8/9</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_R_COUNTER">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>90</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>1023</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="displayIntegerBase">
+      <number>10</number>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_FEEDBACK_SELECT">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>150</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Divided</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fundametal</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_NOISE_MODE">
+     <property name="geometry">
+      <rect>
+       <x>368</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Low Noise</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Reserved</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Reserved</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Low spur</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_MUXOUT">
+     <property name="geometry">
+      <rect>
+       <x>368</x>
+       <y>60</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>3-State</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DVdd</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DGND</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>R Divider</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>N Divider</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Analog LD</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Digital LD</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>TestMode</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_double_buff">
+     <property name="geometry">
+      <rect>
+       <x>368</x>
+       <y>90</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_charge_pump_current">
+     <property name="geometry">
+      <rect>
+       <x>368</x>
+       <y>120</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>7</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>0.31</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.63</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0.94</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1.25</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1.56</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1.88</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2.19</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2.50</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2.81</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3.13</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3.44</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3.75</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4.06</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4.38</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4.69</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5.00</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_LDF">
+     <property name="geometry">
+      <rect>
+       <x>368</x>
+       <y>150</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>FRAC-N</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>INT-N</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_LDP">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>30</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>10ns</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>6ns</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_PD_polarity">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>60</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Negative</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Positive</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_POWERDOWN">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>90</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_cp_3_state">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>120</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_counter_rst">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>150</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_VCO_POWERDOWN">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>30</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_MTLD">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>60</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_AUX_OUTPUT_SELECT">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>120</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Divided</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fundamental</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_AUX_OUTPUT_ENABLE">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>150</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_AUX_OUTPUT_POWER">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>180</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>-10 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-7 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-4 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-1 dBm</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_RF_OUT">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>240</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_OUTPUT_POWER">
+     <property name="geometry">
+      <rect>
+       <x>810</x>
+       <y>270</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>3</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>-10 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-7 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-4 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-1 dBm</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_band_select_clk_mode">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>180</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Low</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>High</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_ABP">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>180</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>6ns(FRAC-N)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3ns(INT-N)</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_CSR">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>210</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_charge_cancellation">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>210</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Disable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enable</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_clock_divider">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>240</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>4095</number>
+     </property>
+     <property name="value">
+      <number>150</number>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_LDPIN">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>240</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Low</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Digital LD</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Low</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>High</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_phase_adjust">
+     <property name="geometry">
+      <rect>
+       <x>141</x>
+       <y>180</y>
+       <width>80</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>0: Off</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1: On</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="comboBox_CLK_div_mode">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>270</y>
+       <width>131</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Clock Div Off</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fast Lock Enable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Resync Enable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Reserved</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_Ref_Freq">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>121</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="font">
@@ -65,1692 +861,881 @@
        <pointsize>10</pointsize>
       </font>
      </property>
-     <property name="locale">
-      <locale language="C" country="AnyCountry"/>
+     <property name="text">
+      <string>Ref Freq (Mhz)</string>
      </property>
-     <property name="title">
-      <string>ADF4351</string>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
-     <widget class="QLabel" name="label_17">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>261</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>RF Freq</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="USBTX">
-      <property name="geometry">
-       <rect>
-        <x>750</x>
-        <y>370</y>
-        <width>151</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Write</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit_ref">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>120</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="inputMask">
-       <string>99</string>
-      </property>
-      <property name="text">
-       <string>25</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="comboBox_presacler">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>210</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>4/5</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>8/9</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QSpinBox" name="spinBox_R_COUNTER">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>180</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>1023</number>
-      </property>
-      <property name="value">
-       <number>1</number>
-      </property>
-      <property name="displayIntegerBase">
-       <number>10</number>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="comboBox_FEEDBACK_SELECT">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>240</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>Divided</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fundametal</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_NOISE_MODE">
-      <property name="geometry">
-       <rect>
-        <x>368</x>
-        <y>30</y>
-        <width>101</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Low Noise</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Reserved</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Reserved</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Low spur</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_MUXOUT">
-      <property name="geometry">
-       <rect>
-        <x>368</x>
-        <y>60</y>
-        <width>101</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>3-State</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DVdd</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DGND</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>R Divider</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>N Divider</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Analog LD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Digital LD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>TestMode</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_double_buff">
-      <property name="geometry">
-       <rect>
-        <x>368</x>
-        <y>90</y>
-        <width>101</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_charge_pump_current">
-      <property name="geometry">
-       <rect>
-        <x>368</x>
-        <y>120</y>
-        <width>101</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>7</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>0.31</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>0.63</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>0.94</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1.25</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1.56</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1.88</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>2.19</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>2.50</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>2.81</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>3.13</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>3.44</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>3.75</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>4.06</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>4.38</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>4.69</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>5.00</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_LDF">
-      <property name="geometry">
-       <rect>
-        <x>368</x>
-        <y>150</y>
-        <width>101</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>FRAC-N</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>INT-N</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_LDP">
-      <property name="geometry">
-       <rect>
-        <x>590</x>
-        <y>30</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>10ns</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>6ns</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_PD_polarity">
-      <property name="geometry">
-       <rect>
-        <x>590</x>
-        <y>60</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>Negative</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Positive</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_POWERDOWN">
-      <property name="geometry">
-       <rect>
-        <x>590</x>
-        <y>90</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_cp_3_state">
-      <property name="geometry">
-       <rect>
-        <x>590</x>
-        <y>120</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_counter_rst">
-      <property name="geometry">
-       <rect>
-        <x>590</x>
-        <y>150</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_VCO_POWERDOWN">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>30</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_MTLD">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>60</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_AUX_OUTPUT_SELECT">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>90</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Divided</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fundamental</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_AUX_OUTPUT_ENABLE">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>120</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_AUX_OUTPUT_POWER">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>150</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>-10 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-7 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-4 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-1 dBm</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_RF_OUT">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>180</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_OUTPUT_POWER">
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>210</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>3</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>-10 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-7 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-4 dBm</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>-1 dBm</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_band_select_clk_mode">
-      <property name="geometry">
-       <rect>
-        <x>390</x>
-        <y>270</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Low</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>High</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_ABP">
-      <property name="geometry">
-       <rect>
-        <x>560</x>
-        <y>270</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>6ns(FRAC-N)</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>3ns(INT-N)</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_CSR">
-      <property name="geometry">
-       <rect>
-        <x>560</x>
-        <y>300</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_charge_cancellation">
-      <property name="geometry">
-       <rect>
-        <x>390</x>
-        <y>300</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Disable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QSpinBox" name="spinBox_clock_divider">
-      <property name="geometry">
-       <rect>
-        <x>390</x>
-        <y>330</y>
-        <width>81</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>4095</number>
-      </property>
-      <property name="value">
-       <number>150</number>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="comboBox_LDPIN">
-      <property name="geometry">
-       <rect>
-        <x>560</x>
-        <y>330</y>
-        <width>111</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>Low</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Digital LD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Low</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>High</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_phase_adjust">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>300</y>
-        <width>73</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>0: Off</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1: On</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QComboBox" name="comboBox_CLK_div_mode">
-      <property name="geometry">
-       <rect>
-        <x>790</x>
-        <y>270</y>
-        <width>131</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <item>
-       <property name="text">
-        <string>Clock Div Off</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Fast Lock Enable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Resync Enable</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Reserved</string>
-       </property>
-      </item>
-     </widget>
-     <widget class="QLabel" name="label_18">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>120</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Ref Freq (Mhz)</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_19">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>180</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>R Counter</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_20">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>210</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Prescaler</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_21">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>240</y>
-        <width>111</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Feedback Sig</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_refx2">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>150</y>
-        <width>81</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ref x2</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_22">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>300</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Phase Adj</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_refdiv2">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>150</y>
-        <width>81</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Ref /2</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinBox_phase_val">
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>330</y>
-        <width>71</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>4095</number>
-      </property>
-      <property name="singleStep">
-       <number>1</number>
-      </property>
-      <property name="value">
-       <number>1</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_23">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>330</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Phase Val</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_24">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>278</x>
-        <y>30</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Noise Mode</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_25">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>278</x>
-        <y>60</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>MUXOUT</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_26">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>258</x>
-        <y>90</y>
-        <width>101</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Double Buff</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_27">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>308</x>
-        <y>150</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>LDF</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_28">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>248</x>
-        <y>110</y>
-        <width>111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>CHRG Pump I</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_29">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>480</x>
-        <y>150</y>
-        <width>101</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Counter RST</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_30">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>500</x>
-        <y>120</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>CP 3-State</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_31">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>480</x>
-        <y>90</y>
-        <width>101</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Powerdown</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_32">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>490</x>
-        <y>60</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>PD Polarity</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_33">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>500</x>
-        <y>30</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>LDP</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_34">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>230</x>
-        <y>270</y>
-        <width>151</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Band Sel CLK Mode</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_35">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>300</y>
-        <width>161</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Charge Cancellation</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_36">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>510</x>
-        <y>270</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>ABP</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_37">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>510</x>
-        <y>300</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>CSR</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_38">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>330</y>
-        <width>161</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Clock Divider Value</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_39">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>670</x>
-        <y>270</y>
-        <width>111</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>CLK Div Mode</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_40">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>500</x>
-        <y>330</y>
-        <width>51</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>LD Pin</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_41">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>670</x>
-        <y>30</y>
-        <width>131</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>VCO Power Down</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_42">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>60</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>MTLD</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_43">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>690</x>
-        <y>90</y>
-        <width>111</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>AUX OUT SELECT</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_44">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>710</x>
-        <y>120</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>AUX OUT</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_45">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>680</x>
-        <y>150</y>
-        <width>121</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>AUX OUT POWER</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_46">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>720</x>
-        <y>180</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>RF OUT</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_47">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>690</x>
-        <y>210</y>
-        <width>111</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>OUTPUT POWER</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox_FREQUENCY">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>261</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Mono</family>
-        <pointsize>24</pointsize>
-       </font>
-      </property>
-      <property name="locale">
-       <locale language="C" country="AnyCountry"/>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="suffix">
-       <string> MHz</string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-      <property name="minimum">
-       <double>35.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>4400.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-      <property name="stepType">
-       <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
-      </property>
-      <property name="value">
-       <double>100.000000000000000</double>
-      </property>
-     </widget>
-     <widget class="QLabel" name="labelTsync">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>670</x>
-        <y>300</y>
-        <width>211</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Noto Sans</family>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Tsync</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
     </widget>
-    <widget class="QCheckBox" name="checkBox_autoinit">
+    <widget class="QLabel" name="label_R_Counter">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>755</x>
-       <y>330</y>
-       <width>121</width>
+       <x>50</x>
+       <y>90</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>R Counter</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Prescaler">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>120</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Prescaler</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Feedback_Sig">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>150</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Feedback Sig</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_refx2">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>60</y>
+       <width>81</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>Auto Init</string>
+      <string>Ref x2</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Phase_Adj">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>180</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Phase Adj</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_refdiv2">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>60</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ref /2</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_phase_val">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>210</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>4095</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Phase_Val">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>210</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Phase Val</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Noise_Mode">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>278</x>
+       <y>30</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Noise Mode</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_MUXOUT">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>278</x>
+       <y>60</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>MUXOUT</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Double_Buf">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>258</x>
+       <y>90</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Double Buff</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_LDP">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>308</x>
+       <y>150</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>LDF</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_CHRG_Pump">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>248</x>
+       <y>115</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>CHRG Pump I</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Counter_RST">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>150</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Counter RST</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_CP_3_State">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>120</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>CP 3-State</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Powerdown">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>90</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Powerdown</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_PD_Polarity">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>60</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>PD Polarity</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_LDP_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>30</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>LDP</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Band_Sel_CLK_Mode">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>180</y>
+       <width>151</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Band Sel CLK Mode</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Charge_Cancellation">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>210</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Charge Cancellation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ABP">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>180</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>ABP</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_CSR">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>210</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>CSR</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Clock_Divider_Value">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>240</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Clock Divider Value</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_CLK_Div_Mode">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>270</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>CLK Div Mode</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_LD_Pin">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>240</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>LD Pin</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_VCO_Power_Down">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>30</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>VCO Power Down</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_MTLD">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>60</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>MTLD</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_AUX_OUT_SELECT">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>120</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AUX OUT SELECT</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_AUX_OUT">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>150</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AUX OUT</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_AUX_OUT_POWER">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>680</x>
+       <y>180</y>
+       <width>121</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AUX OUT POWER</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_RF_OUT">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>240</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>RF OUT</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_OUTPUT_POWER">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>270</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>OUTPUT POWER</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="doubleSpinBox_FREQUENCY">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>360</y>
+       <width>261</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Mono</family>
+       <pointsize>24</pointsize>
+      </font>
+     </property>
+     <property name="locale">
+      <locale language="C" country="AnyCountry"/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="accelerated">
+      <bool>true</bool>
+     </property>
+     <property name="showGroupSeparator" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="suffix">
+      <string> MHz</string>
+     </property>
+     <property name="decimals">
+      <number>3</number>
+     </property>
+     <property name="minimum">
+      <double>35.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>4400.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+     <property name="stepType">
+      <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Tsync">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>300</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Noto Sans</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Tsync</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBox_autotx">
      <property name="geometry">
       <rect>
-       <x>755</x>
-       <y>350</y>
+       <x>750</x>
+       <y>340</y>
        <width>121</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
       <string>Auto Write</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_autoinit">
+     <property name="geometry">
+      <rect>
+       <x>750</x>
+       <y>320</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Auto Init</string>
      </property>
     </widget>
    </widget>
@@ -1984,12 +1969,22 @@
  <tabstops>
   <tabstop>doubleSpinBox_FREQUENCY</tabstop>
   <tabstop>USBTX</tabstop>
+  <tabstop>checkBox_autoinit</tabstop>
+  <tabstop>checkBox_autotx</tabstop>
   <tabstop>line_reg0</tabstop>
   <tabstop>line_reg1</tabstop>
   <tabstop>line_reg2</tabstop>
   <tabstop>line_reg3</tabstop>
   <tabstop>line_reg4</tabstop>
   <tabstop>line_reg5</tabstop>
+  <tabstop>lineEdit_ref</tabstop>
+  <tabstop>checkBox_refx2</tabstop>
+  <tabstop>checkBox_refdiv2</tabstop>
+  <tabstop>spinBox_R_COUNTER</tabstop>
+  <tabstop>comboBox_presacler</tabstop>
+  <tabstop>comboBox_FEEDBACK_SELECT</tabstop>
+  <tabstop>comboBox_phase_adjust</tabstop>
+  <tabstop>spinBox_phase_val</tabstop>
   <tabstop>comboBox_NOISE_MODE</tabstop>
   <tabstop>comboBox_MUXOUT</tabstop>
   <tabstop>comboBox_double_buff</tabstop>
@@ -1998,12 +1993,12 @@
   <tabstop>comboBox_band_select_clk_mode</tabstop>
   <tabstop>comboBox_charge_cancellation</tabstop>
   <tabstop>spinBox_clock_divider</tabstop>
+  <tabstop>comboBox_CLK_div_mode</tabstop>
   <tabstop>comboBox_LDP</tabstop>
   <tabstop>comboBox_PD_polarity</tabstop>
-  <tabstop>lineEdit_ref</tabstop>
+  <tabstop>comboBox_POWERDOWN</tabstop>
   <tabstop>comboBox_cp_3_state</tabstop>
   <tabstop>comboBox_counter_rst</tabstop>
-  <tabstop>comboBox_POWERDOWN</tabstop>
   <tabstop>comboBox_ABP</tabstop>
   <tabstop>comboBox_CSR</tabstop>
   <tabstop>comboBox_LDPIN</tabstop>
@@ -2014,16 +2009,6 @@
   <tabstop>comboBox_AUX_OUTPUT_POWER</tabstop>
   <tabstop>comboBox_RF_OUT</tabstop>
   <tabstop>comboBox_OUTPUT_POWER</tabstop>
-  <tabstop>comboBox_CLK_div_mode</tabstop>
-  <tabstop>checkBox_autotx</tabstop>
-  <tabstop>checkBox_autoinit</tabstop>
-  <tabstop>checkBox_refdiv2</tabstop>
-  <tabstop>checkBox_refx2</tabstop>
-  <tabstop>spinBox_R_COUNTER</tabstop>
-  <tabstop>comboBox_presacler</tabstop>
-  <tabstop>comboBox_FEEDBACK_SELECT</tabstop>
-  <tabstop>comboBox_phase_adjust</tabstop>
-  <tabstop>spinBox_phase_val</tabstop>
  </tabstops>
  <resources>
   <include location="Resources.qrc"/>
