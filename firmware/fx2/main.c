@@ -43,8 +43,6 @@
 #define EEPROM_CHECKSUM_MAGIC 0xEC
 
 #define EP0BUFF_SIZE 64
-#define EEPROM_ADDR_SMALL 0x50
-#define EEPROM_ADDR_LARGE 0x51
 
 usb_desc_device_c usb_device = {
     .bLength = sizeof( struct usb_desc_device ),
@@ -205,14 +203,14 @@ static void handle_pending_usb_setup() {
         return;
     }
 
-    // read/write small/large EEPROM
+    // read/write EEPROM - only large EEPROM makes sense
     if((req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_IN) ||
         req->bmRequestType == (USB_RECIP_DEVICE|USB_TYPE_VENDOR|USB_DIR_OUT)) &&
         (req->bRequest == USB_REQ_CYPRESS_EEPROM_SB ||
         req->bRequest == USB_REQ_CYPRESS_EEPROM_DB)) {
         bool     arg_read  = (req->bmRequestType & USB_DIR_IN);
-        bool     arg_dbyte = (req->bRequest == USB_REQ_CYPRESS_EEPROM_DB);
-        uint8_t  arg_chip  = arg_dbyte ? EEPROM_ADDR_LARGE : EEPROM_ADDR_SMALL;
+        bool     arg_dbyte = EEPROM_I2C_DOUBLE_BYTE;
+        uint8_t  arg_chip  = EEPROM_I2C_ADDR;
         uint16_t arg_addr  = req->wValue;
         uint16_t arg_len   = req->wLength;
         pending_setup = false;
