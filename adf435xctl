@@ -61,30 +61,30 @@ for r in range(6):
 
 parser.add_argument('--interface', help='INTERFACE: FX2 (default), BusPirate, tinyADF, NONE', default='FX2')
 parser.add_argument('--lock-detect', dest='lock_detect', action = 'store_true', help = 'query adf435x digital lock detect state')
-parser.add_argument('--version', action = 'store_true', help = 'show adf435x version and exit')
-parser.add_argument('--store-default', dest = 'store_default', action = 'store_true',
-                    help = 'store the current register set as power-on default and exit '
-                    '(ignore all other arguments)')
-parser.add_argument('--clear-default', dest = 'clear_default', action = 'store_true',
-                    help = 'clear the power-on default, come up uninitialized and exit '
-                    '(ignore all other arguments)')
 parser.add_argument('-v', dest='verbose', action='count', default=0, help='increase verbosity')
+parser.add_argument('-V', '--version', action = 'store_true', help = 'show adf435x version and exit')
+init_group = parser.add_mutually_exclusive_group()
+init_group.add_argument('--init-none', dest='init_none', action='store_true',
+                        help='clear init settings and exit')
+init_group.add_argument('--init-stand-alone', dest = 'init_stand_alone', action='store_true',
+                        help='set current settings as init for no-USB mode and exit')
+init_group.add_argument('--init-always', dest='init_always', action='store_true',
+                        help='set current settings as init for power-on and exit')
 
 # Parse
 options = parser.parse_args()
 args = vars(options)
 
-if options.version:
-    print(adf435x_version)
-    sys.exit()
-
 if options.interface == 'FX2': # do the communication with the ADF435x device
     intf = getattr(adf435x.interfaces, args['interface'])() # which interface?
-    if options.store_default:
-        intf.store_default() # store the 6 registers as power-on default
+    if options.init_none:
+        intf.set_startup( 0 ) # clear the power-on default
         sys.exit()
-    if options.clear_default:
-        intf.clear_default() # clear the power-on default values
+    if options.init_stand_alone:
+        intf.set_startup( 1 ) # store stand-alone power-on default
+        sys.exit()
+    if options.init_always:
+        intf.set_startup( 2 ) # store power-on default
         sys.exit()
 
 # Generate register values

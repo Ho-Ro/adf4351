@@ -59,13 +59,9 @@ class FX2:
             self.dev.ctrl_transfer(
                 bmRequestType=0x40, bRequest=USB_REQ_SET_REG, wValue=0, wIndex=0, data_or_wLength=data )
 
-    def clear_default( self ): # clear the default settings in EEPROM
+    def set_startup( self, typ ): # store the registers into EEPROM as default setting
         self.dev.ctrl_transfer(
-            bmRequestType=0x40, bRequest=USB_REQ_EE_REGS, wValue=0, wIndex=0, data_or_wLength=None )
-
-    def store_default( self ): # store the registers into EEPROM as default setting
-        self.dev.ctrl_transfer(
-            bmRequestType=0x40, bRequest=USB_REQ_EE_REGS, wValue=1, wIndex=0, data_or_wLength=None )
+            bmRequestType=0x40, bRequest=USB_REQ_EE_REGS, wValue=typ, wIndex=0, data_or_wLength=None )
 
     def get_mux( self ): # get the status of the MUX bit - byte value 0: MUXOUT=LOW or 1: MUXOUT=HIGH
         return self.dev.ctrl_transfer(
@@ -126,10 +122,7 @@ class BusPirate:
         for reg in regs:
             self.write_data(reg)
 
-    def clear_default( self ): # clear the default settings in EEPROM - n/a
-        return
-
-    def store_default( self ): # store the registers into EEPROM as default setting - n/a
+    def set_startup( self, typ ): # set the default startup settings in EEPROM - n/a
         return
 
     def get_mux( self ): # get the status of the MUX bit - not possible with this interface
@@ -168,10 +161,7 @@ class tinyADF:
             while self.ADF.in_waiting:
                 self.ADF.read()
 
-    def clear_default( self ): # clear the default settings in EEPROM - n/a
-        return
-
-    def store_default( self ): # store the registers into EEPROM as default setting - n/a
+    def set_startup( self, typ ): # set the default startup settings in EEPROM - n/a
         return
 
     def get_mux( self ): # get the status of the MUX bit - not possible with this interface

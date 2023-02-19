@@ -5,4 +5,4 @@
 
 from adf435x.interfaces import FX2
 
-FX2().clear_default()
+FX2().set_startup( 0 )

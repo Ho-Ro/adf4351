@@ -78,8 +78,8 @@ usage: adf435xctl [-h] [--device-type DEVICE_TYPE] [--freq FREQ] [--ref-freq REF
                   [--aux-output-enable] [--aux-output-power AUX_OUTPUT_POWER]
                   [--output-disable] [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE]
                   [--r0 R0] [--r1 R1] [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5]
-                  [--interface INTERFACE] [--lock-detect] [--version] [--store-default]
-                  [--clear-default] [-v]
+                  [--interface INTERFACE] [--lock-detect] [-v] [-V]
+                  [--init-none | --init-stand-alone | --init-always]
 
 Control program for ADF4350/1 eval board
 
@@ -148,14 +148,13 @@ optional arguments:
   --interface INTERFACE
                         INTERFACE: FX2 (default), BusPirate, tinyADF, NONE
   --lock-detect         query adf435x digital lock detect state
-  --version             show adf435x version and exit
-  --store-default       store the current register set as power-on default and exit (ignore
-                        all other arguments)
-  --clear-default       clear the power-on default, come up uninitialized and exit (ignore all
-                        other arguments)
   -v                    increase verbosity
+  -V, --version         show adf435x version and exit
+  --init-none           clear init settings and exit
+  --init-stand-alone    set current settings as init for no-USB mode and exit
+  --init-always         set current settings as init for power-on and exit
 
-adf435x version 0.3.4
+adf435x version 0.3.6
 ```
 
 ### Usage Examples
@@ -189,10 +188,11 @@ The firmware supports these vendor commands:
 to be compatible with the Analog Devices evaluation software.
 The 4 byte register content is written to the ADF435x registers via the SPI connection.
 -  `USB_REQ_EE_REGS` (0xDE) - store or clear the default register settings in EEPROM.
--  `USB_REQ_GET_MUX` (0xE0) - read 1 byte where `bit 0` reflects the state of the `MUXOUT` pin of ADF435x.
+-  `USB_REQ_GET_MUX` (0xDF) - read 1 byte where `bit 0` reflects the state of the `MUXOUT` pin of ADF435x.
 The other bits 1..7 are reserved and currently set to `0`.
+-  `USB_REQ_CYPRESS_EEPROM_SB` (0xA2) - read or write EEPROM, defaults to small, but detects large address mode.
+-  `USB_REQ_CYPRESS_EXT_RAM` (0xA3) - read or write the RAM
 -  `USB_REQ_CYPRESS_EEPROM_DB` (0xA9) - read or write the large EEPROM on the eval board.
-
 
 The firmware requires the following wiring:
 
@@ -289,16 +289,11 @@ make
 3. Activate the *large* EEPROM, on my Chinese eval board by removing the jumper `JP1`.
 4. Connect the device, check the VID:PID, e.g. with `lsusb` or `sudo dmesg`,
    it's typically `0x0456`:`0xb40d` (ADF435x eval board) or `0x0456`:`0xb403` (ADF4xxx interface).
-5. Load the Cypress EEPROM helper firmware into RAM, `cycfx2prog` should be in your path
-(**use the correct VID:PID from above**):
-```sh
-cycfx2prog -id=0x0456.0xb40d prg:vend_ax.hex run
-```
-6. Write the firmware into EEPROM, **use the same VID:PID as above**.
+5. Write the firmware into EEPROM, use the VID:PID as above.
 ```sh
 ./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw.iic
 ```
-7. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
+6. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
 as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
 
 #### cyusb
