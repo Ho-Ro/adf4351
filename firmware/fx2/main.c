@@ -122,7 +122,8 @@ enum {
     USB_REQ_GET_MUX = 0xDF,            // get status of the MUX pin
 };
 
-// register and checksum setup storage 6 x 32 bit register + 32 bit reserved + 32 bit checksum
+// register and checksum setup storage
+// 6 x 32 bit register + 6 byte reserved + 1 byte init_type + 1 byte checksum
 __xdata uint8_t reg_set[ REG_SET_SIZE ];
 
 
@@ -364,11 +365,11 @@ static void adf_reg_init() {
 }
 
 
-static uint8_t ee_init_type_get() {
+static uint8_t ee_get_init_type() {
     // If the EEPROM contains a valid register set
     // then return the init_type
     if ( eeprom_read( EEPROM_I2C_ADDR_LARGE, EEPROM_REG_ADDR, reg_set, REG_SET_SIZE, EEPROM_I2C_DOUBLE_BYTE ) ) {
-        if ( reg_set[ 31 ] == reg_chksum() ) {
+        if ( reg_set[ 31 ] == reg_chksum() ) { // valid
             return reg_set[ 30 ];
         }
     }
@@ -384,28 +385,28 @@ int main() {
     adf_pin_init();
     // adf_reg_init();
 
-    uint8_t init_type = ee_init_type_get();
+    uint8_t init_type = ee_get_init_type();
 
-    if ( init_type == 1 ) { // init_stand_alone
-        init_wait = 250;
+    if ( init_type == 1 ) {        // init_stand_alone
+        init_wait = 200;           // wait 2 s for USB
     } else if ( init_type == 2 ) { // init_always
-        adf_reg_init();
+        adf_reg_init();            // do not wait
     }
 
     // disconnect to renumerate on the bus
     usb_init( /*disconnect=*/true );
 
-    // check FNADDR -> if not connected to USB after 1.25 s init the regs
+    // check FNADDR -> if not connected to USB after 2 s init the regs
     while ( true ) {
-        if ( FNADDR ) {
+        if ( FNADDR ) { // enumerated on USB
+            init_wait = 0;
             if ( pending_setup )
                 handle_pending_usb_setup();
         } else if ( init_wait ) { // in USB init phase
-            init_wait -= 1;
-            if ( init_wait ) {  // still not over?
-                delay_ms( 5 );  // loop delay
-            } else {            // time over
-                adf_reg_init(); // init the register
+            if ( --init_wait ) {  // still not over?
+                delay_ms( 10 );   // loop delay
+            } else {              // time over
+                adf_reg_init();   // init the register
             }
         }
     }
