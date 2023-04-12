@@ -4,7 +4,7 @@
 #include "QThread"
 
 USBCTRL::USBCTRL( QObject *parent ) : QObject( parent ) {
-    if ( verbose )
+    if ( verbose > 1 )
         printf( "USBCTRL::USBCTRL()\n" );
 
 #define USB_VENDOR_ID 0x0456
@@ -28,14 +28,14 @@ USBCTRL::USBCTRL( QObject *parent ) : QObject( parent ) {
 }
 
 USBCTRL::~USBCTRL() {
-    if ( verbose )
+    if ( verbose > 1 )
         printf( "USBCTRL::~USBCTRL()\n" );
     closeDevice();
     disconnect( timer, SIGNAL( timeout() ), this, SLOT( pollUSB() ) );
 }
 
 void USBCTRL::pollUSB() {
-    if ( verbose > 3 )
+    if ( verbose > 4 )
         printf( "   PollUSB\n" );
 
     if ( uiData.isConnected == false ) {
@@ -43,13 +43,13 @@ void USBCTRL::pollUSB() {
         device_handle = libusb_open_device_with_vid_pid( context, USB_VENDOR_ID, USB_PRODUCT_ID );
 
         if ( device_handle ) {
-            if ( verbose )
+            if ( verbose > 1 )
                 printf( "Device connected\n" );
             uiData.isConnected = true;
             device = libusb_get_device( device_handle );
             if ( !libusb_get_device_descriptor( device, &device_descriptor ) ) {
                 bcdDevice = device_descriptor.bcdDevice;
-                if ( verbose > 1 )
+                if ( verbose > 2 )
                     printf( " FW%04X\n", bcdDevice );
 
                 uiData.firmwareVersionMajor = bcdDevice >> 8;
@@ -62,19 +62,19 @@ void USBCTRL::pollUSB() {
         }
     } else {
         if ( uiData.regUpdatePending == true ) {
-            if ( verbose > 1 )
+            if ( verbose > 2 )
                 printf( " regUpdatePending\n" );
             uiData.regUpdatePending = false;
             QThread::msleep( 1 );
             for ( int r = 5; r >= 0; --r ) {
-                if ( verbose )
-                    printf( "R%d = 0x%08x\n", r, uiData.reg[ r ] );
+                if ( verbose > 1 )
+                    printf( "XFER 0x%08X -> R%d\n", uiData.reg[ r ], r );
                 libusb_control_transfer( device_handle, 0x40, USB_REQ_SET_REG, 0x00, 0x00, (uint8_t *)( uiData.reg + r ), 4, 10 );
                 QThread::msleep( 1 );
             }
         } else if ( uiData.readMuxoutPending ) {
             uint8_t muxStat = 0;
-            if ( verbose > 2 )
+            if ( verbose > 3 )
                 printf( "  readMUXOUT_pending\n" );
             uiData.readMuxoutPending = false;
             if ( 1 == libusb_control_transfer( device_handle, 0xC0, USB_REQ_GET_MUX, 0x00, 0x00, &muxStat, 1, 10 ) )
@@ -88,7 +88,7 @@ void USBCTRL::pollUSB() {
 
 
 void USBCTRL::changeReg( const uint32_t *reg, bool autoTx ) {
-    if ( verbose > 1 )
+    if ( verbose > 2 )
         printf( " USBCTRL::changeReg(), %d\n", autoTx );
     memcpy( uiData.reg, reg, sizeof( uiData.reg ) );
     if ( autoTx )
@@ -99,7 +99,7 @@ void USBCTRL::changeReg( const uint32_t *reg, bool autoTx ) {
 
 
 void USBCTRL::closeDevice() {
-    if ( verbose > 1 )
+    if ( verbose > 2 )
         printf( " USBCTRL::closeDevice()\n" );
     libusb_close( device_handle );
     libusb_exit( context );
@@ -115,6 +115,6 @@ void USBCTRL::slowReadTimeout() {
         uiData.autoTxPending = false;
         uiData.regUpdatePending = true;
     }
-    if ( verbose > 2 )
+    if ( verbose > 3 )
         printf( "  USBCTRL::slowReadTimeou1(), regUpdatePendig = %d\n", uiData.regUpdatePending );
 }

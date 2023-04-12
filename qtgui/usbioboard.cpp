@@ -161,7 +161,7 @@ void USBIOBoard::recalculate() {
 
 
 void USBIOBoard::updateReg() {
-    if ( verbose > 1 )
+    if ( verbose > 2 )
         printf( " USBIOBoard::updateReg( %d )\n", autoTX );
 
     const uint32_t hex_values[] = {
@@ -200,7 +200,7 @@ void USBIOBoard::displayReg() {
 
 void USBIOBoard::updateGUI( bool isConnected, UI_Data *ui_data ) {
     static bool wasConnected = false;
-    if ( verbose > 2 )
+    if ( verbose > 3 )
         printf( "  USBIOBoard::update_gui( %d )\n", isConnected );
     ui->labelMuxOut->setVisible( isConnected );
     autoInit = ui->checkBox_autoinit->isChecked();

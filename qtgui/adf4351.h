@@ -11,6 +11,8 @@
 #include <string.h>
 #include <wchar.h>
 
+extern uint8_t verbose;
+
 class ADF4351 : public QObject {
     Q_OBJECT
   private:

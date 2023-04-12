@@ -100,11 +100,12 @@ void ADF4351::calculateRegFromFreq( uint32_t frequency ) {
 #endif
 
 void ADF4351::buildRegisters() {
-    // printf( "AD4351::BuildRegisters()\n" );
+    if ( verbose > 1 )
+        printf( "AD4351::BuildRegisters()\n" );
     for ( int i = 0; i < 6; i++ ) {
         previous_reg[ i ] = reg[ i ];
     }
-    PFDFreq = ( REF_FREQ * (double)( ref_doubler ? 2 : 1 ) / (double)( ref_div2 ? 2 : 1 ) / (double)r_counter );
+    PFDFreq = ( REF_FREQ * double( ref_doubler ? 2 : 1 ) / double( ref_div2 ? 2 : 1 ) / double( r_counter ) );
     uint16_t output_divider = 1;
     if ( frequency >= 2200.0 ) {
         output_divider = 1;
@@ -130,16 +131,17 @@ void ADF4351::buildRegisters() {
 
 
     if ( FEEDBACK_SELECT ) {
-        N = (double)frequency * output_divider / PFDFreq;
+        N = frequency * output_divider / PFDFreq;
     } else {
-        N = (double)frequency / PFDFreq;
+        N = frequency / PFDFreq;
     }
 
-    INT = (uint32_t)N;
-    MOD = (uint32_t)round( 1000 * PFDFreq );
-    FRAC = (uint32_t)round( ( (double)N - INT ) * MOD );
+    N += 1e-9; // correct double to int error
+    INT = uint32_t( N );
+    MOD = uint32_t( round( 1000 * PFDFreq ) );
+    FRAC = uint32_t( round( ( N - INT ) * MOD ) );
     if ( enable_gcd ) {
-        uint32_t div = gcd( (uint32_t)MOD, (uint32_t)FRAC );
+        uint32_t div = gcd( uint32_t( MOD ), uint32_t( FRAC ) );
         MOD = MOD / div;
         FRAC = FRAC / div;
     }
@@ -147,19 +149,22 @@ void ADF4351::buildRegisters() {
         MOD = 2.0;
     }
 
-    // printf( "f = %f\n", ( INT + FRAC / MOD ) * PFDFreq / output_divider );
+    if ( verbose > 1 ) {
+        printf( "N: %f, INT: %d, FRAC: %d, MOD: %d, PFDFreq: %d kHz\n", N, INT, int( FRAC ), int( MOD ), int( 1000 * PFDFreq ) );
+        printf( "f = %f MHz\n", ( INT + FRAC / MOD ) * PFDFreq / output_divider );
+    }
 
     if ( band_select_auto ) {
         uint32_t temp;
         if ( band_select_clock_mode == 0 ) // low
         {
-            temp = (uint32_t)round( 8.0 * PFDFreq );
+            temp = uint32_t( round( 8.0 * PFDFreq ) );
             if ( 8.0 * PFDFreq - temp > 0 ) {
                 temp += 1u;
             }
             temp = ( ( temp > 255u ) ? 255u : temp );
         } else {
-            temp = (uint32_t)round( PFDFreq * 2.0 );
+            temp = uint32_t( round( PFDFreq * 2.0 ) );
             if ( 2.0 * PFDFreq - temp > 0 ) {
                 temp += 1u;
             }
@@ -200,8 +205,9 @@ void ADF4351::buildRegisters() {
 #endif
     reg[ 5 ] = ( uint32_t )( (uint32_t)LD * ( 1 << 22 ) + (uint32_t)0x3 * ( 1 << 19 ) + 5.0 );
 
-    // for ( int r = 0; r < 6; ++r )
-    //    printf( "r%d = 0x%08X\n", r, reg[ r ] );
+        if ( verbose )
+            for ( int r = 0; r < 6; ++r )
+                printf( "R%d = 0x%08X\n", r, reg[ r ] );
 
     if ( CLK_DIV_MODE == 2 ) {
         tSync = 1.0 / PFDFreq * MOD * clock_divider;
@@ -214,7 +220,10 @@ void ADF4351::buildRegisters() {
 
 
 void ADF4351::initFromRegisters() {
+    if ( verbose > 1 )
+        printf( "ADF4351::initFromRegisters()\n");
     uint16_t uINT = ( reg[ 0 ] >> 15 ) & 0xFFFF;
     uint16_t uFRAC = ( reg[ 0 ] >> 3 ) & 0x0FFF;
-    printf( "0x%04X 0x%03X\n", uINT, uFRAC );
+    if ( verbose > 2 )
+        printf( "0x%04X 0x%03X\n", uINT, uFRAC );
 }
