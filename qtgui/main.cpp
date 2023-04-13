@@ -19,10 +19,12 @@ int main( int argc, char *argv[] ) {
     p.addOption( verboseOption );
     p.addHelpOption();
     p.process( application );
+    const double F_MIN = 33;   // 34.375
+    const double F_MAX = 4500; // 4400
     if ( p.isSet( frequencyOption ) ) {
         optionFrequency = p.value( "frequency" ).toDouble();
-        if ( optionFrequency < 35 || optionFrequency > 4400 ) {
-            fprintf( stderr, "  frequency must be 35..4400\n" );
+        if ( optionFrequency < F_MIN || optionFrequency > F_MAX ) {
+            fprintf( stderr, "frequency must be %g..%g MHz\n", F_MIN, F_MAX );
             return -1;
         }
     }

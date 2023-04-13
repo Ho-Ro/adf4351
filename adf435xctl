@@ -111,11 +111,13 @@ if options.verbose:
         for k in kw:
             print(f'{k} = {kw[k]}')
     if  options.verbose > 1:
-        for k in ('ref_freq', 'freq'):
-            print( f'{k} = {calculate_regs_kw[k]}' )
+        print( f'freq = {calculate_regs_kw["freq"]}' )
     if options.verbose == 2:
-        for k in ('INT', 'FRAC', 'MOD', 'output_divider', 'band_select_clock_divider'):
-            print(f'{k} = {kw[k]}')
+        print(f'INT  = {kw["INT"]}')
+        if kw['FRAC']:
+            print(f'FRAC = {kw["FRAC"]}')
+            print(f'MOD  = {kw["MOD"]}')
+        print(f'output_divider = {kw["output_divider"]}')
     for r in range(5,-1, -1):
         print('R%d = 0x%08x' % (r, regs[r]))
 
@@ -123,7 +125,7 @@ if options.interface != 'NONE': # do the communication with the ADF435x device
     intf = getattr(adf435x.interfaces, args['interface'])() # which interface?
     intf.set_regs(regs[::-1]) # write the 6 registers
     if kw['mux_out']: # normally set to digital lock
-        time.sleep(.001) # wait 1 ms for PLL lock, takes typically < 100µs
+        time.sleep(.01) # wait 10 ms for PLL lock
         status = intf.get_mux()[0] # get one byte, 0: MUXOUT=LOW or 1: MUXOUT=HIGH
         if kw['mux_out'] == 6: # digital lock
             print(f'{("NOLOCK", "LOCKED")[status]}')

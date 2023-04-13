@@ -82,7 +82,7 @@ def calculate_regs(
         device_type=DeviceType.ADF4351,
         freq=50.0,
         ref_freq=25.0,
-        r_counter=1,
+        r_counter=250,
         ref_doubler=False,
         ref_div2=False,
         feedback_select=FeedbackSelect.Fundamental,
@@ -100,9 +100,9 @@ def calculate_regs(
             else:
                 b = b % a
 
-    fMAX = 4400
+    fMAX = 4500 # 4400
     if device_type == DeviceType.ADF4351:
-        fMIN = 34.375
+        fMIN = 33 # 34.375
     else:
         fMIN = 137.5
     if freq < fMIN or freq > fMAX:
@@ -124,6 +124,8 @@ def calculate_regs(
     INT = int(floor(N))
     MOD = int(round(1000.0 * pfd_freq))
     FRAC = int(round((N - INT) * MOD))
+
+    # print( N, INT, MOD, FRAC, pfd_freq )
 
     div = gcd(MOD, FRAC)
     MOD = MOD / div
@@ -180,7 +182,7 @@ def make_regs(
         mux_out=MuxOut.ThreeState,
         ref_doubler=False,
         ref_div2=False,
-        r_counter=1,
+        r_counter=250,
         double_buff_r4=False,
         charge_pump_current=2.50,
         ldp=10.0,
