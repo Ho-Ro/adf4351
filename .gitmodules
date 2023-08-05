@@ -7,5 +7,3 @@
 [submodule "firmware/fx2/libfx2"]
 	path = firmware/fx2/libfx2
 	url = https://github.com/whitequark/libfx2.git
-[submodule "libfx2"]
-	branch = main
