@@ -6,7 +6,6 @@
 
 USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::USB_ADF4351_form ) {
 
-    settings = new QSettings( "adf435x", "adf435xgui" );
     ui->setupUi( this );
     usbCtrl = new USBCTRL();
     adf4351 = new ADF4351();
@@ -14,22 +13,27 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
     ui->labelMuxOut->setVisible( false );
 
     // get persistent settings
+    settings = new QSettings( "adf435x", "adf435xgui" );
+    settings->beginGroup( "gui" );
     if ( optionFrequency ) {
         ui->doubleSpinBox_FREQUENCY->setValue( optionFrequency );
         autoInit = true;
     } else {
-        ui->doubleSpinBox_FREQUENCY->setValue( settings->value( "gui/frequency", 100 ).toDouble() );
-        autoInit = settings->value( "gui/autoInit", false ).toBool();
+        ui->doubleSpinBox_FREQUENCY->setValue( settings->value( "frequency", 100 ).toDouble() );
+        autoInit = settings->value( "autoInit", false ).toBool();
     }
     ui->checkBox_autoinit->setChecked( autoInit );
-    autoTX = settings->value( "gui/enableAutoTx", false ).toBool();
+    autoTX = settings->value( "enableAutoTx", false ).toBool();
     ui->checkBox_autotx->setChecked( autoTX );
     ui->USBTX->setEnabled( !autoTX );
-    ui->comboBox_MUXOUT->setCurrentIndex( settings->value( "adf435x/MUXOUT", 0 ).toUInt() );
-    ui->comboBox_OUTPUT_POWER->setCurrentIndex( settings->value( "adf435x/OUTPUT_POWER", 0 ).toUInt() );
-    ui->comboBox_RF_OUT->setCurrentIndex( settings->value( "adf435x/RF_OUT", 0 ).toUInt() );
-    ui->comboBox_MTLD->setCurrentIndex( settings->value( "adf435x/MTLD", 0 ).toUInt() );
-    ui->spinBox_R_COUNTER->setValue( settings->value( "adf435x/R_COUNTER", 1 ).toUInt() );
+    settings->endGroup(); // gui
+    settings->beginGroup( "adf435x" );
+    ui->comboBox_MUXOUT->setCurrentIndex( settings->value( "MUXOUT", 0 ).toUInt() );
+    ui->comboBox_OUTPUT_POWER->setCurrentIndex( settings->value( "OUTPUT_POWER", 0 ).toUInt() );
+    ui->comboBox_RF_OUT->setCurrentIndex( settings->value( "RF_OUT", 0 ).toUInt() );
+    ui->comboBox_MTLD->setCurrentIndex( settings->value( "MTLD", 0 ).toUInt() );
+    ui->spinBox_R_COUNTER->setValue( settings->value( "R_COUNTER", 1 ).toUInt() );
+    settings->endGroup(); // adf435x
 
     connect( this, SIGNAL( signalRecalculate() ), adf4351, SLOT( buildRegisters() ) );
 
@@ -96,19 +100,23 @@ void USBIOBoard::showEvent( QShowEvent *event ) {
 USBIOBoard::~USBIOBoard() {
     disconnect( usbCtrl, SIGNAL( usbctrlUpdate( bool, UI_Data * ) ), this, SLOT( updateGUI( bool, UI_Data * ) ) );
 
-    settings->setValue( "gui/enableAutoTx", autoTX );
-    settings->setValue( "gui/autoInit", autoInit );
-    settings->setValue( "gui/frequency", ui->doubleSpinBox_FREQUENCY->value() );
+    // add other persistent values here (and above in the constructor)
+    settings->beginGroup( "gui" );
+    settings->setValue( "enableAutoTx", autoTX );
+    settings->setValue( "autoInit", autoInit );
+    settings->setValue( "frequency", ui->doubleSpinBox_FREQUENCY->value() );
+    settings->endGroup(); // gui
 
-    settings->setValue( "adf435x/MUXOUT", ui->comboBox_MUXOUT->currentIndex() );
-    settings->setValue( "adf435x/OUTPUT_POWER", ui->comboBox_OUTPUT_POWER->currentIndex() );
-    settings->setValue( "adf435x/RF_OUT", ui->comboBox_RF_OUT->currentIndex() );
-    settings->setValue( "adf435x/MTLD", ui->comboBox_MTLD->currentIndex() );
-    settings->setValue( "adf435x/R_COUNTER", ui->spinBox_R_COUNTER->value() );
-
+    settings->beginGroup( "adf435x" );
+    settings->setValue( "MUXOUT", ui->comboBox_MUXOUT->currentIndex() );
+    settings->setValue( "OUTPUT_POWER", ui->comboBox_OUTPUT_POWER->currentIndex() );
+    settings->setValue( "RF_OUT", ui->comboBox_RF_OUT->currentIndex() );
+    settings->setValue( "MTLD", ui->comboBox_MTLD->currentIndex() );
+    settings->setValue( "R_COUNTER", ui->spinBox_R_COUNTER->value() );
     for ( int r = 0; r < 6; ++r )
-        settings->setValue( QString( "adf435x/R%1" ).arg( r ),
-                            QString( "0x%1" ).arg( adf4351->reg[ r ], 8, 16, QChar( '0' ) ).toUpper() );
+        settings->setValue( QString( "R%1" ).arg( r ),
+                            QString( "0x%1" ).arg( adf4351->reg[ r ], 8, 16, QChar( '0' ) ) );
+    settings->endGroup();
     delete settings;
 
     delete ui;
