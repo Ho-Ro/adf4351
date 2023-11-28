@@ -58,7 +58,7 @@ usb_desc_device_c usb_device = {
     .bcdDevice = 0x0036,
     .iManufacturer = 1, // 1 = usb_strings[0]
     .iProduct = 2,      // 2 = usb_strings[1]
-    .iSerialNumber = 0, // 3 = usb_strings[2] if exist
+    .iSerialNumber = 3, // 3 = usb_strings[2] if exist
     .bNumConfigurations = 1,
 };
 
@@ -98,7 +98,7 @@ usb_ascii_string_c usb_strings[] = {
     // set string numbers in usb_device to 1, 2 (,3)
     "ANALOG DEVICES", // string = 1, Product
     "EVAL-ADF4351",   // string = 2, Manufacturer
-    // "EXPERIMENTAL",   // string = 3, SerialNumber
+    "EXPERIMENTAL",   // string = 3, SerialNumber, must be 12 char long
 };
 
 __xdata struct usb_descriptor_set usb_descriptor_set = {
@@ -125,6 +125,44 @@ enum {
 // register and checksum setup storage
 // 6 x 32 bit register + 6 byte reserved + 1 byte init_type + 1 byte checksum
 __xdata uint8_t reg_set[ REG_SET_SIZE ];
+
+
+// ID Registers that provide an unique serial number -> Cypress KBA89285
+__xdata __at 0xE507 volatile uint8_t UNIQID0; // ID register byte 0 (LSB)
+__xdata __at 0xE508 volatile uint8_t UNIQID1; // ID register
+__xdata __at 0xE509 volatile uint8_t UNIQID2; // ID register
+__xdata __at 0xE50A volatile uint8_t UNIQID3; // ID register
+__xdata __at 0xE50B volatile uint8_t UNIQID4; // ID register
+__xdata __at 0xE50C volatile uint8_t UNIQID5; // ID register byte 5 (MSB)
+
+
+static __xdata char *usb_string_at_index(uint8_t index) {
+  return (__xdata char *)usb_strings[index - 1];
+}
+
+
+static void prepare_unique_serial_number() {
+    // array used to convert hex to ascii
+    const char hex2Ascii[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                                   '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+    // Prepare the serial number target string, cast away the constness
+    __xdata char *usb_string_serial_number = usb_string_at_index(usb_device.iSerialNumber);
+
+    // Get unique serial number from processor.
+    usb_string_serial_number[11] = hex2Ascii[ ( UNIQID0 & 0xF0 ) >> 4 ]; /* LSB */
+    usb_string_serial_number[10] = hex2Ascii[ UNIQID0 & 0x0F ];
+    usb_string_serial_number[9] = hex2Ascii[ ( UNIQID1 & 0xF0 ) >> 4 ];
+    usb_string_serial_number[8] = hex2Ascii[ UNIQID1 & 0x0F ];
+    usb_string_serial_number[7] = hex2Ascii[ ( UNIQID2 & 0xF0 ) >> 4 ];
+    usb_string_serial_number[6] = hex2Ascii[ UNIQID2 & 0x0F ];
+    usb_string_serial_number[5] = hex2Ascii[ ( UNIQID3 & 0xF0 ) >> 4 ];
+    usb_string_serial_number[4] = hex2Ascii[ UNIQID3 & 0x0F ];
+    usb_string_serial_number[3] = hex2Ascii[ ( UNIQID4 & 0xF0 ) >> 4 ];
+    usb_string_serial_number[2] = hex2Ascii[ UNIQID4 & 0x0F ];
+    usb_string_serial_number[1] = hex2Ascii[ ( UNIQID5 & 0xF0 ) >> 4 ];
+    usb_string_serial_number[0] = hex2Ascii[ UNIQID5 & 0x0F ]; /* MSB */
+}
 
 
 // send register value (4 bytes) to ADF4351
@@ -381,6 +419,8 @@ int main() {
     uint8_t init_wait = 0;
 
     CPUCS = _CLKOE | _CLKSPD1; // 48 MHz clock
+
+    prepare_unique_serial_number();
 
     adf_pin_init();
     // adf_reg_init();
