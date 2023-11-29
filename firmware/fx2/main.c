@@ -55,7 +55,7 @@ usb_desc_device_c usb_device = {
     .bMaxPacketSize0 = 64,
     .idVendor = 0x0456,
     .idProduct = 0xb40d,
-    .bcdDevice = 0x0036,
+    .bcdDevice = 0x0037,
     .iManufacturer = 1, // 1 = usb_strings[0]
     .iProduct = 2,      // 2 = usb_strings[1]
     .iSerialNumber = 3, // 3 = usb_strings[2] if exist
@@ -168,12 +168,11 @@ static void prepare_unique_serial_number() {
 // send register value (4 bytes) to ADF4351
 static void adf_set_reg( const uint8_t *reg ) {
 
-    uint8_t bit_pos = 32;
     const uint8_t *data = reg + 3; // start with MSB
     uint8_t one_byte = 0;          // silence warning 'use before init'
 
-    while ( bit_pos ) {           // shift data out, MSB first
-        if ( bit_pos-- % 8 == 0 ) // every eight bit
+    for ( uint8_t bit_pos = 0; bit_pos < 32; ++bit_pos ) { // shift data out, MSB first
+        if ( bit_pos % 8 == 0 )   // every eight bit
             one_byte = *data--;   // fetch next byte
         if ( one_byte & 0x80 )    // bit high?
             IOA = DATA_IO;        // CLK low, LE low, DATA high
