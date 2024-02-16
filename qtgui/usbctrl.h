@@ -24,7 +24,7 @@ typedef enum {
 class UI_Data {
   public:
     bool isConnected;
-    bool regUpdatePending = false;
+    uint8_t regUpdatePending = 0;
     bool autoTxPending = false;
     bool readFirmwareInfoPending = true;
     uint8_t readMuxoutPending = false;
@@ -47,7 +47,7 @@ class USBCTRL : public QObject {
 
   public slots:
     void pollUSB();
-    void changeReg( const uint32_t *reg, bool auto_tx );
+    void changeReg( const uint32_t *reg, bool auto_tx, uint8_t mask = 0b00111111 );
     void slowReadTimeout();
 
   private:

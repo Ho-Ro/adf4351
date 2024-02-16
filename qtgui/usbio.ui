@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>950</width>
-    <height>489</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>950</width>
-    <height>480</height>
+    <height>500</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1200</width>
-    <height>1000</height>
+    <width>950</width>
+    <height>500</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -57,42 +57,23 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>420</x>
-       <y>330</y>
-       <width>261</width>
-       <height>31</height>
+       <x>210</x>
+       <y>360</y>
+       <width>121</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Noto Sans</family>
-       <pointsize>14</pointsize>
+       <pointsize>24</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>RF Freq</string>
+      <string>RF Freq:</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="USBTX">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>369</y>
-       <width>151</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Noto Sans</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Write</string>
+      <set>Qt::AlignJustify|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_ref">
@@ -1641,7 +1622,7 @@
     <widget class="QDoubleSpinBox" name="doubleSpinBox_FREQUENCY">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>336</x>
        <y>360</y>
        <width>261</width>
        <height>51</height>
@@ -1712,24 +1693,11 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_autotx">
-     <property name="geometry">
-      <rect>
-       <x>750</x>
-       <y>340</y>
-       <width>121</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Auto Write</string>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkBox_autoinit">
      <property name="geometry">
       <rect>
-       <x>750</x>
-       <y>320</y>
+       <x>760</x>
+       <y>365</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -1738,12 +1706,47 @@
       <string>Auto Init</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="checkBox_autotx">
+     <property name="geometry">
+      <rect>
+       <x>760</x>
+       <y>385</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Auto Write</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelMuxOut">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>360</y>
+       <width>71</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="text">
+      <string>MUXOUT</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </widget>
    <widget class="QLineEdit" name="line_reg0">
     <property name="geometry">
      <rect>
       <x>15</x>
-      <y>445</y>
+      <y>440</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1775,7 +1778,7 @@
     <property name="geometry">
      <rect>
       <x>135</x>
-      <y>445</y>
+      <y>440</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1807,7 +1810,7 @@
     <property name="geometry">
      <rect>
       <x>255</x>
-      <y>445</y>
+      <y>440</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1839,7 +1842,7 @@
     <property name="geometry">
      <rect>
       <x>375</x>
-      <y>445</y>
+      <y>440</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1871,7 +1874,7 @@
     <property name="geometry">
      <rect>
       <x>495</x>
-      <y>445</y>
+      <y>440</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1903,7 +1906,7 @@
     <property name="geometry">
      <rect>
       <x>615</x>
-      <y>445</y>
+      <y>440</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1931,28 +1934,153 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="labelMuxOut">
+   <widget class="QPushButton" name="USBTX0">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>445</y>
-      <width>151</width>
-      <height>31</height>
+      <x>15</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
      </rect>
     </property>
-    <property name="autoFillBackground">
-     <bool>true</bool>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
-     <string>MUXOUT</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>Write R0</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="USBTX1">
+    <property name="geometry">
+     <rect>
+      <x>135</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Write R1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="USBTX2">
+    <property name="geometry">
+     <rect>
+      <x>255</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Write R2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="USBTX3">
+    <property name="geometry">
+     <rect>
+      <x>375</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Write R3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="USBTX4">
+    <property name="geometry">
+     <rect>
+      <x>495</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Write R4</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="USBTX5">
+    <property name="geometry">
+     <rect>
+      <x>615</x>
+      <y>470</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Write R5</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="USBTX">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>440</y>
+      <width>151</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Noto Sans</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Write R0..R5</string>
+    </property>
+   </widget>
+   <zorder>USBTX</zorder>
+   <zorder>groupBox_main</zorder>
+   <zorder>line_reg0</zorder>
+   <zorder>line_reg1</zorder>
+   <zorder>line_reg2</zorder>
+   <zorder>line_reg3</zorder>
+   <zorder>line_reg4</zorder>
+   <zorder>line_reg5</zorder>
+   <zorder>USBTX0</zorder>
+   <zorder>USBTX1</zorder>
+   <zorder>USBTX2</zorder>
+   <zorder>USBTX3</zorder>
+   <zorder>USBTX4</zorder>
+   <zorder>USBTX5</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

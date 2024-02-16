@@ -61,17 +61,20 @@ void USBCTRL::pollUSB() {
             timer->start( 20 ); // poll fast
         }
     } else {
-        if ( uiData.regUpdatePending == true ) {
+        if ( uiData.regUpdatePending ) {
             if ( verbose > 2 )
-                printf( " regUpdatePending\n" );
-            uiData.regUpdatePending = false;
+                printf( " regUpdatePending = 0x%02X\n", uiData.regUpdatePending );
             QThread::msleep( 1 );
             for ( int r = 5; r >= 0; --r ) {
-                if ( verbose > 1 )
-                    printf( "XFER 0x%08X -> R%d\n", uiData.reg[ r ], r );
-                libusb_control_transfer( device_handle, 0x40, USB_REQ_SET_REG, 0x00, 0x00, (uint8_t *)( uiData.reg + r ), 4, 10 );
-                QThread::msleep( 1 );
+                if ( uiData.regUpdatePending & ( 1 << r ) ) {
+                    if ( verbose > 1 )
+                        printf( "XFER 0x%08X -> R%d\n", uiData.reg[ r ], r );
+                    libusb_control_transfer( device_handle, 0x40, USB_REQ_SET_REG, 0x00, 0x00, (uint8_t *)( uiData.reg + r ), 4,
+                                             10 );
+                    QThread::msleep( 1 );
+                }
             }
+            uiData.regUpdatePending = 0;
         } else if ( uiData.readMuxoutPending ) {
             uint8_t muxStat = 0;
             if ( verbose > 3 )
@@ -87,14 +90,14 @@ void USBCTRL::pollUSB() {
 }
 
 
-void USBCTRL::changeReg( const uint32_t *reg, bool autoTx ) {
+void USBCTRL::changeReg( const uint32_t *reg, bool autoTx, uint8_t mask ) {
     if ( verbose > 2 )
         printf( " USBCTRL::changeReg(), %d\n", autoTx );
     memcpy( uiData.reg, reg, sizeof( uiData.reg ) );
     if ( autoTx )
         uiData.autoTxPending = true;
     else
-        uiData.regUpdatePending = true;
+        uiData.regUpdatePending = mask;
 }
 
 
@@ -113,8 +116,8 @@ void USBCTRL::slowReadTimeout() {
     uiData.readMuxoutPending = true;
     if ( uiData.autoTxPending ) {
         uiData.autoTxPending = false;
-        uiData.regUpdatePending = true;
+        uiData.regUpdatePending = 0b00111111;
     }
     if ( verbose > 3 )
-        printf( "  USBCTRL::slowReadTimeou1(), regUpdatePendig = %d\n", uiData.regUpdatePending );
+        printf( "  USBCTRL::slowReadTimeou1(), regUpdatePendig = 0x%02X\n", uiData.regUpdatePending );
 }

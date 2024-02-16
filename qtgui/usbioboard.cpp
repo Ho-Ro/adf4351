@@ -37,15 +37,31 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
 
     connect( this, SIGNAL( signalRecalculate() ), adf4351, SLOT( buildRegisters() ) );
 
-    connect( this, SIGNAL( signalUpdateReg( const uint32_t *, bool ) ), usbCtrl, SLOT( changeReg( const uint32_t *, bool ) ) );
+    connect( this, SIGNAL( signalUpdateReg( const uint32_t *, bool, uint8_t ) ), usbCtrl,
+             SLOT( changeReg( const uint32_t *, bool, uint8_t ) ) );
     connect( this, SIGNAL( signalAutoTx() ), this, SLOT( updateReg() ) );
-    connect( ui->USBTX, SIGNAL( clicked( bool ) ), this, SLOT( updateReg() ) );
+    connect( ui->USBTX, &QPushButton::clicked, this, [ this ]() { updateReg(); } );
+    connect( ui->USBTX0, &QPushButton::clicked, this, [ this ]() { updateReg( 0b00000001 ); } );
+    connect( ui->USBTX1, &QPushButton::clicked, this, [ this ]() { updateReg( 0b00000010 ); } );
+    connect( ui->USBTX2, &QPushButton::clicked, this, [ this ]() { updateReg( 0b00000100 ); } );
+    connect( ui->USBTX3, &QPushButton::clicked, this, [ this ]() { updateReg( 0b00001000 ); } );
+    connect( ui->USBTX4, &QPushButton::clicked, this, [ this ]() { updateReg( 0b00010000 ); } );
+    connect( ui->USBTX5, &QPushButton::clicked, this, [ this ]() { updateReg( 0b00100000 ); } );
     // connect(ui->groupBox_main, SIGNAL(clicked(bool)), this, SLOT(recalculate()));
 
     connect( usbCtrl, SIGNAL( usbctrlUpdate( bool, UI_Data * ) ), this, SLOT( updateGUI( bool, UI_Data * ) ) );
     connect( adf4351, SIGNAL( regUpdateResult() ), this, SLOT( displayReg() ) );
 
-    connect( ui->checkBox_autotx, SIGNAL( clicked( bool ) ), this, SLOT( autoTxClicked() ) );
+    connect( ui->checkBox_autotx, &QPushButton::clicked, this, [ this ]() {
+        autoTX = ui->checkBox_autotx->isChecked();
+        ui->USBTX->setEnabled( !autoTX );
+        ui->USBTX0->setEnabled( !autoTX );
+        ui->USBTX1->setEnabled( !autoTX );
+        ui->USBTX2->setEnabled( !autoTX );
+        ui->USBTX3->setEnabled( !autoTX );
+        ui->USBTX4->setEnabled( !autoTX );
+        ui->USBTX5->setEnabled( !autoTX );
+    } );
 
     connect( ui->doubleSpinBox_FREQUENCY, SIGNAL( valueChanged( double ) ), this, SLOT( recalculate() ) );
 
@@ -114,8 +130,7 @@ USBIOBoard::~USBIOBoard() {
     settings->setValue( "MTLD", ui->comboBox_MTLD->currentIndex() );
     settings->setValue( "R_COUNTER", ui->spinBox_R_COUNTER->value() );
     for ( int r = 0; r < 6; ++r )
-        settings->setValue( QString( "R%1" ).arg( r ),
-                            QString( "0x%1" ).arg( adf4351->reg[ r ], 8, 16, QChar( '0' ) ) );
+        settings->setValue( QString( "R%1" ).arg( r ), QString( "0x%1" ).arg( adf4351->reg[ r ], 8, 16, QChar( '0' ) ) );
     settings->endGroup();
     delete settings;
 
@@ -168,22 +183,17 @@ void USBIOBoard::recalculate() {
 }
 
 
-void USBIOBoard::updateReg() {
+void USBIOBoard::updateReg( uint8_t mask ) {
     if ( verbose > 2 )
-        printf( " USBIOBoard::updateReg( %d )\n", autoTX );
+        printf( " USBIOBoard::updateReg( 0x%02X )\n", mask );
 
     const uint32_t hex_values[] = {
         ui->line_reg0->text().toUInt( nullptr, 16 ), ui->line_reg1->text().toUInt( nullptr, 16 ),
         ui->line_reg2->text().toUInt( nullptr, 16 ), ui->line_reg3->text().toUInt( nullptr, 16 ),
         ui->line_reg4->text().toUInt( nullptr, 16 ), ui->line_reg5->text().toUInt( nullptr, 16 ),
     };
-    emit signalUpdateReg( hex_values, autoTX );
-}
-
-
-void USBIOBoard::autoTxClicked() {
-    autoTX = ui->checkBox_autotx->isChecked();
-    ui->USBTX->setEnabled( !autoTX );
+    ui->labelMuxOut->setText( QString( "%1" ).arg( ui->comboBox_MUXOUT->currentText() ) );
+    emit signalUpdateReg( hex_values, autoTX, mask );
 }
 
 
@@ -221,12 +231,10 @@ void USBIOBoard::updateGUI( bool isConnected, UI_Data *ui_data ) {
         }
         setWindowTitle( windowTitle );
 
-        if ( !ui_data->readFirmwareInfoPending ) {
-            ui->labelMuxOut->setText(
-                QString( "%1 = %2" ).arg( ui->comboBox_MUXOUT->currentText(), ui_data->muxoutStat ? "HIGH" : "LOW" ) );
-        }
         if ( !wasConnected && autoInit )
             updateReg();
+        ui->labelMuxOut->setStyleSheet( ui_data->muxoutStat ? "QLabel { background-color : lightgreen; }"
+                                                            : "QLabel { background-color : lightgrey; }" );
     } else {
         ui_data->readMuxoutPending = true;
         ui_data->readFirmwareInfoPending = true;

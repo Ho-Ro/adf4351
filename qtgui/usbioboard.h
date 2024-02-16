@@ -33,14 +33,13 @@ class USBIOBoard : public QMainWindow {
     QString windowTitle;
 
   signals:
-    void signalUpdateReg( const uint32_t *reg, bool enableAutoTx );
+    void signalUpdateReg( const uint32_t *reg, bool enableAutoTx, uint8_t mask = 0b00111111 );
     void signalAutoTx();
     void signalRecalculate();
 
   public slots:
     void updateGUI( bool isConnected, UI_Data *uiData );
     void displayReg();
-    void autoTxClicked();
-    void updateReg();
+    void updateReg( uint8_t mask = 0b00111111 );
     void recalculate();
 };
