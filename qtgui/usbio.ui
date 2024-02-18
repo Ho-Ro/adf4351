@@ -92,7 +92,7 @@
       <string>25</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_presacler">
+    <widget class="QComboBox" name="comboBox_prescaler">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -115,7 +115,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QSpinBox" name="spinBox_R_COUNTER">
+    <widget class="QSpinBox" name="spinBox_r_counter">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -137,7 +137,7 @@
       <number>10</number>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_FEEDBACK_SELECT">
+    <widget class="QComboBox" name="comboBox_feedback_select">
      <property name="geometry">
       <rect>
        <x>140</x>
@@ -163,7 +163,7 @@
     <widget class="QComboBox" name="comboBox_NOISE_MODE">
      <property name="geometry">
       <rect>
-       <x>368</x>
+       <x>370</x>
        <y>30</y>
        <width>101</width>
        <height>22</height>
@@ -190,10 +190,10 @@
       </property>
      </item>
     </widget>
-    <widget class="QComboBox" name="comboBox_MUXOUT">
+    <widget class="QComboBox" name="comboBox_muxout">
      <property name="geometry">
       <rect>
-       <x>368</x>
+       <x>370</x>
        <y>60</y>
        <width>101</width>
        <height>22</height>
@@ -246,7 +246,7 @@
     <widget class="QComboBox" name="comboBox_double_buff">
      <property name="geometry">
       <rect>
-       <x>368</x>
+       <x>370</x>
        <y>90</y>
        <width>101</width>
        <height>22</height>
@@ -266,7 +266,7 @@
     <widget class="QComboBox" name="comboBox_charge_pump_current">
      <property name="geometry">
       <rect>
-       <x>368</x>
+       <x>370</x>
        <y>120</y>
        <width>101</width>
        <height>22</height>
@@ -359,7 +359,7 @@
     <widget class="QComboBox" name="comboBox_LDF">
      <property name="geometry">
       <rect>
-       <x>368</x>
+       <x>370</x>
        <y>150</y>
        <width>101</width>
        <height>22</height>
@@ -499,7 +499,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QComboBox" name="comboBox_MTLD">
+    <widget class="QComboBox" name="comboBox_mtld">
      <property name="geometry">
       <rect>
        <x>810</x>
@@ -589,7 +589,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QComboBox" name="comboBox_RF_OUT">
+    <widget class="QComboBox" name="comboBox_rf_out">
      <property name="geometry">
       <rect>
        <x>810</x>
@@ -612,7 +612,7 @@
       </property>
      </item>
     </widget>
-    <widget class="QComboBox" name="comboBox_OUTPUT_POWER">
+    <widget class="QComboBox" name="comboBox_output_power">
      <property name="geometry">
       <rect>
        <x>810</x>
@@ -1469,7 +1469,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_MTLD">
+    <widget class="QLabel" name="label_mtld">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -1569,7 +1569,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_RF_OUT">
+    <widget class="QLabel" name="label_rf_out">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -1594,7 +1594,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_OUTPUT_POWER">
+    <widget class="QLabel" name="label_output_power">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -1619,7 +1619,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="doubleSpinBox_FREQUENCY">
+    <widget class="QDoubleSpinBox" name="doubleSpinBox_frequency">
      <property name="geometry">
       <rect>
        <x>336</x>
@@ -1722,10 +1722,10 @@
     <widget class="QLabel" name="labelMuxOut">
      <property name="geometry">
       <rect>
-       <x>640</x>
-       <y>360</y>
+       <x>625</x>
+       <y>362</y>
        <width>71</width>
-       <height>51</height>
+       <height>46</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -2095,7 +2095,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>doubleSpinBox_FREQUENCY</tabstop>
+  <tabstop>doubleSpinBox_frequency</tabstop>
   <tabstop>USBTX</tabstop>
   <tabstop>checkBox_autoinit</tabstop>
   <tabstop>checkBox_autotx</tabstop>
@@ -2108,13 +2108,13 @@
   <tabstop>lineEdit_ref</tabstop>
   <tabstop>checkBox_refx2</tabstop>
   <tabstop>checkBox_refdiv2</tabstop>
-  <tabstop>spinBox_R_COUNTER</tabstop>
-  <tabstop>comboBox_presacler</tabstop>
-  <tabstop>comboBox_FEEDBACK_SELECT</tabstop>
+  <tabstop>spinBox_r_counter</tabstop>
+  <tabstop>comboBox_prescaler</tabstop>
+  <tabstop>comboBox_feedback_select</tabstop>
   <tabstop>comboBox_phase_adjust</tabstop>
   <tabstop>spinBox_phase_val</tabstop>
   <tabstop>comboBox_NOISE_MODE</tabstop>
-  <tabstop>comboBox_MUXOUT</tabstop>
+  <tabstop>comboBox_muxout</tabstop>
   <tabstop>comboBox_double_buff</tabstop>
   <tabstop>comboBox_charge_pump_current</tabstop>
   <tabstop>comboBox_LDF</tabstop>
@@ -2131,12 +2131,12 @@
   <tabstop>comboBox_CSR</tabstop>
   <tabstop>comboBox_LDPIN</tabstop>
   <tabstop>comboBox_VCO_POWERDOWN</tabstop>
-  <tabstop>comboBox_MTLD</tabstop>
+  <tabstop>comboBox_mtld</tabstop>
   <tabstop>comboBox_AUX_OUTPUT_SELECT</tabstop>
   <tabstop>comboBox_AUX_OUTPUT_ENABLE</tabstop>
   <tabstop>comboBox_AUX_OUTPUT_POWER</tabstop>
-  <tabstop>comboBox_RF_OUT</tabstop>
-  <tabstop>comboBox_OUTPUT_POWER</tabstop>
+  <tabstop>comboBox_rf_out</tabstop>
+  <tabstop>comboBox_output_power</tabstop>
  </tabstops>
  <resources>
   <include location="Resources.qrc"/>

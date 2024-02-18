@@ -92,7 +92,7 @@ void USBCTRL::pollUSB() {
 
 void USBCTRL::changeReg( const uint32_t *reg, bool autoTx, uint8_t mask ) {
     if ( verbose > 2 )
-        printf( " USBCTRL::changeReg(), %d\n", autoTx );
+        printf( " USBCTRL::changeReg( %d, 0x%02X )\n", autoTx, mask );
     memcpy( uiData.reg, reg, sizeof( uiData.reg ) );
     if ( autoTx )
         uiData.autoTxPending = true;

@@ -4,7 +4,9 @@
 
 #include "adf4351.h"
 #include "usbctrl.h"
+#include <QLineEdit>
 #include <QMainWindow>
+#include <QPushButton>
 #include <QSettings>
 #include <QTimer>
 
@@ -26,11 +28,15 @@ class USBIOBoard : public QMainWindow {
     ADF4351 *adf4351;
 
     QSettings *settings;
+    QLineEdit *regLineEdit[ 6 ];
+    uint32_t regValue[ 6 ];
+    QPushButton *txReg[ 6 ];
     bool autoTX = false;
     bool autoInit = false;
     void getDataFromUI();
     void showEvent( QShowEvent *event );
     QString windowTitle;
+    void showRegChanged( uint8_t mask, bool set = true );
 
   signals:
     void signalUpdateReg( const uint32_t *reg, bool enableAutoTx, uint8_t mask = 0b00111111 );
