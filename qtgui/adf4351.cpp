@@ -31,7 +31,7 @@ uint32_t gcd( uint32_t a, uint32_t b ) {
 
 void ADF4351::buildRegisters() {
     if ( verbose > 1 )
-        printf( "AD4351::BuildRegisters()\n" );
+        printf( " AD4351::BuildRegisters()\n" );
 
     PFDFreq = ( REF_FREQ * double( ref_doubler ? 2 : 1 ) / double( ref_div2 ? 2 : 1 ) / double( r_counter ) );
     uint16_t output_divider = 1;
@@ -139,9 +139,9 @@ void ADF4351::buildRegisters() {
 
 void ADF4351::initFromRegisters() {
     if ( verbose > 1 )
-        printf( "ADF4351::initFromRegisters()\n" );
+        printf( " ADF4351::initFromRegisters()\n" );
     uint16_t uINT = ( reg_values[ 0 ] >> 15 ) & 0xFFFF;
     uint16_t uFRAC = ( reg_values[ 0 ] >> 3 ) & 0x0FFF;
     if ( verbose > 2 )
-        printf( "0x%04X 0x%03X\n", uINT, uFRAC );
+        printf( "  0x%04X 0x%03X\n", uINT, uFRAC );
 }

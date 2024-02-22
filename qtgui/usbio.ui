@@ -568,14 +568,12 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="currentIndex">
+      <number>3</number>
+     </property>
      <item>
       <property name="text">
-       <string>-10 dBm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>-7 dBm</string>
+       <string>-1 dBm</string>
       </property>
      </item>
      <item>
@@ -585,7 +583,12 @@
      </item>
      <item>
       <property name="text">
-       <string>-1 dBm</string>
+       <string>-7 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-10 dBm</string>
       </property>
      </item>
     </widget>
@@ -622,16 +625,11 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <item>
       <property name="text">
-       <string>-10 dBm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>-7 dBm</string>
+       <string>-1 dBm</string>
       </property>
      </item>
      <item>
@@ -641,7 +639,12 @@
      </item>
      <item>
       <property name="text">
-       <string>-1 dBm</string>
+       <string>-7 dBm</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>-10 dBm</string>
       </property>
      </item>
     </widget>

@@ -46,8 +46,9 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
     settings->beginGroup( "adf435x" );
     // set muxout to digital lock detect
     ui->comboBox_muxout->setCurrentIndex( 6 );
-    ui->comboBox_muxout->setToolTip( "The on-chip multiplexer is controlled by R2[DB28:DB26].\n"
-                                     "Note that N counter output must be disabled for VCO band\n"
+    ui->comboBox_muxout->setToolTip( "<b>MUXOUT</b><br/>"
+                                     "The on-chip multiplexer is controlled by R2[28:26].<br/>"
+                                     "Note that N counter output must be disabled for VCO band<br/>"
                                      "selection to operate correctly." );
     ui->comboBox_output_power->setCurrentIndex( settings->value( "OUTPUT_POWER", 0 ).toUInt() );
     ui->comboBox_output_power->setToolTip( "R4[4:3] set the value of the primary RF output power level." );
@@ -70,13 +71,13 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
     ui->comboBox_prescaler->setToolTip( "<b>Prescaler Value</b><br/>"
                                         "The dual-modulus prescaler (P/P + 1), along with the INT, "
                                         "FRAC, and MOD values, determines the overall division "
-                                        "ratio from the VCO output to the PFD input.<br/>"
-                                        "The PR1 bit R1[27] sets the prescaler value.<br/>"
-                                        "Operating at CML levels, the prescaler takes the clock from the<br/>"
-                                        "VCO output and divides it down for the counters. The prescaler<br/>"
-                                        "is based on a synchronous 4/5 core. When the prescaler is set to<br/>"
-                                        "4/5, the maximum RF frequency allowed is 3.6 GHz. Therefore,<br/>"
-                                        "when operating the ADF4351 above 3.6 GHz, the prescaler must<br/>"
+                                        "ratio from the VCO output to the PFD input. "
+                                        "The PR1 bit R1[27] sets the prescaler value. "
+                                        "Operating at CML levels, the prescaler takes the clock from the "
+                                        "VCO output and divides it down for the counters. The prescaler "
+                                        "is based on a synchronous 4/5 core. When the prescaler is set to "
+                                        "4/5, the maximum RF frequency allowed is 3.6 GHz. Therefore, "
+                                        "when operating the ADF4351 above 3.6 GHz, the prescaler must "
                                         "be set to 8/9. The prescaler limits the INT value as follows:<br/>"
                                         "• Prescaler = 4/5: N min = 23<br/>"
                                         "• Prescaler = 8/9: N min = 75" );
@@ -127,6 +128,72 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
                                           "2. A new write is performed on Register R0." );
     settings->endGroup(); // adf435x
 
+    ui->comboBox_charge_pump_current->setToolTip( "<b>Charge Pump Current Setting</b><br/>"
+                                                  "Bits R2[12:9] set the charge pump current. This value should "
+                                                  "be set to the charge pump current that the loop filter is designed "
+                                                  "with." );
+    ui->comboBox_NOISE_MODE->setToolTip( "<b>Low Noise and Low Spur Modes</b><br/>"
+                                         "The noise mode on the ADF4351 is controlled by setting "
+                                         "R2[30:29]. The noise mode "
+                                         "allows the user to optimize a design either for improved spurious "
+                                         "performance or for improved phase noise performance.<br/>"
+                                         "When the <i>low spur mode</i> is selected, dither is enabled. Dither "
+                                         "randomizes the fractional quantization noise so that it resembles "
+                                         "white noise rather than spurious noise. As a result, the part is "
+                                         "optimized for improved spurious performance. Low spur mode "
+                                         "is normally used for fast-locking applications when the PLL "
+                                         "closed-loop bandwidth is wide. Wide loop bandwidth is a loop "
+                                         "bandwidth greater than 1/10 of the RFOUT channel step resolution "
+                                         "(fRES). A wide loop filter does not attenuate the spurs to the "
+                                         "same level as a narrow loop bandwidth.<br/>"
+                                         "For best noise performance, use the low noise mode option. "
+                                         "When the <i>low noise mode</i> is selected, dither is disabled. This "
+                                         "mode ensures that the charge pump operates in an optimum "
+                                         "region for noise performance. Low noise mode is extremely "
+                                         "useful when a narrow loop filter bandwidth is available. The "
+                                         "synthesizer ensures extremely low noise, and the filter attenuates "
+                                         "the spurs." );
+    ui->comboBox_LDF->setToolTip( "<b>Lock Detect Function (LDF)</b><br/>"
+                                  "The R2[8] bit configures the lock detect function (LDF). The LDF "
+                                  "controls the number of PFD cycles monitored by the lock detect "
+                                  "circuit to ascertain whether lock has been achieved. When DB8 is "
+                                  "set to 0, the number of PFD cycles monitored is 40. When DB8 "
+                                  "is set to 1, the number of PFD cycles monitored is 5. It is "
+                                  "recommended that the R2[8] bit be set to 0 for fractional-N mode "
+                                  "and to 1 for integer-N mode." );
+    ui->comboBox_LDP->setToolTip( "<b>Lock Detect Precision (LDP)</b><br/>"
+                                  "The lock detect precision bit R2[7] sets the comparison "
+                                  "window in the lock detect circuit. When R2[7] is set to 0, the "
+                                  "comparison window is 10 ns; when R2[7] is set to 1, the window "
+                                  "is 6 ns. The lock detect circuit goes high when n consecutive "
+                                  "PFD cycles are less than the comparison window value; n is set "
+                                  "by the LDF bit R2[8]. For example, with R2[8] = 0 and R2[7] = 0, "
+                                  "40 consecutive PFD cycles of 10 ns or less must occur before "
+                                  "digital lock detect goes high." );
+    ui->comboBox_band_select_clk_mode->setToolTip( "<b>Band Select Clock Mode</b><br/>"
+                                                   "Setting the R3[23] bit to 1 selects a faster logic sequence of band "
+                                                   "selection, which is suitable for high PFD frequencies and is "
+                                                   "necessary for fast lock applications. Setting the R3[23] bit to 0 is "
+                                                   "recommended for low PFD (&lt;125 kHz) values. For the faster "
+                                                   "band select logic modes (R3[23] set to 1), the value of the band "
+                                                   "select clock divider must be less than or equal to 254." );
+    ui->comboBox_charge_cancellation->setToolTip( "<b>Charge Cancelation</b><br/>"
+                                                  "Setting the R3[21] bit to 1 enables charge pump charge cancelation. "
+                                                  "This has the effect of reducing PFD spurs in integer-N "
+                                                  "mode. In fractional-N mode, this bit should be set to 0." );
+    ui->comboBox_CLK_div_mode->setToolTip( "<b>Clock Divider Mode</b><br/>"
+                                           "R3[16:15] must be set to 10 to activate phase resync "
+                                           "(see the Phase Resync section). These bits must be set to 01 "
+                                           "to activate fast lock (see the Fast Lock Timer and Register "
+                                           "Sequences section). Setting R3[16:15] to 00 disables "
+                                           "the clock divider." );
+    ui->spinBox_clock_divider->setToolTip( "<b>12-Bit Clock Divider Value</b><br/>"
+                                           "R3[14:3] set the 12-bit clock divider value. This value "
+                                           "is the timeout counter for activation of phase resync. "
+                                           "The clock divider value also sets the "
+                                           "timeout counter for fast lock." );
+
+
     connect( this, SIGNAL( signalRecalculate() ), adf4351, SLOT( buildRegisters() ) );
 
     connect( this, SIGNAL( signalUpdateReg( const uint32_t *, bool, uint8_t ) ), usbCtrl,
@@ -139,11 +206,13 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
     connect( usbCtrl, SIGNAL( usbctrlUpdate( bool, UI_Data * ) ), this, SLOT( updateGUI( bool, UI_Data * ) ) );
     connect( adf4351, SIGNAL( regUpdateResult() ), this, SLOT( displayReg() ) );
 
-    connect( ui->checkBox_autotx, &QPushButton::clicked, this, [ this ]() {
+    connect( ui->checkBox_autotx, &QCheckBox::clicked, this, [ this ]() {
         autoTX = ui->checkBox_autotx->isChecked();
         ui->USBTX->setEnabled( !autoTX );
         for ( int r = 0; r < 6; ++r )
             txReg[ r ]->setEnabled( !autoTX );
+        if ( autoTX && regChanged )
+            updateReg();
     } );
 
     connect( ui->doubleSpinBox_frequency, SIGNAL( valueChanged( double ) ), this, SLOT( recalculate() ) );
@@ -258,8 +327,8 @@ void USBIOBoard::getDataFromUI() {
     adf4351->mtld = ui->comboBox_mtld->currentIndex();
     adf4351->AUX_OUTPUT_SELECT = ui->comboBox_AUX_OUTPUT_SELECT->currentIndex();
     adf4351->AUX_OUTPUT_ENABLE = ui->comboBox_AUX_OUTPUT_ENABLE->currentIndex();
-    adf4351->AUX_OUTPUT_POWER = ui->comboBox_AUX_OUTPUT_POWER->currentIndex();
-    adf4351->output_power = ui->comboBox_output_power->currentIndex();
+    adf4351->AUX_OUTPUT_POWER = 3 - ui->comboBox_AUX_OUTPUT_POWER->currentIndex(); // index 0: max power
+    adf4351->output_power = 3 - ui->comboBox_output_power->currentIndex();         // index 0: max power
     adf4351->RF_ENABLE = ui->comboBox_rf_out->currentIndex();
     adf4351->PR1 = ui->comboBox_prescaler->currentIndex();
     adf4351->feedback_select = ui->comboBox_feedback_select->currentIndex();
@@ -276,12 +345,17 @@ void USBIOBoard::showRegChanged( uint8_t mask, bool set ) {
     for ( int r = 0; r < 6; ++r )
         if ( mask & 1 << r )
             regLineEdit[ r ]->setStyleSheet( set ? "QLineEdit { color : red; }" : "QLineEdit { color : black; }" );
+    // remenber reg status
+    if ( set )
+        regChanged |= mask;
+    else
+        regChanged &= ~mask & 0b00111111;
 }
 
 
 void USBIOBoard::updateReg( uint8_t regs_changed ) {
     if ( verbose > 2 )
-        printf( " USBIOBoard::updateReg( 0x%02X )\n", regs_changed );
+        printf( "  USBIOBoard::updateReg( 0x%02X )\n", regs_changed );
 
     const uint32_t reg_values[] = {
         ui->line_reg0->text().toUInt( nullptr, 16 ), ui->line_reg1->text().toUInt( nullptr, 16 ),
@@ -313,7 +387,7 @@ void USBIOBoard::displayReg() {
 void USBIOBoard::updateGUI( bool isConnected, UI_Data *ui_data ) {
     static bool wasConnected = false;
     if ( verbose > 3 )
-        printf( "  USBIOBoard::update_gui( %d )\n", isConnected );
+        printf( "   USBIOBoard::update_gui( %d )\n", isConnected );
     ui->labelMuxOut->setVisible( isConnected );
     autoInit = ui->checkBox_autoinit->isChecked();
     if ( isConnected ) {

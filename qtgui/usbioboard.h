@@ -37,6 +37,7 @@ class USBIOBoard : public QMainWindow {
     void showEvent( QShowEvent *event );
     QString windowTitle;
     void showRegChanged( uint8_t mask, bool set = true );
+    uint8_t regChanged = 0;
 
   signals:
     void signalUpdateReg( const uint32_t *reg, bool enableAutoTx, uint8_t mask = 0b00111111 );
