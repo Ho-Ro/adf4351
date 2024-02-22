@@ -55,7 +55,7 @@ usb_desc_device_c usb_device = {
     .bMaxPacketSize0 = 64,
     .idVendor = 0x0456,
     .idProduct = 0xb40d,
-    .bcdDevice = 0x0037,
+    .bcdDevice = 0x0038, // FW version 0.3.8
     .iManufacturer = 1, // 1 = usb_strings[0]
     .iProduct = 2,      // 2 = usb_strings[1]
     .iSerialNumber = 3, // 3 = usb_strings[2] if exist
@@ -126,42 +126,39 @@ enum {
 // 6 x 32 bit register + 6 byte reserved + 1 byte init_type + 1 byte checksum
 __xdata uint8_t reg_set[ REG_SET_SIZE ];
 
+// EZ-USB® FX2LP™ Unique ID Registers – KBA89285
+// Question:
+// Is there a die ID or a unique ID on each EZ-USB® FX2LP™ chip
+// that can be used in the application firmware?
+// Answer:
+// Yes. The FX2LP chips have a 6-byte unique ID that can be read and used
+// in the application firmware by customers. This ID is present at these
+// register addresses: 0xE507, 0xE508, 0xE509, 0xE50A, 0xE50B, and 0xE50C.
+// The most significant byte is present at address 0xE50C,
+// and the least significant byte is present at address 0xE507.
+// Please make sure to read and store the ID in that order.
 
-// ID Registers that provide an unique serial number -> Cypress KBA89285
-__xdata __at 0xE507 volatile uint8_t UNIQID0; // ID register byte 0 (LSB)
-__xdata __at 0xE508 volatile uint8_t UNIQID1; // ID register
-__xdata __at 0xE509 volatile uint8_t UNIQID2; // ID register
-__xdata __at 0xE50A volatile uint8_t UNIQID3; // ID register
-__xdata __at 0xE50B volatile uint8_t UNIQID4; // ID register
-__xdata __at 0xE50C volatile uint8_t UNIQID5; // ID register byte 5 (MSB)
-
+__xdata __at 0xE507 volatile uint8_t UNIQID[6] ;  // 6 ID register bytes little endian
 
 static __xdata char *usb_string_at_index(uint8_t index) {
   return (__xdata char *)usb_strings[index - 1];
 }
 
-
 static void prepare_unique_serial_number() {
     // array used to convert hex to ascii
-    const char hex2Ascii[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
+    const char hex2ascii[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
                                    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
     // Prepare the serial number target string, cast away the constness
     __xdata char *usb_string_serial_number = usb_string_at_index(usb_device.iSerialNumber);
 
     // Get unique serial number from processor.
-    usb_string_serial_number[11] = hex2Ascii[ ( UNIQID0 & 0xF0 ) >> 4 ]; /* LSB */
-    usb_string_serial_number[10] = hex2Ascii[ UNIQID0 & 0x0F ];
-    usb_string_serial_number[9] = hex2Ascii[ ( UNIQID1 & 0xF0 ) >> 4 ];
-    usb_string_serial_number[8] = hex2Ascii[ UNIQID1 & 0x0F ];
-    usb_string_serial_number[7] = hex2Ascii[ ( UNIQID2 & 0xF0 ) >> 4 ];
-    usb_string_serial_number[6] = hex2Ascii[ UNIQID2 & 0x0F ];
-    usb_string_serial_number[5] = hex2Ascii[ ( UNIQID3 & 0xF0 ) >> 4 ];
-    usb_string_serial_number[4] = hex2Ascii[ UNIQID3 & 0x0F ];
-    usb_string_serial_number[3] = hex2Ascii[ ( UNIQID4 & 0xF0 ) >> 4 ];
-    usb_string_serial_number[2] = hex2Ascii[ UNIQID4 & 0x0F ];
-    usb_string_serial_number[1] = hex2Ascii[ ( UNIQID5 & 0xF0 ) >> 4 ];
-    usb_string_serial_number[0] = hex2Ascii[ UNIQID5 & 0x0F ]; /* MSB */
+    uint8_t bbb = 6; // start with MSB
+    while ( bbb-- ) {
+        uint8_t uniqid = UNIQID[bbb];
+        *usb_string_serial_number++ = hex2ascii[ uniqid >> 4 & 0x0F ];  // upper nibble
+        *usb_string_serial_number++ = hex2ascii[ uniqid & 0x0F ];  // lower nibble
+    }
 }
 
 

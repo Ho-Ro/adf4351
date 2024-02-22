@@ -73,6 +73,11 @@ init_group.add_argument('--init-always', dest='init_always', action='store_true'
 
 # Parse
 options = parser.parse_args()
+
+if options.version:
+    print( adf435x_version )
+    sys.exit()
+
 args = vars(options)
 
 if options.interface == 'FX2': # do the communication with the ADF435x device

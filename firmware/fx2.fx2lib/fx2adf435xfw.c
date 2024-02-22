@@ -150,18 +150,18 @@ void insert_serial_number() {
     const char hex2Ascii[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
                                    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' }; /* array used to convert hex to ascii */
 
-    *( (BYTE __xdata *)p_serial_num + 24 ) = hex2Ascii[ ( UNIQID0 & 0xF0 ) >> 4 ]; /* LSB */
-    *( (BYTE __xdata *)p_serial_num + 22 ) = hex2Ascii[ UNIQID0 & 0x0F ];
-    *( (BYTE __xdata *)p_serial_num + 20 ) = hex2Ascii[ ( UNIQID1 & 0xF0 ) >> 4 ];
-    *( (BYTE __xdata *)p_serial_num + 18 ) = hex2Ascii[ UNIQID1 & 0x0F ];
-    *( (BYTE __xdata *)p_serial_num + 16 ) = hex2Ascii[ ( UNIQID2 & 0xF0 ) >> 4 ];
-    *( (BYTE __xdata *)p_serial_num + 14 ) = hex2Ascii[ UNIQID2 & 0x0F ];
-    *( (BYTE __xdata *)p_serial_num + 12 ) = hex2Ascii[ ( UNIQID3 & 0xF0 ) >> 4 ];
-    *( (BYTE __xdata *)p_serial_num + 10 ) = hex2Ascii[ UNIQID3 & 0x0F ];
-    *( (BYTE __xdata *)p_serial_num + 8 ) = hex2Ascii[ ( UNIQID4 & 0xF0 ) >> 4 ];
-    *( (BYTE __xdata *)p_serial_num + 6 ) = hex2Ascii[ UNIQID4 & 0x0F ];
-    *( (BYTE __xdata *)p_serial_num + 4 ) = hex2Ascii[ ( UNIQID5 & 0xF0 ) >> 4 ];
-    *( (BYTE __xdata *)p_serial_num + 2 ) = hex2Ascii[ UNIQID5 & 0x0F ]; /* MSB */
+    *( (BYTE __xdata *)p_serial_num + 24 ) = hex2Ascii[ UNIQID0 & 0x0F ]; /* LSB */
+    *( (BYTE __xdata *)p_serial_num + 22 ) = hex2Ascii[ ( UNIQID0 & 0xF0 ) >> 4 ];
+    *( (BYTE __xdata *)p_serial_num + 20 ) = hex2Ascii[ UNIQID1 & 0x0F ];
+    *( (BYTE __xdata *)p_serial_num + 18 ) = hex2Ascii[ ( UNIQID1 & 0xF0 ) >> 4 ];
+    *( (BYTE __xdata *)p_serial_num + 16 ) = hex2Ascii[ UNIQID2 & 0x0F ];
+    *( (BYTE __xdata *)p_serial_num + 14 ) = hex2Ascii[ ( UNIQID2 & 0xF0 ) >> 4 ];
+    *( (BYTE __xdata *)p_serial_num + 12 ) = hex2Ascii[ UNIQID3 & 0x0F ];
+    *( (BYTE __xdata *)p_serial_num + 10 ) = hex2Ascii[ ( UNIQID3 & 0xF0 ) >> 4 ];
+    *( (BYTE __xdata *)p_serial_num + 8 ) = hex2Ascii[ UNIQID4 & 0x0F ];
+    *( (BYTE __xdata *)p_serial_num + 6 ) = hex2Ascii[ ( UNIQID4 & 0xF0 ) >> 4 ];
+    *( (BYTE __xdata *)p_serial_num + 4 ) = hex2Ascii[ UNIQID5 & 0x0F ];
+    *( (BYTE __xdata *)p_serial_num + 2 ) = hex2Ascii[ ( UNIQID5 & 0xF0 ) >> 4 ]; /* MSB */
 }
 
 void fx2adf435xfw_init( void ) {

@@ -105,3 +105,10 @@ distclean: clean
 	-make -j4 -C firmware/stm32/libopencm3 clean
 	-make -C qtgui distclean
 
+
+# show the versions from python package and firmware
+.PHONY:	show_versions
+show_versions:
+	-@grep VERSION  adf435x/core.py | cut -d= -f2
+	-@fgrep .bcdDevice firmware/fx2/main.c | cut -d= -f2
+	-@fgrep 'VER =' firmware/fx2.fx2lib/dscr.a51 | cut -d= -f2

@@ -20,7 +20,7 @@
 ##
 
 
-VERSION = '0.3.7'
+VERSION = '0.3.8'
 
 
 from math import ceil, floor, log
