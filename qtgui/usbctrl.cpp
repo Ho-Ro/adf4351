@@ -52,10 +52,10 @@ void USBCTRL::pollUSB() {
                 if ( verbose > 2 ) {
                     printf( "  FW%04X\n", bcdDevice );
                 }
-                if ( libusb_get_string_descriptor_ascii( device_handle, device_descriptor.iSerialNumber, serNum, 31 ) >= 0 ) {
-                    serNum[ 32 ] = '\0';
+                if ( libusb_get_string_descriptor_ascii( device_handle, device_descriptor.iSerialNumber, serialNumber, 32 ) >= 0 ) {
+                    serialNumber[ 32 ] = '\0';
                     if ( verbose > 2 )
-                        printf( "  SerNum: %s\n", serNum );
+                        printf( "  SerNum: %s\n", serialNumber );
                 }
                 uiData.firmwareVersionMajor = bcdDevice >> 8;
                 uiData.firmwareVersionMinor = ( bcdDevice & 0x00F0 ) >> 4;

@@ -28,23 +28,27 @@ adf435x
 1. Install depedencies:
 
    On Debian/Ubuntu:
-   ```sh
+
+```sh
    sudo apt install python3-setuptools python3-usb
-   ```
+```
 
 2. Build a Debian package:
-   ```sh
+
+```sh
    make deb
-   ```
+```
 
 3. Install the Debian package:
-   ```sh
+
+```sh
    make debinstall
-   ```
+```
 
 ### Usage
 
 This code sets the output frequency to 100 MHz:
+
 ```python
 from adf435x.interfaces import FX2
 from adf435x import freq_make_regs
@@ -62,35 +66,30 @@ adf435xctl
 Requires **adf435x** to be installed.
 
 ```
-usage: adf435xctl [-h] [--device-type DEVICE_TYPE] [--freq FREQ] [--ref-freq REF_FREQ]
-                  [--r-counter R_COUNTER] [--ref-doubler] [--ref-div2]
-                  [--feedback-select FEEDBACK_SELECT]
+usage: adf435xctl [-h] [--device-type DEVICE_TYPE] [--freq FREQ] [--ref-freq REF_FREQ] [--r-counter R_COUNTER]
+                  [--ref-doubler] [--ref-div2] [--feedback-select FEEDBACK_SELECT]
                   [--band-select-clock-divider BAND_SELECT_CLOCK_DIVIDER]
-                  [--band-select-clock-mode BAND_SELECT_CLOCK_MODE] [--int INT] [--frac FRAC]
-                  [--mod MOD] [--phase-value PHASE_VALUE] [--prescaler-4-5]
-                  [--low-noise-spur-mode LOW_NOISE_SPUR_MODE] [--mux-out MUX_OUT]
-                  [--double-buff-r4] [--charge-pump-current CHARGE_PUMP_CURRENT] [--ldp LDP]
-                  [--pd-polarity PD_POLARITY] [--powerdown] [--cp-three-state]
-                  [--counter-reset] [--abp ABP] [--charge-cancel] [--csr]
-                  [--clk-div-mode CLK_DIV_MODE] [--clock-divider-value CLOCK_DIVIDER_VALUE]
-                  [--output-divider OUTPUT_DIVIDER] [--vco-powerdown]
-                  [--mute-till-lock-detect] [--aux-output-select AUX_OUTPUT_SELECT]
-                  [--aux-output-enable] [--aux-output-power AUX_OUTPUT_POWER]
-                  [--output-disable] [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE]
-                  [--r0 R0] [--r1 R1] [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5]
-                  [--interface INTERFACE] [--lock-detect] [-v] [-V]
+                  [--band-select-clock-mode BAND_SELECT_CLOCK_MODE] [--int INT] [--frac FRAC] [--mod MOD]
+                  [--phase-value PHASE_VALUE] [--prescaler-4-5] [--low-noise-spur-mode LOW_NOISE_SPUR_MODE]
+                  [--mux-out MUX_OUT] [--double-buff-r4] [--charge-pump-current CHARGE_PUMP_CURRENT] [--ldp LDP]
+                  [--pd-polarity PD_POLARITY] [--powerdown] [--cp-three-state] [--counter-reset] [--abp ABP]
+                  [--charge-cancel] [--csr] [--clk-div-mode CLK_DIV_MODE] [--clock-divider-value CLOCK_DIVIDER_VALUE]
+                  [--output-divider OUTPUT_DIVIDER] [--vco-powerdown] [--mute-till-lock-detect]
+                  [--aux-output-select AUX_OUTPUT_SELECT] [--aux-output-enable] [--aux-output-power AUX_OUTPUT_POWER]
+                  [--output-disable] [--output-power OUTPUT_POWER] [--ld-pin-mode LD_PIN_MODE] [--r0 R0] [--r1 R1]
+                  [--r2 R2] [--r3 R3] [--r4 R4] [--r5 R5] [--interface INTERFACE] [--lock-detect] [-v] [-V]
                   [--init-none | --init-stand-alone | --init-always]
 
 Control program for ADF4350/1 eval board
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --device-type DEVICE_TYPE
                         default = 1
   --freq FREQ, -f FREQ  default = 50.0
   --ref-freq REF_FREQ   default = 25.0
   --r-counter R_COUNTER
-                        default = 1
+                        default = 250
   --ref-doubler         default = False
   --ref-div2            default = False
   --feedback-select FEEDBACK_SELECT
@@ -154,24 +153,27 @@ optional arguments:
   --init-stand-alone    set current settings as init for no-USB mode and exit
   --init-always         set current settings as init for power-on and exit
 
-adf435x version 0.3.6
+adf435x version 0.3.8
 ```
 
 ### Usage Examples
 
 Sets the output frequency to 1000 MHz.
 The program `adf435xctl` returns `0` (no error) on success, otherwise `!= 0`.
+
 ```sh
 ./adf435xctl --freq=1000
 ```
 
-Sets the output frequency to 1000 MHz, sets MUXOUT pin to reflect LD (6 = digital lock detect) and checks the pin status.
+ Sets the output frequency to 1000 MHz, sets MUXOUT pin to reflect LD (6 = digital lock detect) and checks the pin status.
 When locked, the command prints "LOCKED" and returns `0` (no error), otherwise it prints "NOLOCK" and returns `1` (error).
+
 ```sh
 ./adf435xctl --freq=1000 --lock-detect
 ```
 
 This allows to chain the program.
+
 ```sh
 ./adf435xctl --freq=1000 --lock-detect && echo SUCCESS
 ```
@@ -209,21 +211,24 @@ e.g. to get the LD (lock detect) condition (set MUXOUT bits of reg 2 to 6).
 ### Building
 
 1. First init/update all the sub-modules within the git repository, silence the message about changed submodule:
-   ```sh
+
+```sh
    git submodule update --init
-   ```
+```
 
 2. Install AutoTools and the SDCC (Small Devices C Compiler).
 
    On Debian/Ubuntu:
-   ```sh
+
+```sh
    sudo apt install make sdcc
-   ```
+```
 
 3. Build the firmware:
-   ```sh
+
+```sh
    make firmware
-   ```
+```
 
    You will get the firmware files `fx2adf435xfw.ihx` and `fx2adf435xfw.iic`
 
@@ -245,21 +250,25 @@ Just disconnect and reconnect and upload the correct FW.
 Install *cycfx2prog*.
 
    On Debian/Ubuntu:
-   ```sh
+
+```sh
    sudo apt install cycfx2prog
-   ```
+```
 
 1. Connect the FX2 board to the USB, a typical FX2 eval board should come up with VID:PID `04b4:8613`,
 while an Analog Devices ADF435x eval board clone announces typically as `0456:b40d` or `0456:b403`.
 2. Load the firware file `fx2adf435xfw.ihx` to the unconfigured Cypress FX2 RAM with the following command:
-   ```sh
+
+```sh
 cycfx2prog prg:fx2adf435xfw.ihx run
-   ```
+```
    or use the command `./adf435xinit`.
    If the eval board clone announces already as e.g. `0456:b40d`, modify the upload command:
-   ```sh
+
+```sh
 cycfx2prog -id=0x0456.0xb40d prg:fx2adf435xfw.ihx run
-   ```
+```
+
 3. The device will now renumerate with the VID:PID `0456:b40d` as an *"ANALOG DEVICES"* *"EVAL-ADF4351"*.
 
 ### Store the firmware permanently in EEPROM
@@ -279,20 +288,24 @@ See the [complete documentation](https://libfx2.readthedocs.io) for details.
 You can use the simple command line tool [fx2eeprom](https://github.com/Ho-Ro/fx2eeprom).
 
 1. Prepare the tools
+
 ```sh
 apt install cycfx2prog libusb-1.0-0-dev
 git clone https://github.com/Ho-Ro/fx2eeprom.git
 cd fx2eeprom
 make
 ```
+
 2. Copy the file `fx2adf435xfw.iic` into the `fx2eeprom` directory.
 3. Activate the *large* EEPROM, on my Chinese eval board by removing the jumper `JP1`.
 4. Connect the device, check the VID:PID, e.g. with `lsusb` or `sudo dmesg`,
    it's typically `0x0456`:`0xb40d` (ADF435x eval board) or `0x0456`:`0xb403` (ADF4xxx interface).
 5. Write the firmware into EEPROM, use the VID:PID as above.
+
 ```sh
 ./fx2eeprom w 0x0456 0xb40d < fx2adf435xfw.iic
 ```
+
 6. Disconnect and reconnect the eval board, it will now come up with VID/PID `0456:b40d`
 as an *"ANALOG DEVICES"* *"EVAL-ADF4351"* and can be used immediately from now on.
 

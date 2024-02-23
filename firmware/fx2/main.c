@@ -96,9 +96,9 @@ usb_configuration_set_c usb_configs[] = {
 
 usb_ascii_string_c usb_strings[] = {
     // set string numbers in usb_device to 1, 2 (,3)
-    "ANALOG DEVICES", // string = 1, Product
-    "EVAL-ADF4351",   // string = 2, Manufacturer
-    "EXPERIMENTAL",   // string = 3, SerialNumber, must be 12 char long
+    "ANALOG DEVICES", // string = 1, Manufacturer
+    "EVAL-ADF4351",   // string = 2, Product
+    "EXPERIMENTAL",   // string = 3, space for SerialNumber, must be 12 char long
 };
 
 __xdata struct usb_descriptor_set usb_descriptor_set = {

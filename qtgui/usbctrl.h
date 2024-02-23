@@ -61,7 +61,7 @@ class USBCTRL : public QObject {
     libusb_device *device;
     libusb_device_descriptor device_descriptor;
     uint16_t bcdDevice = 0;
-    uint8_t serNum[ 33 ];
+    uint8_t serialNumber[ 33 ];
 
     QTimer *timer;
     QTimer *slowRead;

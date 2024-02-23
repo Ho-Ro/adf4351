@@ -1725,10 +1725,10 @@
     <widget class="QLabel" name="labelMuxOut">
      <property name="geometry">
       <rect>
-       <x>625</x>
-       <y>362</y>
-       <width>71</width>
-       <height>46</height>
+       <x>336</x>
+       <y>335</y>
+       <width>261</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -1742,6 +1742,32 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="adaptiveScroll">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>370</y>
+       <width>88</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Adaptive
+Scroll</string>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoRepeatDelay">
+      <number>300</number>
      </property>
     </widget>
    </widget>

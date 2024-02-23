@@ -252,6 +252,21 @@ USBIOBoard::USBIOBoard( QWidget *parent ) : QMainWindow( parent ), ui( new Ui::U
     connect( ui->lineEdit_ref, SIGNAL( textChanged( QString ) ), this, SLOT( recalculate() ) );
     for ( int r = 0; r < 6; ++r )
         connect( regLineEdit[ r ], &QLineEdit::textChanged, this, [ this, r ]() { showRegChanged( 1 << r ); } );
+    connect( ui->adaptiveScroll, &QCheckBox::clicked, this, [ this ]() {
+        if ( ui->adaptiveScroll->isChecked() ) { // reset frequency to multiples of step width
+            ui->doubleSpinBox_frequency->setStepType( QAbstractSpinBox::AdaptiveDecimalStepType );
+            int freq = ui->doubleSpinBox_frequency->value();
+            if ( freq > 1000 )
+                freq = ( ( freq + 50 ) / 100 ) * 100;
+            else if ( freq > 100 )
+                freq = ( ( freq + 5 ) / 10 ) * 10;
+            else
+                freq = ui->doubleSpinBox_frequency->value() + 0.501;
+            ui->doubleSpinBox_frequency->setValue( freq );
+        } else {
+            ui->doubleSpinBox_frequency->setStepType( QAbstractSpinBox::DefaultStepType );
+        }
+    } );
 
     recalculate();
 
