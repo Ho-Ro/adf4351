@@ -10,5 +10,5 @@ while True:
     for freq in range(50, 100):
         regs = freq_make_regs(freq)
         intf.set_regs(regs[::-1])
-        print('%0.1fMHz' % freq)
+        print('%0.1f MHz' % freq)
         time.sleep(0.1)

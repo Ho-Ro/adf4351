@@ -6,6 +6,7 @@ PID = 0xb40d
 CONFIGBYTE = 0x01
 
 IHX2IIC = firmware/fx2.fx2lib/fx2lib/utils/ihx2iic.py --vid $(VID) --pid $(PID) --configbyte $(CONFIGBYTE)
+FX2EEPROM = fx2eeprom w $(VID) $(PID)
 
 .PHONY: all
 all: firmware gui
@@ -39,6 +40,11 @@ stm32adf435xfw.bin: firmware/stm32/stm32adf435xfw.bin
 firmware/stm32/stm32adf435xfw.bin: firmware/stm32/stm32adf435xfw.c
 	make -j4 -C firmware/stm32/libopencm3
 	make -j4 -C firmware/stm32
+
+
+.PHONY:	store_fw
+store_fw: fx2adf435xfw.iic
+	$(FX2EEPROM) < $<
 
 
 .PHONY:	upload_fw

@@ -3,7 +3,7 @@
 ## This file is part of the adf435x project.
 ##
 ## Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
-## Copyright (C) 2022, 2023 Martin Homuth-Rosemann
+## Copyright (C) 2022-2024 Martin Homuth-Rosemann
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ class FX2:
             self.dev.ctrl_transfer(
                 bmRequestType=0x40, bRequest=USB_REQ_SET_REG, wValue=0, wIndex=0, data_or_wLength=data )
 
-    def set_startup( self, typ ): # store the registers into EEPROM as default setting
+    def set_startup( self, typ ): # store the current register values into EEPROM as default setting
         self.dev.ctrl_transfer(
             bmRequestType=0x40, bRequest=USB_REQ_EE_REGS, wValue=typ, wIndex=0, data_or_wLength=None )
 
@@ -67,15 +67,15 @@ class FX2:
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_GET_MUX, wValue=0, wIndex=0, data_or_wLength=1 )
 
-    def get_eeprom( self, addr=8160, size=32 ):
+    def get_eeprom( self, addr=8160, size=32 ): # read EEPROM content, default is the register set
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_EEPROM_DB, wValue=addr, wIndex=0, data_or_wLength=size )
 
-    def set_eeprom( self, data, addr=8160 ):
+    def set_eeprom( self, data, addr=8160 ): # write EEPROM content, default is the register set
         self.dev.ctrl_transfer(
             bmRequestType=0x40, bRequest=USB_REQ_CYPRESS_EEPROM_DB, wValue=addr, wIndex=0, data_or_wLength=data )
 
-    def get_xram( self, addr=0x3e00, size=32 ):
+    def get_xram( self, addr=0x3e00, size=32 ): # read XRAM content, default is the register set
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_EXT_RAM, wValue=addr, wIndex=0, data_or_wLength=size )
 
@@ -90,7 +90,7 @@ class FX2:
 
 class BusPirate:
     '''This interface communicates via serial port using the pyBusPirateLite
-    module and translates the command in native SPI.'''
+    module and translates the command in native SPI. (untested)'''
 
     def __init__(self, device='/dev/ttyUSB0', baudrate=115200):
         '''Initialize the interface for the Bus Pirate using "device"

@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 
 # requires the new fx2 firmware (based on libfx2)
+# store current register settings as default for power-on without USB connection
 
 from adf435x.interfaces import FX2
 
-intf = FX2()
-
-rev = intf.get_chip_rev()[0]
-print( 'FX2 chip revision:', rev )
-
+FX2().set_startup( 2 )

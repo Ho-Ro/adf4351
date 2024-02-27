@@ -7,8 +7,8 @@ import time
 from adf435x.interfaces import FX2
 from adf435x import freq_make_regs
 
-fMin = 34.375 # MHz
-fMax = 4400   # MHz
+fMin = 33   # MHz
+fMax = 4500 # MHz
 
 
 def usage():
@@ -32,7 +32,7 @@ def decode_frequency( freq_string ):
 if len( sys.argv ) != 2:
     usage()
 
-freq = decode_frequency( sys.argv[1] )
+freq = decode_frequency( sys.argv[1].upper() )
 if freq < fMin or freq > fMax:
     usage()
 

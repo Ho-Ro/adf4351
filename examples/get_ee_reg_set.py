@@ -14,16 +14,16 @@ intf = FX2()
 
 reg_set = intf.get_eeprom()
 
-if reg_set[-2] != 0xEC: # EEPROM checksum magic value
+if reg_set[-2] == 0: # EEPROM checksum magic value
     print( 'no valid default reg set')
     print( reg_set )
-    sys.exit(1)
+    # sys.exit(1)
 
 cs_ee = reg_set[-1] # checksum from reg_set
 
 # calculate checksum
 cs_calc = 0
-for iii in range(24):
+for iii in range(31):
     cs_calc ^= reg_set[iii]
 
 if  cs_ee == cs_calc: # cs match

@@ -10,7 +10,7 @@
  * fx2ad4351fw is an open-source firmware for a Cypress FX2 based USB
  * interface to the Analog Devices ADF435x series of chips.
  * Inspired by libfx2/firmware/boot-cypress, uses libfx2 as helper library.
- * Copyright (C) 2023 Martin Homuth-Rosemann
+ * Copyright (C) 2023-2024 Martin Homuth-Rosemann
  *
  * The code is licensed under the terms of the GNU GPL, version 3 or later.
  */
@@ -41,7 +41,6 @@
 #define REG_SET_SIZE 32
 // store at top af address space
 #define EEPROM_REG_ADDR ( EEPROM_I2C_SIZE - REG_SET_SIZE )
-#define EEPROM_CHECKSUM_MAGIC 0xEC
 
 #define EP0BUFF_SIZE 64
 
@@ -56,9 +55,9 @@ usb_desc_device_c usb_device = {
     .idVendor = 0x0456,
     .idProduct = 0xb40d,
     .bcdDevice = 0x0038, // FW version 0.3.8
-    .iManufacturer = 1, // 1 = usb_strings[0]
-    .iProduct = 2,      // 2 = usb_strings[1]
-    .iSerialNumber = 3, // 3 = usb_strings[2] if exist
+    .iManufacturer = 1,  // 1 = usb_strings[0]
+    .iProduct = 2,       // 2 = usb_strings[1]
+    .iSerialNumber = 3,  // 3 = usb_strings[2] if exist
     .bNumConfigurations = 1,
 };
 
@@ -138,26 +137,21 @@ __xdata uint8_t reg_set[ REG_SET_SIZE ];
 // and the least significant byte is present at address 0xE507.
 // Please make sure to read and store the ID in that order.
 
-__xdata __at 0xE507 volatile uint8_t UNIQID[6] ;  // 6 ID register bytes little endian
+__xdata __at 0xE507 volatile uint8_t UNIQID[ 6 ]; // 6 ID register bytes little endian
 
-static __xdata char *usb_string_at_index(uint8_t index) {
-  return (__xdata char *)usb_strings[index - 1];
-}
+static __xdata char *usb_string_at_index( uint8_t index ) { return (__xdata char *)usb_strings[ index - 1 ]; }
+
+// array used to convert hex to ascii
+static const char hex2ascii[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 static void prepare_unique_serial_number() {
-    // array used to convert hex to ascii
-    const char hex2ascii[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7',
-                                   '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
     // Prepare the serial number target string, cast away the constness
-    __xdata char *usb_string_serial_number = usb_string_at_index(usb_device.iSerialNumber);
+    __xdata char *usb_string_serial_number = usb_string_at_index( usb_device.iSerialNumber );
 
-    // Get unique serial number from processor.
-    uint8_t bbb = 6; // start with MSB
-    while ( bbb-- ) {
-        uint8_t uniqid = UNIQID[bbb];
-        *usb_string_serial_number++ = hex2ascii[ uniqid >> 4 & 0x0F ];  // upper nibble
-        *usb_string_serial_number++ = hex2ascii[ uniqid & 0x0F ];  // lower nibble
+    // Get unique serial number from processor, start with MSB at UNIQID[5].
+    for ( __xdata uint8_t *uniqid = UNIQID + 5; uniqid >= UNIQID; --uniqid ) {
+        *usb_string_serial_number++ = hex2ascii[ *uniqid >> 4 ];   // upper nibble
+        *usb_string_serial_number++ = hex2ascii[ *uniqid & 0x0F ]; // lower nibble
     }
 }
 
@@ -168,20 +162,20 @@ static void adf_set_reg( const uint8_t *reg ) {
     const uint8_t *data = reg + 3; // start with MSB
     uint8_t one_byte = 0;          // silence warning 'use before init'
 
-    for ( uint8_t bit_pos = 0; bit_pos < 32; ++bit_pos ) { // shift data out, MSB first
-        if ( bit_pos % 8 == 0 )   // every eight bit
-            one_byte = *data--;   // fetch next byte
-        if ( one_byte & 0x80 )    // bit high?
-            IOA = DATA_IO;        // CLK low, LE low, DATA high
-        else                      // bit low
-            IOA = 0;              // CLK low, LE low, DATA low
-        IOA |= CLK_IO;            // set CLK high, shift data bit in
-        IOA = 0;                  // set CLK low, set DATA low
-        one_byte <<= 1;           // next bit
-    }
-    // t6 > 10 ns between set CLK low and set LE high
-    IOA = LE_IO; // set LE high, transfer shift reg to R0..5
-    IOA = 0;     // set LE low
+    // shift data out, MSB first
+    for ( uint8_t bit_pos = 0; bit_pos < 32; ++bit_pos ) {
+        if ( bit_pos % 8 == 0 ) // every eight bit
+            one_byte = *data--; // fetch next byte
+        if ( one_byte & 0x80 )  // bit high?
+            IOA = DATA_IO;      // CLK low, LE low, DATA high
+        else                    // bit low
+            IOA = 0;            // CLK low, LE low, DATA low
+        IOA |= CLK_IO;          // set CLK high, shift data bit in
+        IOA = 0;                // set CLK low, set DATA low
+        one_byte <<= 1;         // next bit
+    }                           // t6 > 10 ns between set CLK low and set LE high
+    IOA = LE_IO;                // set LE high, transfer shift reg to R0..5
+    IOA = 0;                    // set LE low
 }
 
 
