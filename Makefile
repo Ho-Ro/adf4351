@@ -56,13 +56,20 @@ qtgui/Makefile: qtgui/adf435xgui.pro
 	cd qtgui && qmake && cd ..
 
 
-.PHONY: gui
-gui: qtgui/linux/adf435xgui
+adf435xgui: qtgui/linux/adf435xgui
 	cp $< .
+
+
+.PHONY: gui
+gui: adf435xgui
 
 
 qtgui/linux/adf435xgui: qtgui/Makefile
 	make -j -C qtgui
+
+.PHONY: examples
+examples:
+	-make -C examples
 
 
 # create a python source package
@@ -102,6 +109,7 @@ clean:
 	-make -C firmware/fx2.fx2lib clean
 	-make -C firmware/stm32 clean
 	-make -C qtgui clean
+	-make -C examples clean
 
 
 # removes all build artefacts
@@ -110,6 +118,7 @@ distclean: clean
 	-rm -Rf *.deb firmware/fx2.fx2lib/Makefile
 	-make -j4 -C firmware/stm32/libopencm3 clean
 	-make -C qtgui distclean
+	-make -C examples distclean
 
 
 # show the versions from python package and firmware

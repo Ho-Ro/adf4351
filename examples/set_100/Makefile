@@ -1,8 +1,14 @@
-all: set_100
+TARGET = set_100
 
-set_100: main.cpp
+all: $(TARGET)
+
+$(TARGET): main.cpp
 	gcc $< -o $@ -l usb-1.0
 
 .PHONY: clean
 clean:
 	rm -f *~
+
+.PHONY: distclean
+distclean: clean
+	rm -f $(TARGET)
