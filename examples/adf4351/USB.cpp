@@ -13,9 +13,9 @@ USB::USB() {
 
     int rc = 0;
 
-    if ( libusb_init( &context ) ) {
-        printf( "Could not init USB.\n" );
-        exit( -1 );
+    if ( ( rc = libusb_init( &context ) ) ) {
+        printf( "Could not init USB: %d\n", rc );
+        exit( rc );
     }
 
     dev_handle = libusb_open_device_with_vid_pid( context, VID, PID );
