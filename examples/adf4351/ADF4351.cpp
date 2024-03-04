@@ -51,3 +51,13 @@ void ADF435X::setFreq( double freq, uint16_t RCounter ) {
     REG[ 1 ] |= 0x08008000 | ( (uint32_t)( MOD ) << 3 );                       // 8/9, PHASE=1, CTRL=1
     REG[ 0 ] |= ( (uint32_t)( INT ) << 15 | (uint32_t)( FRAC ) << 3 );
 }
+
+
+// return a 'bits' wide section of register 'index' at position 'pos'
+uint32_t ADF435X::getReg( int index, int bits, int pos ) {
+    if ( bits < 32 ) { // return a section
+        return ( REG[ index ] >> pos ) & ( ( 1 << bits ) - 1 );
+    } else { // return the whole register
+        return REG[ index ];
+    }
+}

@@ -10,11 +10,9 @@
 
 
 USB::USB() {
-
-    int rc = 0;
-
+    int rc;
     if ( ( rc = libusb_init( &context ) ) ) {
-        fprintf( stderr, "Could not init USB: %d\n", rc );
+        fprintf( stderr, "USB init: %s\n", libusb_strerror( rc ) );
         exit( rc );
     }
 
@@ -36,6 +34,15 @@ USB::~USB() {
 
 
 int USB::sendReg( uint32_t reg ) { // transfer one 32 bit register
-    return libusb_control_transfer( dev_handle, bmRequestType, USB_REQ_SET_REG, wValue, wIndex, (uint8_t *)&reg, sizeof reg,
-                                    timeout );
+    return libusb_control_transfer( dev_handle, requestWrite, USB_REQ_SET_REG, wValue, wIndex, (uint8_t *)&reg, 4, timeout );
+}
+
+
+uint8_t USB::getMux() {
+    uint8_t mux = 0;
+    int rc;
+    rc = libusb_control_transfer( dev_handle, requestRead, USB_REQ_GET_MUX, wValue, wIndex, &mux, 1, timeout );
+    if ( rc != 1 )
+        fprintf( stderr, "USB get mux: %s\n", libusb_strerror( rc ) );
+    return mux;
 }

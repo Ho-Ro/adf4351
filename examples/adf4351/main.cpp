@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 
 #include "ADF4351.h"
 #include "USB.h"
@@ -40,11 +41,17 @@ int main( int argc, char *argv[] ) {
 
     int regnum = 6;
     while ( regnum-- ) {
-        uint32_t R = adf.getReg( regnum );
-        if ( 4 != usb.sendReg( R ) ) {
+        uint32_t REG = adf.getReg( regnum );
+        if ( 4 != usb.sendReg( REG ) ) {
             fprintf( stderr, "error writing register %d\n", regnum );
             break;
         }
-        printf( "R%d = 0x%08X\n", regnum, R );
+        printf( "R%d = 0x%08X\n", regnum, REG );
+    }
+
+    if ( adf.getReg( 2, 3, 26 ) == 6 ) { // muxout = digital lock detect
+        // sleep for 10 ms before reading digital lock detect status
+        nanosleep( ( const struct timespec[] ){ { 0, 10000000L } }, nullptr );
+        printf( "%s\n", usb.getMux() ? "LOCKED" : "NOLOCK" );
     }
 }
