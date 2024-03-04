@@ -14,23 +14,28 @@ USB::USB() {
     int rc = 0;
 
     if ( ( rc = libusb_init( &context ) ) ) {
-        printf( "Could not init USB: %d\n", rc );
+        fprintf( stderr, "Could not init USB: %d\n", rc );
         exit( rc );
     }
 
     dev_handle = libusb_open_device_with_vid_pid( context, VID, PID );
 
-    if ( dev_handle == NULL ) {
-        printf( "Could not open device 0x%04x:0x%04x\n", VID, PID );
+    if ( dev_handle == nullptr ) {
+        fprintf( stderr, "Error: Could not open ADF4351-EVAL device 0x%04X:0x%04X\n", VID, PID );
         exit( -1 );
     }
 }
 
 
 USB::~USB() {
-    libusb_close( dev_handle );
-    libusb_exit( context );
+    if ( dev_handle )
+        libusb_close( dev_handle );
+    if ( context )
+        libusb_exit( context );
 }
 
 
-int USB::send_reg( uint32_t reg ) { return libusb_control_transfer( dev_handle, 0x40, 0xDD, 0x00, 0x00, (uint8_t *)&reg, 4, 10 ); }
+int USB::sendReg( uint32_t reg ) { // transfer one 32 bit register
+    return libusb_control_transfer( dev_handle, bmRequestType, USB_REQ_SET_REG, wValue, wIndex, (uint8_t *)&reg, sizeof reg,
+                                    timeout );
+}

@@ -32,7 +32,7 @@ int main( int argc, char *argv[] ) {
     }
 
     // Open the USB interface to the ADF4351 eval board registers
-    USB *usb = new USB();
+    USB usb;
 
     // Calculation of register values
     ADF435X adf;
@@ -41,7 +41,7 @@ int main( int argc, char *argv[] ) {
     int regnum = 6;
     while ( regnum-- ) {
         uint32_t R = adf.getReg( regnum );
-        if ( 4 != usb->send_reg( R ) ) {
+        if ( 4 != usb.sendReg( R ) ) {
             fprintf( stderr, "error writing register %d\n", regnum );
             break;
         }
