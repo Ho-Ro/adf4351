@@ -34,7 +34,11 @@ USB::~USB() {
 
 
 int USB::sendReg( uint32_t reg ) { // transfer one 32 bit register
-    return libusb_control_transfer( dev_handle, requestWrite, USB_REQ_SET_REG, wValue, wIndex, (uint8_t *)&reg, 4, timeout );
+    int rc;
+    rc = libusb_control_transfer( dev_handle, requestWrite, USB_REQ_SET_REG, wValue, wIndex, (uint8_t *)&reg, 4, timeout );
+    if ( rc != 4 )
+        fprintf( stderr, "USB send register: %s\n", libusb_strerror( rc ) );
+    return rc;
 }
 
 
