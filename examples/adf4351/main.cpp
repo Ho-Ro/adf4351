@@ -39,14 +39,16 @@ int main( int argc, char *argv[] ) {
     ADF435X adf;
     adf.setFreq( freq );
 
+    printf( "INT: %d, FRAC: %d, MOD: %d\n", adf.getINT(), adf.getFRAC(), adf.getMOD() );
+
     int regnum = 6;
     while ( regnum-- ) {
         uint32_t REG = adf.getReg( regnum );
+        printf( "R%d = 0x%08X\n", regnum, REG );
         if ( 4 != usb.sendReg( REG ) ) {
             fprintf( stderr, "error writing register %d\n", regnum );
             break;
         }
-        printf( "R%d = 0x%08X\n", regnum, REG );
     }
 
     if ( adf.getReg( 2, 3, 26 ) == 6 ) { // muxout = digital lock detect

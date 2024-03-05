@@ -12,14 +12,16 @@
 class ADF435X {
   public:
     ADF435X( uint32_t refIn = 25000000 ) : refIn{ refIn } {};
-    void setFreq( double freq_Hz, uint16_t Rcounter = 250 );
+    void setFreq( double freq_Hz, uint32_t Rcounter = 250 );
     uint32_t getReg( int index, int bits = 32, int pos = 0 );
+    uint32_t getINT() { return INT; };
+    uint32_t getFRAC() { return FRAC; };
+    uint32_t getMOD() { return MOD; };
 
   private:
-    uint16_t INT;
-    uint16_t FRAC;
-    uint16_t MOD;
-    uint8_t RF_DIV;
+    uint32_t INT;
+    uint32_t FRAC;
+    uint32_t MOD;
     uint32_t refIn;
     uint32_t REG[ 6 ];
 };
