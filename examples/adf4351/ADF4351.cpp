@@ -10,7 +10,7 @@
 #include "ADF4351.h"
 
 // calculate greatest common denominator
-static uint32_t gcd( uint32_t n1, uint32_t n2 ) {
+static uint32_t getGCD( uint32_t n1, uint32_t n2 ) {
     while ( n1 != n2 )
         if ( n1 > n2 )
             n1 -= n2;
@@ -20,24 +20,24 @@ static uint32_t gcd( uint32_t n1, uint32_t n2 ) {
 }
 
 
-void ADF435X::setFreq( double freq, uint32_t RCounter ) {
+void ADF435X::calculateFreq( double freq, uint32_t RCounter ) {
 
-    // start with register default values
-    REG[ 5 ] = 0x00180005;
-    REG[ 4 ] = 0x00000004;
-    REG[ 3 ] = 0x00000003;
-    REG[ 2 ] = 0x00000002;
-    REG[ 1 ] = 0x00000001;
-    REG[ 0 ] = 0x00000000;
+    // init register with default values
+    R5.u = 0x00180005;
+    R4.u = 0x00000004;
+    R3.u = 0x00000003;
+    R2.u = 0x00000002;
+    R1.u = 0x00000001;
+    R0.u = 0x00000000;
 
-    if ( freq == 0 ) {       // switch off
-        REG[ 4 ] |= 1 << 11; // VCO power down
-        return;              // ready
+    if ( freq == 0 ) { // switch off
+        R4.b.VCOPowerDown = VCO_POWERDOWN;
+        return;
     }
 
     RCounter &= 0x3FF;
     double fPFD = refIn / RCounter;
-    uint32_t bSelClkDiv = uint32_t( ceil( fPFD / 125000 ) );
+    uint32_t bandSelClkDiv = uint32_t( ceil( fPFD / 125000 ) );
     uint32_t divider = 1;
     uint32_t RF_DIV = 0;
 
@@ -49,39 +49,53 @@ void ADF435X::setFreq( double freq, uint32_t RCounter ) {
     }
     double VCO_Freq = freq * divider;
 
-    // printf( "VCO: %g GHz, divider: %d, bSelClkDiv: %d\n", VCO_Freq / 1e9, divider, bSelClkDiv );
-
     INT = VCO_Freq / fPFD;
     MOD = fPFD / 1000;
-    FRAC = MOD * ( ( (float)VCO_Freq / fPFD ) - (float)INT );
-
-    uint32_t LDF_LDP = 0b00;
+    FRAC = MOD * ( ( VCO_Freq / fPFD ) - INT );
 
     if ( !FRAC ) { // INT mode
         MOD = 2;
-        LDF_LDP = 0b11;
+        R2.b.LDF = LDF_INT;
+        R2.b.LDP = LDP_6NS;
     } else { // FRAC mode
-        uint32_t div = gcd( FRAC, MOD );
-        FRAC /= div;
-        MOD /= div;
+        uint32_t gcd = getGCD( FRAC, MOD );
+        FRAC /= gcd;
+        MOD /= gcd;
+        R2.b.LDF = LDF_FRAC;
+        R2.b.LDP = LDP_10NS;
     }
 
-    // printf( "INT: %d, FRAC: %d, MOD: %d\n", INT, FRAC, MOD );
-
-    REG[ 5 ] |= 0x00400000;                                            // LD = Dig LD
-    REG[ 4 ] |= 1 << 23 | RF_DIV << 20 | bSelClkDiv << 12 | 0x87 << 3; // FB=fund
-    REG[ 3 ] |= 150 << 3;                                              // Clk Div = 150
-    REG[ 2 ] |= 0x18002E40 | RCounter << 14 | LDF_LDP << 7;            // MUX: dig lock, LDF, LDP
-    REG[ 1 ] |= 1 << 27 | 1 << 15 | MOD << 3;                          // 8/9, PHASE=1, CTRL=1
-    REG[ 0 ] |= INT << 15 | FRAC << 3;
+    // set register values
+    R5.b.LDPinMode = LD_PIN_DIGITAL_LOCK;
+    //
+    R4.b.feedback = FEEDBACK_FUNDAMENTAL;
+    R4.b.RFDivSel = RF_DIV;
+    R4.b.bandSelClkDiv = bandSelClkDiv;
+    R4.b.outEnable = ENABLE;
+    R4.b.outPower = POWER_PLUS5DB;
+    R4.b.MTLD = ENABLE;
+    //
+    R3.b.clkDiv = 150;
+    //
+    R2.b.muxOut = MUX_DIGITALLOCK; // dig lock detect
+    R2.b.RCounter = RCounter;
+    R2.b.doubleBuffer = ENABLE;
+    R2.b.CPCurrent = CPCURRENT_2_50; // 2.50 mA
+    R2.b.PDPolarity = POLARITY_POSITIVE;
+    //
+    R1.b.MOD = MOD;
+    R1.b.phase = 1;
+    R1.b.prescaler = PRESCALER_8_9;
+    //
+    R0.b.INT = INT;
+    R0.b.FRAC = FRAC;
 }
 
 
 // return a 'bits' wide section of register 'index' at position 'pos'
 uint32_t ADF435X::getReg( int index, int bits, int pos ) {
-    if ( bits < 32 ) { // return a section
-        return ( REG[ index ] >> pos ) & ( ( 1U << bits ) - 1 );
-    } else { // return the whole register
-        return REG[ index ];
-    }
+    if ( bits >= 32 ) // return the whole register
+        return *R[ index ];
+    else // return a register section
+        return ( *R[ index ] >> pos ) & ( ( 1U << bits ) - 1 );
 }

@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <ctype.h>
+#include <unistd.h>
 
 #include "ADF4351.h"
 #include "USB.h"
@@ -15,45 +17,103 @@
 
 int main( int argc, char *argv[] ) {
 
+    bool dryRun = false;
+    int verbose = 0;
+    bool reportLock = false;
+    char *farg = nullptr;
+    int c;
+    opterr = 0;
+
+    while ( ( c = getopt( argc, argv, "df:hlv" ) ) != -1 )
+        switch ( c ) {
+        case 'd':
+            dryRun = true;
+            break;
+        case 'f':
+            farg = optarg;
+            break;
+        case 'l':
+            reportLock = true;
+            break;
+        case 'v':
+            ++verbose;
+            break;
+        case 'h':
+            puts( "adf4351 [-f FREQ] [-h] [-v]\n"
+                  "  -d      : dry run, do not set adf4351 register\n"
+                  "  -f FREQ : set frequency (float value with optional suffix 'k', 'M', 'G')\n"
+                  "  -h      : show this help\n"
+                  "  -l      : report lock status\n"
+                  "  -v      : be verbose" );
+            return 1;
+        case '?':
+            if ( optopt == 'f' )
+                fprintf( stderr, "Option -%c requires an frequency argument.\n", optopt );
+            else if ( isprint( optopt ) )
+                fprintf( stderr, "Unknown option `-%c'.\n", optopt );
+            else
+                fprintf( stderr, "Unknown option character `\\x%x'.\n", optopt );
+            return 1;
+        default:
+            return 1;
+        }
+
+    if ( !farg ) {
+        fprintf( stderr, "no frequency given, use argument \"-f FREQ\"\n" );
+    }
+
     double freq = 0;
 
-    // 1st command line argument is target frequence (double) with optional suffix 'k' or 'M'
-    if ( argc > 1 ) {
+    // -f command line argument is target frequence (double) with optional suffix 'k' or 'M'
+    if ( farg ) {
         char *suffix;
-        freq = strtod( argv[ 1 ], &suffix );
+        freq = strtod( farg, &suffix );
         if ( *suffix == 'k' )
             freq *= 1e3;
         else if ( *suffix == 'M' )
             freq *= 1e6;
+        else if ( *suffix == 'G' )
+            freq *= 1e9;
         // check for valid value, freq == 0 switches off
         if ( freq && ( freq < 33000000 || freq > 4500000000 ) ) {
-            printf( "Input %s is outside of valid frequency range 33MHz...4500MHz\n", argv[ 1 ] );
+            printf( "Input %s is outside of valid frequency range 33MHz...4500MHz\n", farg );
             exit( -1 );
         }
     }
 
-    // Open the USB interface to the ADF4351 eval board registers
-    USB usb;
+    // USB interface to the ADF4351 eval board registers
+    USB *usb = nullptr;
+    if ( !dryRun )
+        usb = new USB();
 
     // Calculation of register values
     ADF435X adf;
-    adf.setFreq( freq );
+    adf.calculateFreq( freq );
 
-    printf( "INT: %d, FRAC: %d, MOD: %d\n", adf.getINT(), adf.getFRAC(), adf.getMOD() );
+    if ( verbose )
+        printf( "INT: %d, FRAC: %d, MOD: %d\n", adf.getINT(), adf.getFRAC(), adf.getMOD() );
 
     int regnum = 6;
     while ( regnum-- ) {
-        uint32_t REG = adf.getReg( regnum );
-        printf( "R%d = 0x%08X\n", regnum, REG );
-        if ( 4 != usb.sendReg( REG ) ) {
+        uint32_t value = adf.getReg( regnum );
+        if ( usb && 4 != usb->sendReg( value ) ) {
             fprintf( stderr, "error writing register %d\n", regnum );
             break;
         }
+        if ( verbose )
+            printf( "R%d: 0x%08X\n", regnum, value );
     }
 
-    if ( adf.getReg( 2, 3, 26 ) == 6 ) { // muxout = digital lock detect
-        // sleep for 10 ms before reading digital lock detect status
-        nanosleep( ( const struct timespec[] ){ { 0, 10000000L } }, nullptr );
-        printf( "%s\n", usb.getMux() ? "LOCKED" : "NOLOCK" );
+    // argument "-l" -> show lock status
+    if ( reportLock && usb && adf.getReg( 2, 3, 26 ) == 6 ) { // muxout = digital lock detect
+        // sleep for 20 ms before reading digital lock detect status
+        nanosleep( ( const struct timespec[] ){ { 0, 20000000L } }, nullptr );
+        if ( usb->getMux() ) {
+            puts( "LOCKED" );
+            return 0;
+        } else {
+            puts( "NOLOCK" );
+            return 1;
+        };
     }
 }
