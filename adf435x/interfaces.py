@@ -54,38 +54,74 @@ class FX2:
         self.dev.set_configuration()
 
     def set_regs( self, regs ): # write the registers
+        if not self.dev:
+            return None
         for reg in regs:
             data=[(reg >> (8 * b)) & 0xFF for b in range(4)] # split the 32 register bits into 4 bytes
             self.dev.ctrl_transfer(
                 bmRequestType=0x40, bRequest=USB_REQ_SET_REG, wValue=0, wIndex=0, data_or_wLength=data )
 
     def set_startup( self, typ ): # store the current register values into EEPROM as default setting
+        if not self.dev:
+            return None
         self.dev.ctrl_transfer(
             bmRequestType=0x40, bRequest=USB_REQ_EE_REGS, wValue=typ, wIndex=0, data_or_wLength=None )
 
     def get_mux( self ): # get the status of the MUX bit - byte value 0: MUXOUT=LOW or 1: MUXOUT=HIGH
+        if not self.dev:
+            return None
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_GET_MUX, wValue=0, wIndex=0, data_or_wLength=1 )
 
     def get_eeprom( self, addr=8160, size=32 ): # read EEPROM content, default is the register set
+        if not self.dev:
+            return None
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_EEPROM_DB, wValue=addr, wIndex=0, data_or_wLength=size )
 
     def set_eeprom( self, data, addr=8160 ): # write EEPROM content, default is the register set
+        if not self.dev:
+            return None
         self.dev.ctrl_transfer(
             bmRequestType=0x40, bRequest=USB_REQ_CYPRESS_EEPROM_DB, wValue=addr, wIndex=0, data_or_wLength=data )
 
     def get_xram( self, addr=0x3e00, size=32 ): # read XRAM content, default is the register set
+        if not self.dev:
+            return None
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_EXT_RAM, wValue=addr, wIndex=0, data_or_wLength=size )
 
     def get_chip_rev( self ): # get the chip revision
+        if not self.dev:
+            return None
         return self.dev.ctrl_transfer(
             bmRequestType=0xC0, bRequest=USB_REQ_CYPRESS_CHIP_REV, wValue=0, wIndex=0, data_or_wLength=1 )
 
     def renumerate( self ): # renumerate on the bus
+        if not self.dev:
+            return None
         return self.dev.ctrl_transfer(
             bmRequestType=0x40, bRequest=0xa8, wValue=0, wIndex=0, data_or_wLength=0 )
+
+    def get_fw_version( self ):
+        if not self.dev:
+            return None
+        return self.dev.bcdDevice
+
+    def get_manufacturer_string( self ):
+        if self.dev and self.dev.iManufacturer:
+            return usb.util.get_string( self.dev, self.dev.iManufacturer )
+        return None
+
+    def get_product_string( self ):
+        if self.dev and self.dev.iProduct:
+            return usb.util.get_string( self.dev, self.dev.iProduct )
+        return None
+
+    def get_serial_number_string( self ):
+        if self.dev and self.dev.iSerialNumber:
+            return usb.util.get_string( self.dev, self.dev.iSerialNumber )
+        return None
 
 
 class BusPirate:

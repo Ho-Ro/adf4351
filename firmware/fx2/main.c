@@ -54,7 +54,7 @@ usb_desc_device_c usb_device = {
     .bMaxPacketSize0 = 64,
     .idVendor = 0x0456,
     .idProduct = 0xb40d,
-    .bcdDevice = 0x0038, // FW version 0.3.8
+    .bcdDevice = 0x0040, // FW version 0.4.0
     .iManufacturer = 1,  // 1 = usb_strings[0]
     .iProduct = 2,       // 2 = usb_strings[1]
     .iSerialNumber = 3,  // 3 = usb_strings[2] if exist
