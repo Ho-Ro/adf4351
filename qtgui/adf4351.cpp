@@ -67,6 +67,10 @@ void ADF4351::buildRegisters() {
     INT = uint32_t( N );
     MOD = uint32_t( round( 1000 * PFDFreq ) );
     FRAC = uint32_t( round( ( N - INT ) * MOD ) );
+    if ( LDP < 0 ) // auto
+        LDP = FRAC ? 0 : 1;
+    if ( LDF < 0 ) // auto
+        LDF = FRAC ? 0 : 1;
     if ( enable_gcd ) {
         uint32_t div = gcd( uint32_t( MOD ), uint32_t( FRAC ) );
         MOD = MOD / div;

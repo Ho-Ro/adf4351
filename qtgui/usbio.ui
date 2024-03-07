@@ -367,6 +367,11 @@
      </property>
      <item>
       <property name="text">
+       <string>auto</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>FRAC-N</string>
       </property>
      </item>
@@ -385,6 +390,11 @@
        <height>22</height>
       </rect>
      </property>
+     <item>
+      <property name="text">
+       <string>auto</string>
+      </property>
+     </item>
      <item>
       <property name="text">
        <string>10ns</string>

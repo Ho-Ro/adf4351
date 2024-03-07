@@ -37,8 +37,8 @@ class ADF4351 : public QObject {
     uint8_t NOISE_MODE;          // 0 default
     uint8_t muxout;              // 6 = digital lock detect
     uint8_t charge_pump_current; // 8 default
-    bool LDF;                    // 0: fract n 1: INT n , 0 default
-    bool LDP;                    // 0: 10ns 1: 6ns 0 default
+    int LDF;                     // -1: auto, 0: fract n, 1: INT n , -1 default
+    int LDP;                     // -1: auto, 0: 10ns, 1: 6ns, -1 default
     bool PD_Polarity;            // 0: negative 1:positive 1 default
     bool POWERDOWN;              // 0 default
     bool cp_3stage;              // 0 default

@@ -325,8 +325,8 @@ void USBIOBoard::getDataFromUI() {
     adf4351->muxout = ui->comboBox_muxout->currentIndex();
     adf4351->double_buff = ui->comboBox_double_buff->currentIndex();
     adf4351->charge_pump_current = ui->comboBox_charge_pump_current->currentIndex();
-    adf4351->LDF = ui->comboBox_LDF->currentIndex();
-    adf4351->LDP = ui->comboBox_LDP->currentIndex();
+    adf4351->LDF = ui->comboBox_LDF->currentIndex() - 1; // index 0 -> auto
+    adf4351->LDP = ui->comboBox_LDP->currentIndex() - 1; // index 0 -> auto
     adf4351->PD_Polarity = ui->comboBox_PD_polarity->currentIndex();
     adf4351->cp_3stage = ui->comboBox_cp_3_state->currentIndex();
     adf4351->counter_reset = ui->comboBox_counter_rst->currentIndex();
