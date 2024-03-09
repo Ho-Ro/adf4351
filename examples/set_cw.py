@@ -5,7 +5,7 @@
 import sys
 import time
 from adf435x.interfaces import FX2
-from adf435x import freq_make_regs
+from adf435x.core import freq_make_regs
 
 fMin = 33   # MHz
 fMax = 4500 # MHz

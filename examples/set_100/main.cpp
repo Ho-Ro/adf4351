@@ -31,7 +31,7 @@ int main() {
     // printf( "Device opened succesfully!\n" );
 
     // register values for f = 100 MHz
-    uint32_t reg[] = { 0x3e800000, 0x08008011, 0x003e8e42, 0x000004b3, 0x00d0103c, 0x00580005 };
+    uint32_t reg[] = { 0x3E800000, 0x08008011, 0x183EAFC2, 0x000004B3, 0x00D0043C, 0x00580005 };
 
     for ( int r = 5; r >= 0; --r ) {
         rc = send_reg( reg[ r ] );

@@ -23,6 +23,9 @@ static uint32_t getGCD( uint32_t n1, uint32_t n2 ) {
 void ADF435X::calculateFreq( double freq, uint32_t RCounter ) {
 
     // init register with default values
+    INT = 0;
+    MOD = 0;
+    FRAC = 0;
     R5.u = 0x00180005;
     R4.u = 0x00000004;
     R3.u = 0x00000003;

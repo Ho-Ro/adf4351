@@ -3,7 +3,7 @@
 ## This file is part of the adf435x project.
 ##
 ## Copyright (C) 2017 Joel Holdsworth <joel@airwebreathe.org.uk>
-## Copyright (C) 2022, 2023 Martin Homuth-Rosemann
+## Copyright (C) 2022-2024 Martin Homuth-Rosemann
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,4 +19,4 @@
 ## along with this program; if not, see <http://www.gnu.org/licenses/>.
 ##
 
-from .core import *
+VERSION = '0.4.0'

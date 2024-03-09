@@ -9,7 +9,7 @@ IHX2IIC = firmware/fx2.fx2lib/fx2lib/utils/ihx2iic.py --vid $(VID) --pid $(PID) 
 FX2EEPROM = fx2eeprom w $(VID) $(PID)
 
 .PHONY: all
-all: firmware gui
+all: firmware gui examples
 
 
 .PHONY: firmware
@@ -86,7 +86,7 @@ dsc:
 
 # create a debian binary package
 .PHONY:	deb
-deb:	distclean firmware gui
+deb:	distclean firmware gui examples
 	git log --pretty="%cs: %s [%h]" > Changelog
 	python setup.py --command-packages=stdeb.command bdist_deb
 	-rm -f $(PROJECT)_*_all.deb $(PROJECT)-*.tar.gz

@@ -64,20 +64,30 @@ int main( int argc, char *argv[] ) {
 
     double freq = 0;
 
-    // -f command line argument is target frequence (double) with optional suffix 'k' or 'M'
+    // -f command line argument is target frequence (double) with optional suffix 'k', 'M', 'G'
     if ( farg ) {
         char *suffix;
         freq = strtod( farg, &suffix );
-        if ( *suffix == 'k' )
-            freq *= 1e3;
-        else if ( *suffix == 'M' )
-            freq *= 1e6;
-        else if ( *suffix == 'G' )
-            freq *= 1e9;
+        if ( freq ) {
+            if ( *suffix == 'k' )
+                freq *= 1e3;
+            else if ( *suffix == 'M' )
+                freq *= 1e6;
+            else if ( *suffix == 'G' )
+                freq *= 1e9;
+            else if ( freq <= 5 ) // GHz
+                freq *= 1e9;
+            else if ( freq <= 5000 ) // MHz
+                freq *= 1e6;
+            else if ( freq < 5000000 ) // kHz
+                freq *= 1e3;
+        }
+        if ( verbose )
+            printf( "f = %g MHz\n", freq / 1e6);
         // check for valid value, freq == 0 switches off
         if ( freq && ( freq < 33000000 || freq > 4500000000 ) ) {
-            printf( "Input %s is outside of valid frequency range 33MHz...4500MHz\n", farg );
-            exit( -1 );
+            fprintf( stderr, "Input %s (%g MHz) is outside of valid frequency range 33MHz...4500MHz\n", farg, freq / 1e6 );
+            freq = 0;
         }
     }
 

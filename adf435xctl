@@ -21,7 +21,7 @@
 ##
 
 from collections import OrderedDict
-import adf435x
+import adf435x.core
 import adf435x.interfaces
 import argparse
 import inspect
@@ -35,8 +35,8 @@ parser = argparse.ArgumentParser(
     epilog=f'{adf435x_version}')
 
 # Populate arguments
-calculate_regs_spec = inspect.getfullargspec(adf435x.calculate_regs)
-make_regs_spec = inspect.getfullargspec(adf435x.make_regs)
+calculate_regs_spec = inspect.getfullargspec(adf435x.core.calculate_regs)
+make_regs_spec = inspect.getfullargspec(adf435x.core.make_regs)
 
 arg_dict = OrderedDict()
 for arg, default in zip(calculate_regs_spec.args, calculate_regs_spec.defaults):
@@ -97,13 +97,13 @@ calculate_regs_kw = {arg : args[arg.lower()]
         for arg in calculate_regs_spec.args}
 kw = {arg : args[arg.lower()] for arg in make_regs_spec.args}
 kw['INT'], kw['MOD'], kw['FRAC'], kw['output_divider'], \
-    kw['band_select_clock_divider'] = adf435x.calculate_regs(
+    kw['band_select_clock_divider'] = adf435x.core.calculate_regs(
             **calculate_regs_kw)
 
 if options.lock_detect:
     kw['mux_out'] = 6; # set MUXOUT to digital lock detect
 
-regs = adf435x.make_regs(**kw)
+regs = adf435x.core.make_regs(**kw)
 
 for i in range(6):
     r = args['r%d' % i]

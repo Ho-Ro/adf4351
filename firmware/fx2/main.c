@@ -121,6 +121,13 @@ enum {
     USB_REQ_GET_MUX = 0xDF,            // get status of the MUX pin
 };
 
+// init type
+enum {
+    INIT_NEVER,
+    INIT_STANDALONE, // init after 2 s w/o USB activity
+    INIT_ALWAYS,     // init immediately
+};
+
 // register and checksum setup storage
 // 6 x 32 bit register + 6 byte reserved + 1 byte init_type + 1 byte checksum
 __xdata uint8_t reg_set[ REG_SET_SIZE ];
@@ -345,9 +352,9 @@ static void handle_pending_usb_setup() {
         pending_setup = false;
         SETUP_EP0_BUF( 0 );
         while ( EP0CS & _BUSY )
-            ;                // idle
-        if ( req->wValue ) { // add type and checksum to reg set
-            reg_set[ 30 ] = req->wValue;
+            ;                            // idle
+        if ( req->wValue ) {             // add type and checksum to reg set
+            reg_set[ 30 ] = req->wValue; // 1: init stand alone; 2: init always
             reg_set[ 31 ] = reg_chksum();
         } else { // clear reg set
             xmemclr( reg_set, REG_SET_SIZE );
@@ -417,10 +424,10 @@ int main() {
 
     uint8_t init_type = ee_get_init_type();
 
-    if ( init_type == 1 ) {        // init_stand_alone
-        init_wait = 200;           // wait 2 s for USB
-    } else if ( init_type == 2 ) { // init_always
-        adf_reg_init();            // do not wait
+    if ( init_type == INIT_STANDALONE ) {
+        init_wait = 200; // wait 2 s for USB
+    } else if ( init_type == INIT_ALWAYS ) {
+        adf_reg_init(); // do not wait
     }
 
     // disconnect to renumerate on the bus

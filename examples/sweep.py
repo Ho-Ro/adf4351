@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from adf435x.interfaces import FX2
-from adf435x import freq_make_regs
+from adf435x.core import freq_make_regs
 import time
 
 intf = FX2()

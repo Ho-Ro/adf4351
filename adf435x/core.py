@@ -20,9 +20,6 @@
 ##
 
 
-VERSION = '0.4.0'
-
-
 from math import ceil, floor, log
 
 
@@ -80,7 +77,7 @@ class LDPinMode:
 
 def calculate_regs(
         device_type=DeviceType.ADF4351,
-        freq=50.0,
+        freq=100.0,
         ref_freq=25.0,
         r_counter=250,
         ref_doubler=False,
@@ -88,8 +85,10 @@ def calculate_regs(
         feedback_select=FeedbackSelect.Fundamental,
         band_select_clock_divider=None,
         band_select_clock_mode=BandSelectClockMode.Low):
+    'calculate values: INT, MOD, FRAC, output_divider, band_select_clock_divider'
 
     def gcd(a, b):
+        'get greatest common denominator'
         while True:
             if a == 0:
                 return b
@@ -205,6 +204,7 @@ def make_regs(
         output_disable=False,
         output_power=5.0,
         ld_pin_mode=LDPinMode.DigitalLockDetect):
+    'populate the 6 registers with values'
 
     ChargePumpCurrent = {0.31:0, 0.63:1, 0.94:2, 1.25:3,
             1.56:4, 1.88:5, 2.19:6, 2.50:7,
@@ -302,6 +302,7 @@ def make_regs(
 
 
 def freq_make_regs(freq):
+    'prepare register values'
     INT, MOD, FRAC, output_divider, band_select_clock_divider = \
             calculate_regs(freq=freq)
     return make_regs(INT=INT, MOD=MOD, FRAC=FRAC,
