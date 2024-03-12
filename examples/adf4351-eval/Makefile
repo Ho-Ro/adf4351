@@ -1,17 +1,17 @@
-TARGET = adf4351
+TARGET = adf4351-eval
 
 all: $(TARGET)
 
-$(TARGET): main.o ADF4351.o USB.o
+$(TARGET): main.o adf4351.o eval.o
 	g++ $^ -o $@ -l usb-1.0 -lm
 
-main.o: main.cpp ADF4351.h USB.h Makefile
+main.o: main.cpp adf4351.h eval.h Makefile
 	g++ -Wall -c $< -o $@
 
-ADF4351.o: ADF4351.cpp ADF4351.h Makefile
+adf4351.o: adf4351.cpp adf4351.h Makefile
 	g++ -Wall -c $< -o $@
 
-USB.o: USB.cpp USB.h Makefile
+eval.o: eval.cpp eval.h Makefile
 	g++ -Wall -c $< -o $@
 
 .PHONY: clean

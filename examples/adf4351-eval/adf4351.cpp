@@ -7,7 +7,7 @@
 #include <cmath>
 #include <cstdio>
 
-#include "ADF4351.h"
+#include "adf4351.h"
 
 // calculate greatest common denominator
 static uint32_t getGCD( uint32_t n1, uint32_t n2 ) {
@@ -20,7 +20,7 @@ static uint32_t getGCD( uint32_t n1, uint32_t n2 ) {
 }
 
 
-void ADF435X::calculateFreq( double freq, uint32_t RCounter ) {
+void ADF4351::calculateFreq( double freq, uint32_t RCounter ) {
 
     // init register with default values
     INT = 0;
@@ -96,7 +96,7 @@ void ADF435X::calculateFreq( double freq, uint32_t RCounter ) {
 
 
 // return a 'bits' wide section of register 'index' at position 'pos'
-uint32_t ADF435X::getReg( int index, int bits, int pos ) {
+uint32_t ADF4351::getReg( int index, int bits, int pos ) {
     if ( bits >= 32 ) // return the whole register
         return *R[ index ];
     else // return a register section

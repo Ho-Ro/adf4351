@@ -8,9 +8,9 @@
 
 #include <cstdint>
 
-class ADF435X {
+class ADF4351 {
   public:
-    ADF435X( uint32_t refIn = 25000000 ) : refIn{ refIn } {};
+    ADF4351( uint32_t refIn = 25000000 ) : refIn{ refIn } {};
     void calculateFreq( double freq_Hz, uint32_t Rcounter = 250 );
     uint32_t getReg( int index, int bits = 32, int pos = 0 );
     uint32_t getINT() { return INT; };

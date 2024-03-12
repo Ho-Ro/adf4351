@@ -9,16 +9,17 @@
 #include <libusb-1.0/libusb.h>
 
 
-class USB {
+class EVAL {
   public:
-    USB();
-    ~USB();
+    EVAL( uint16_t VID = 0x0456, uint16_t PID = 0xb40d ) : VID{ VID }, PID{ PID } {};
+    ~EVAL();
+    bool init();
     int sendReg( uint32_t reg ); // transfer one 32 bit register to the device
     uint8_t getMux();            // get the mux status
 
   private:
-    const uint16_t VID = 0x0456;
-    const uint16_t PID = 0xb40d;
+    const uint16_t VID;
+    const uint16_t PID;
     // direction:1: 0=host to dev, 1: dev to host; type:2: 10=vendor, recipient:5: 00000=device
     const uint8_t requestWrite = 0b0'10'00000;
     const uint8_t requestRead = 0b1'10'00000;

@@ -4,28 +4,30 @@
 // Copyright (c) Martin Homuth-Rosemann 2024
 //
 
-#include "USB.h"
+#include "eval.h"
 #include <cstdio>
 #include <cstdlib>
 
 
-USB::USB() {
+bool EVAL::init() {
     int rc;
     if ( ( rc = libusb_init( &context ) ) ) {
-        fprintf( stderr, "USB init: %s\n", libusb_strerror( rc ) );
-        exit( rc );
+        fprintf( stderr, "EVAL init: %s\n", libusb_strerror( rc ) );
+        return false;
     }
 
     dev_handle = libusb_open_device_with_vid_pid( context, VID, PID );
 
     if ( dev_handle == nullptr ) {
         fprintf( stderr, "Error: Could not open ADF4351-EVAL device 0x%04X:0x%04X\n", VID, PID );
-        exit( -1 );
+        return false;
     }
+    return true;
 }
 
 
-USB::~USB() {
+EVAL::~EVAL() {
+    puts( "EVAL::~EVAL()" );
     if ( dev_handle )
         libusb_close( dev_handle );
     if ( context )
@@ -33,7 +35,7 @@ USB::~USB() {
 }
 
 
-int USB::sendReg( uint32_t reg ) { // transfer one 32 bit register
+int EVAL::sendReg( uint32_t reg ) { // transfer one 32 bit register
     int rc;
     rc = libusb_control_transfer( dev_handle, requestWrite, USB_REQ_SET_REG, wValue, wIndex, (uint8_t *)&reg, 4, timeout );
     if ( rc != 4 )
@@ -42,7 +44,7 @@ int USB::sendReg( uint32_t reg ) { // transfer one 32 bit register
 }
 
 
-uint8_t USB::getMux() {
+uint8_t EVAL::getMux() {
     uint8_t mux = 0;
     int rc;
     rc = libusb_control_transfer( dev_handle, requestRead, USB_REQ_GET_MUX, wValue, wIndex, &mux, 1, timeout );
