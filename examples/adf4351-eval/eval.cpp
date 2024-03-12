@@ -27,7 +27,6 @@ bool EVAL::init() {
 
 
 EVAL::~EVAL() {
-    puts( "EVAL::~EVAL()" );
     if ( dev_handle )
         libusb_close( dev_handle );
     if ( context )
