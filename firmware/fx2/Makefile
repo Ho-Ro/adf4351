@@ -10,7 +10,7 @@ PID=b40d
 
 CONFIGBYTE=0x01
 
-IHX2IIC = ../fx2/fx2lib/utils/ihx2iic.py --vid 0x$(VID) --pid 0x$(PID) --configbyte $(CONFIGBYTE)
+IHX2IIC = ../fx2.fx2lib/fx2lib/utils/ihx2iic.py --vid 0x$(VID) --pid 0x$(PID) --configbyte $(CONFIGBYTE)
 
 
 .PHONY: lib
